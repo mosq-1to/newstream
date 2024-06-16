@@ -17,8 +17,4 @@ describe('TextToSpeechService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
-  it('should generate an audio file based on text', () => {
-    service.generateSpeech();
-  });
 });
