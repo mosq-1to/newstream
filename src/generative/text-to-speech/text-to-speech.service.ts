@@ -13,7 +13,7 @@ export class TextToSpeechService {
     });
   }
 
-  async textToSpeech(@Res() res: Response, text: string) {
+  async convertTextToSpeech(@Res() res: Response, text: string) {
     const audio = await this.elevenLabs.generate({
       text: text,
       voice: 'Rachel',

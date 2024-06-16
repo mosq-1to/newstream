@@ -10,6 +10,6 @@ export class TextToSpeechController {
 
   @Post()
   generateSpeech(@Res() res: Response, @Body() dto: GenerateTextToSpeechDto) {
-    return this.textToSpeechService.textToSpeech(res, dto.text);
+    return this.textToSpeechService.convertTextToSpeech(res, dto.text);
   }
 }
