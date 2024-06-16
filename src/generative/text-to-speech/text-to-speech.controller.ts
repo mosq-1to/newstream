@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { TextToSpeechService } from './text-to-speech.service';
 import { GenerateTextToSpeechDto } from './dto/generate-text-to-speech.dto';
 
@@ -8,7 +8,7 @@ export class TextToSpeechController {
   constructor(private readonly textToSpeechService: TextToSpeechService) {}
 
   @Post()
-  generateSpeech(@Body() dto: GenerateTextToSpeechDto) {
-    return this.textToSpeechService.generateSpeech(dto.text);
+  generateSpeech(@Res() res, @Body() dto: GenerateTextToSpeechDto) {
+    return this.textToSpeechService.generateSpeech(res, dto.text);
   }
 }
