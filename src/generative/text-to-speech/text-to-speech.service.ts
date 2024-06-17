@@ -1,6 +1,5 @@
-import { Injectable, Res } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
 import { ElevenLabsClient } from 'elevenlabs';
 
 @Injectable()
@@ -13,17 +12,15 @@ export class TextToSpeechService {
     });
   }
 
-  async convertTextToSpeech(@Res() res: Response, text: string) {
-    const audio = await this.elevenLabs.generate({
-      text: text,
-      voice: 'Rachel',
-      stream: true,
-    });
-
-    res.set({
-      'Content-Type': 'audio/mpeg',
-    });
-
-    audio.pipe(res);
+  async convertTextToSpeech(text: string) {
+    try {
+      return await this.elevenLabs.generate({
+        text: text,
+        voice: 'Rachel',
+        stream: true,
+      });
+    } catch (e) {
+      throw new InternalServerErrorException('Error generating audio');
+    }
   }
 }

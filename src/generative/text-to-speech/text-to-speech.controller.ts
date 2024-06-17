@@ -9,7 +9,18 @@ export class TextToSpeechController {
   constructor(private readonly textToSpeechService: TextToSpeechService) {}
 
   @Post()
-  generateSpeech(@Res() res: Response, @Body() dto: GenerateTextToSpeechDto) {
-    return this.textToSpeechService.convertTextToSpeech(res, dto.text);
+  async generateSpeech(
+    @Res() res: Response,
+    @Body() dto: GenerateTextToSpeechDto,
+  ) {
+    const audioStream = await this.textToSpeechService.convertTextToSpeech(
+      dto.text,
+    );
+
+    res.set({
+      'Content-Type': 'audio/mpeg',
+    });
+
+    audioStream.pipe(res);
   }
 }
