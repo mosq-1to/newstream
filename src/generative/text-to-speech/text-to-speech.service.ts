@@ -1,24 +1,21 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ElevenLabsClient } from 'elevenlabs';
+import { ElevenLabsSpeechGenerationStrategy } from './strategies/elevenlabs-speech-generation-strategy';
+import { SpeechGenerationStrategy } from './strategies/speech-generation-strategy.interface';
 
 @Injectable()
 export class TextToSpeechService {
-  private elevenLabs: ElevenLabsClient;
+  private readonly speechGenerationStrategy: SpeechGenerationStrategy;
 
   constructor(private readonly configService: ConfigService) {
-    this.elevenLabs = new ElevenLabsClient({
-      apiKey: this.configService.get('ELEVENLABS_API_KEY'),
-    });
+    this.speechGenerationStrategy = new ElevenLabsSpeechGenerationStrategy(
+      this.configService,
+    );
   }
 
   async convertTextToSpeech(text: string) {
     try {
-      return await this.elevenLabs.generate({
-        text: text,
-        voice: 'Rachel',
-        stream: true,
-      });
+      return this.speechGenerationStrategy.convertTextToSpeech(text);
     } catch (e) {
       throw new InternalServerErrorException('Error generating audio');
     }
