@@ -1,14 +1,14 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ElevenLabsSpeechGenerationStrategy } from './strategies/elevenlabs-speech-generation-strategy';
 import { SpeechGenerationStrategy } from './strategies/speech-generation-strategy.interface';
+import { OpenaiSpeechGenerationStrategy } from './strategies/openai-speech-generation-strategy';
 
 @Injectable()
 export class TextToSpeechService {
   private readonly speechGenerationStrategy: SpeechGenerationStrategy;
 
   constructor(private readonly configService: ConfigService) {
-    this.speechGenerationStrategy = new ElevenLabsSpeechGenerationStrategy(
+    this.speechGenerationStrategy = new OpenaiSpeechGenerationStrategy(
       this.configService,
     );
   }

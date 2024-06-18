@@ -1,5 +1,5 @@
-import { Readable } from 'stream';
+import * as stream from 'stream';
 
 export abstract class SpeechGenerationStrategy {
-  abstract convertTextToSpeech(text: string): Promise<Readable>;
+  abstract convertTextToSpeech(text: string): Promise<stream.Readable>;
 }

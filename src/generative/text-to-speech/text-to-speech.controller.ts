@@ -19,6 +19,7 @@ export class TextToSpeechController {
 
     res.set({
       'Content-Type': 'audio/mpeg',
+      'Transfer-Encoding': 'chunked',
     });
 
     audioStream.pipe(res);
