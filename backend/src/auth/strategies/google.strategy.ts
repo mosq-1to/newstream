@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { OAuth2Strategy, Profile } from 'passport-google-oauth';
+import { OAuth2Strategy, Profile, VerifyFunction } from 'passport-google-oauth';
 import { AuthService } from '../auth.service';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class GoogleStrategy extends PassportStrategy(OAuth2Strategy, 'google') {
     accessToken: string,
     refreshToken: string,
     profile: Profile,
-    done: Function,
+    done: VerifyFunction,
   ) {
     const user = await this.authService.findOrCreateUser({
       email: profile.emails[0].value,
