@@ -21,5 +21,8 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    "promise/catch-or-return": "error",
+    "promise/always-return": "error",
+    "@typescript-eslint/no-floating-promises": "error"
   },
 };
