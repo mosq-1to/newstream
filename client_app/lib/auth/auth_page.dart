@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'dart:ui' as ui;
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../common/typography/text_styles.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -31,52 +34,52 @@ class AuthPage extends StatelessWidget {
       ),
       Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Welcome to Newstream',
-              style: TextStyle(
-                fontSize: 24,
-                color: Color(0xFFFFFFFF),
-                fontWeight: FontWeight.bold,
+            const SizedBox(height: 100),
+            const Column(children: [
+              Text(
+                'Welcome to Newstream',
+                style: TextStyles.headline,
               ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Stay up to date with no effort',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFFFFFFFF),
+              SizedBox(height: 10),
+              Text(
+                'Stay up to date with no effort',
+                style: TextStyles.body,
               ),
-            ),
+            ]),
             const SizedBox(height: 40),
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFFFFFFF),
+                color: const Color(0xFF606060).withOpacity(0.25),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.network(
-                      'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    const SizedBox(width: 10),
-                    const Text(
-                      'Continue with Google',
-                      style: TextStyle(
-                        color: Color(0xFF000000),
-                      ),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/icons/google.svg',
+                          width: 24,
+                          height: 24,
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          'Continue with Google',
+                          style: TextStyles.body
+                              .copyWith(fontWeight: FontWeight.w500),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
             ),
+            const SizedBox(height: 100),
           ],
         ),
       ),
