@@ -49,6 +49,7 @@ class AuthPage extends StatelessWidget {
               ),
             ]),
             const SizedBox(height: 40),
+            // TODO: Make it a button
             Container(
               decoration: BoxDecoration(
                 color: const Color(0xFF606060).withOpacity(0.25),
