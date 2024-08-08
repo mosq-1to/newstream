@@ -2,8 +2,20 @@ import 'package:client_app/common/ui/button.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../common/theme/text_styles.dart';
+
+const List<String> scopes = <String>[
+  'email',
+];
+
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  // TODO: Move to environment variables
+  serverClientId:
+      '60310253427-v3hci9niu30lh91vjcljqnag744v80fq.apps.googleusercontent.com',
+  scopes: scopes,
+);
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -57,8 +69,20 @@ class AuthPage extends StatelessWidget {
                   height: 24,
                 ),
                 text: 'Continue with Google',
-                onPressed: () {
-                  print('lorem ipsum');
+                onPressed: () async {
+                  try {
+                    await _googleSignIn.signIn();
+
+                    final GoogleSignInAuthentication? auth =
+                        await _googleSignIn.currentUser?.authentication;
+
+                    print('access token: ${auth?.accessToken}');
+                    print('user: ${_googleSignIn.currentUser}');
+
+                    await _googleSignIn.signOut();
+                  } catch (e) {
+                    print(e);
+                  }
                 }),
             const SizedBox(height: 100),
           ],
