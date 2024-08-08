@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../common/typography/text_styles.dart';
+import '../common/theme/text_styles.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
