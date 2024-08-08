@@ -10,6 +10,7 @@ const List<String> scopes = <String>[
   'email',
 ];
 
+// TODO Move the logic outside of presentational layer
 GoogleSignIn _googleSignIn = GoogleSignIn(
   // TODO: Move to environment variables
   serverClientId:
