@@ -1,3 +1,4 @@
+import 'package:client_app/common/ui/button.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_svg/flutter_svg.dart';
@@ -49,37 +50,16 @@ class AuthPage extends StatelessWidget {
               ),
             ]),
             const SizedBox(height: 40),
-            // TODO: Make it a button
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF606060).withOpacity(0.25),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/google.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          'Continue with Google',
-                          style: TextStyles.body
-                              .copyWith(fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                  ],
+            Button(
+                startChild: SvgPicture.asset(
+                  'assets/icons/google.svg',
+                  width: 24,
+                  height: 24,
                 ),
-              ),
-            ),
+                text: 'Continue with Google',
+                onPressed: () {
+                  print('lorem ipsum');
+                }),
             const SizedBox(height: 100),
           ],
         ),
