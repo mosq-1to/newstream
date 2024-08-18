@@ -9,9 +9,10 @@ class GoogleAuthService {
   // TODO: Move to environment variables
   static const String _serverClientId =
       '60310253427-v3hci9niu30lh91vjcljqnag744v80fq.apps.googleusercontent.com';
+  static const List<String> _scopes = ['email'];
 
   static final GoogleSignIn _googleSignIn =
-      GoogleSignIn(scopes: ['email'], serverClientId: _serverClientId);
+      GoogleSignIn(scopes: _scopes, serverClientId: _serverClientId);
 
   const GoogleAuthService();
 
@@ -20,9 +21,7 @@ class GoogleAuthService {
       final response = await http.get(
         Uri.http('10.0.2.2:3000', 'auth/google/callback', {
           'code': code,
-          'authuser': '0',
-          'prompt': 'consent',
-          'scope': 'email',
+          'scope': _scopes.join(' '),
         }),
       );
 
