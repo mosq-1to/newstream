@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:client_app/auth/current_user_model.dart';
 import 'package:client_app/auth/google_auth_code_validation_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 class GoogleAuthService {
-  // TODO: Move to environment variables
-  static const String _serverClientId =
-      '60310253427-v3hci9niu30lh91vjcljqnag744v80fq.apps.googleusercontent.com';
+  static final String _serverClientId =
+      dotenv.env['GOOGLE_AUTH_SERVER_CLIENT_ID']!;
   static const List<String> _scopes = ['email'];
 
   static final GoogleSignIn _googleSignIn =
@@ -19,7 +19,7 @@ class GoogleAuthService {
   Future<String?> validateAuthCode(String code) async {
     try {
       final response = await http.get(
-        Uri.http('10.0.2.2:3000', 'auth/google/callback', {
+        Uri.http(dotenv.env['NEWSTREAM_API_URL']!, 'auth/google/callback', {
           'code': code,
           'scope': _scopes.join(' '),
         }),

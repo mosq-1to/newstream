@@ -2,9 +2,12 @@ import 'package:client_app/auth/auth_controller.dart';
 import 'package:client_app/auth/auth_page.dart';
 import 'package:client_app/auth/google_auth_service.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
+
   Get.put(const GoogleAuthService());
   Get.put(AuthController(Get.find()));
 
