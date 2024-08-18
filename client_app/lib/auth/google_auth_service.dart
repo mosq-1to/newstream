@@ -11,7 +11,7 @@ class GoogleAuthService {
 
   const GoogleAuthService();
 
-  Future<CurrentUserModel?> openPrompt() async {
+  Future<CurrentUserModel?> signIn() async {
     try {
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
 

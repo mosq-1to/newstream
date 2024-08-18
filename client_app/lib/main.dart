@@ -1,9 +1,8 @@
+import 'package:client_app/auth/auth_controller.dart';
+import 'package:client_app/auth/auth_page.dart';
 import 'package:client_app/auth/google_auth_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-
-import 'auth/auth_controller.dart';
-import 'auth/auth_page.dart';
 
 void main() {
   Get.put(const GoogleAuthService());
