@@ -1,95 +1,73 @@
+import 'package:client_app/auth/auth_controller.dart';
 import 'package:client_app/common/ui/button.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:get/get.dart';
 
 import '../common/theme/text_styles.dart';
-
-const List<String> scopes = <String>[
-  'email',
-];
-
-// TODO Move the logic outside of presentational layer
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  // TODO: Move to environment variables
-  serverClientId:
-      '60310253427-v3hci9niu30lh91vjcljqnag744v80fq.apps.googleusercontent.com',
-  scopes: scopes,
-);
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Container(color: const Color(0xFF000000)),
+    final authController = Get.find<AuthController>();
 
-      // Blurred circles
-      Positioned(
-        top: 50,
-        left: -50,
-        child: CircleBlur(
-          color: const Color(0xFFD95B66).withOpacity(0.9),
-          size: 200,
-          blurRadius: 100,
-        ),
-      ),
+    return Obx(() => Stack(children: [
+          Container(color: const Color(0xFF000000)),
 
-      Positioned(
-        bottom: 50,
-        right: -50,
-        child: CircleBlur(
-          color: const Color(0xFF3e568a).withOpacity(0.9),
-          size: 200,
-          blurRadius: 100,
-        ),
-      ),
-      Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const SizedBox(height: 100),
-            const Column(children: [
-              Text(
-                'Welcome to Newstream',
-                style: TextStyles.headline,
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Stay up to date with no effort',
-                style: TextStyles.body,
-              ),
-            ]),
-            const SizedBox(height: 40),
-            Button(
-                startChild: SvgPicture.asset(
-                  'assets/icons/google.svg',
-                  width: 24,
-                  height: 24,
-                ),
-                text: 'Continue with Google',
-                onPressed: () async {
-                  try {
-                    await _googleSignIn.signIn();
+          // Blurred circles
+          Positioned(
+            top: 50,
+            left: -50,
+            child: CircleBlur(
+              color: const Color(0xFFD95B66).withOpacity(0.9),
+              size: 200,
+              blurRadius: 100,
+            ),
+          ),
 
-                    final GoogleSignInAuthentication? auth =
-                        await _googleSignIn.currentUser?.authentication;
-
-                    print('access token: ${auth?.accessToken}');
-                    print('user: ${_googleSignIn.currentUser}');
-
-                    await _googleSignIn.signOut();
-                  } catch (e) {
-                    print(e);
-                  }
-                }),
-            const SizedBox(height: 100),
-          ],
-        ),
-      ),
-    ]);
+          Positioned(
+            bottom: 50,
+            right: -50,
+            child: CircleBlur(
+              color: const Color(0xFF3e568a).withOpacity(0.9),
+              size: 200,
+              blurRadius: 100,
+            ),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(height: 100),
+                const Column(children: [
+                  Text(
+                    'Welcome to Newstream',
+                    style: TextStyles.headline,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Stay up to date with no effort',
+                    style: TextStyles.body,
+                  ),
+                ]),
+                Text('Hello ${authController.currentUser.value?.email}'),
+                const SizedBox(height: 40),
+                Button(
+                    startChild: SvgPicture.asset(
+                      'assets/icons/google.svg',
+                      width: 24,
+                      height: 24,
+                    ),
+                    text: 'Continue with Google',
+                    onPressed: authController.handleGoogleLogin),
+                const SizedBox(height: 100),
+              ],
+            ),
+          ),
+        ]));
   }
 }
 

@@ -21,6 +21,7 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   @Get('google/callback')
   async googleLoginCallback(@Req() req) {
+    console.log(req.body);
     return this.authService.signJwt(req.user);
   }
 }
