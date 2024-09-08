@@ -6,7 +6,8 @@ class AuthController extends GetxController {
   final GoogleAuthService _googleAuthService;
   final currentUser = Rx<CurrentUserModel?>(null);
 
-  AuthController(this._googleAuthService);
+  AuthController({required GoogleAuthService googleAuthService})
+      : _googleAuthService = googleAuthService;
 
   Future<void> handleGoogleLogin() async {
     currentUser.value = await _googleAuthService.signIn();

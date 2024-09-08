@@ -20,13 +20,21 @@ export class GoogleStrategy extends PassportStrategy(OAuth2Strategy, 'google') {
     profile: Profile,
     done: VerifyFunction,
   ) {
-    const user = await this.authService.findOrCreateUser({
-      email: profile.emails[0].value,
-    });
+    try {
+      const user = await this.authService.findOrCreateUser({
+        email: profile.emails[0].value,
+      });
 
-    if (!user) {
-      done(new UnauthorizedException(), false);
+      if (!user) {
+        done(new UnauthorizedException(), false);
+      }
+      done(null, user);
+    } catch (e) {
+      done(e, false);
     }
-    done(null, user);
+  }
+
+  parseResponseError(...args: any[]) {
+    console.log(args);
   }
 }

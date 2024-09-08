@@ -1,11 +1,11 @@
+import 'dart:ui' as ui;
+
 import 'package:client_app/auth/auth_controller.dart';
+import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/common/ui/button.dart';
 import 'package:flutter/widgets.dart';
-import 'dart:ui' as ui;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
-import '../common/theme/text_styles.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});

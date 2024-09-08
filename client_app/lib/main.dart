@@ -1,3 +1,4 @@
+import 'package:client_app/api/newstream/newsteram_api.dart';
 import 'package:client_app/auth/auth_controller.dart';
 import 'package:client_app/auth/auth_page.dart';
 import 'package:client_app/auth/google_auth_service.dart';
@@ -6,10 +7,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 
 void main() async {
-  await dotenv.load(fileName: ".env");
+  await dotenv.load();
 
-  Get.put(const GoogleAuthService());
-  Get.put(AuthController(Get.find()));
+  Get.put(NewstreamApi());
+  Get.put(GoogleAuthService(newstreamApi: Get.find<NewstreamApi>()));
+  Get.put(AuthController(googleAuthService: Get.find<GoogleAuthService>()));
 
   runApp(const MyApp());
 }
