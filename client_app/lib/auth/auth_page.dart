@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:client_app/auth/auth_controller.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/common/ui/button.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -14,7 +14,9 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
 
-    return Obx(() => Stack(children: [
+    return Scaffold(
+      body: Stack(
+        children: [
           Container(color: const Color(0xFF000000)),
 
           // Blurred circles
@@ -53,21 +55,23 @@ class AuthPage extends StatelessWidget {
                     style: TextStyles.body,
                   ),
                 ]),
-                Text('Hello ${authController.currentUser.value?.email}'),
                 const SizedBox(height: 40),
                 Button(
-                    startChild: SvgPicture.asset(
-                      'assets/icons/google.svg',
-                      width: 24,
-                      height: 24,
-                    ),
-                    text: 'Continue with Google',
-                    onPressed: authController.handleGoogleLogin),
+                  startChild: SvgPicture.asset(
+                    'assets/icons/google.svg',
+                    width: 24,
+                    height: 24,
+                  ),
+                  text: 'Continue with Google',
+                  onPressed: authController.handleGoogleLogin,
+                ),
                 const SizedBox(height: 100),
               ],
             ),
           ),
-        ]));
+        ],
+      ),
+    );
   }
 }
 
