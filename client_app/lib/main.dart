@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
       initialBinding: BindingsBuilder(() {
         Get.put(NewstreamApi());
       }),
+      defaultTransition: Transition.fadeIn,
       getPages: [
         GetPage(
           name: '/auth',
