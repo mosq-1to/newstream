@@ -1,5 +1,4 @@
 import 'package:client_app/api/newstream/newsteram_api.dart';
-import 'package:client_app/auth/current_user_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -17,7 +16,8 @@ class GoogleAuthService {
   const GoogleAuthService({required NewstreamApi newstreamApi})
       : _newstreamApi = newstreamApi;
 
-  Future<CurrentUserModel?> signIn() async {
+  /// Returns the access token if the user successfully signs in.
+  Future<String?> signIn() async {
     try {
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
 
@@ -25,14 +25,14 @@ class GoogleAuthService {
         return null;
       }
 
-      final token =
+      final response =
           await _newstreamApi.validateGoogleAuthCode(account.serverAuthCode!);
 
-      if (token == null) {
+      if (response == null) {
         return null;
       }
 
-      return CurrentUserModel(email: account.email);
+      return response.accessToken;
     } catch (e) {
       print('[Error] GoogleAuthService.openPrompt: $e');
     }

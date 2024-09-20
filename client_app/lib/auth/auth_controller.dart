@@ -8,12 +8,13 @@ class AuthController extends GetxController {
       : _googleAuthService = googleAuthService;
 
   Future<void> handleGoogleLogin() async {
-    await _googleAuthService.signIn();
-    // TODO Save the user to the UserService
-    _onSuccessfulLogin();
+    final accessToken = await _googleAuthService.signIn();
+    if (accessToken != null) {
+      _onSuccessfulLogin(accessToken);
+    }
   }
 
-  void _onSuccessfulLogin() {
+  void _onSuccessfulLogin(String accessToken) {
     Get.offNamed('/homefeed');
   }
 }
