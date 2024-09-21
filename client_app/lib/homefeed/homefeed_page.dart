@@ -13,7 +13,7 @@ class HomefeedPage extends StatelessWidget {
         body: DarkBackgroundContainer(
           child: Center(
             child: Text(
-              controller.isUserLoggedIn.value ? 'Homefeed' : 'Loading...',
+              controller.currentUser.value?.email ?? 'Not logged in',
             ),
           ),
         ),

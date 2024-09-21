@@ -5,17 +5,21 @@ class SplashscreenController extends GetxController {
   final UserService _userService = Get.find();
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
 
-    _userService.getUserAccessToken().then(
-      (accessToken) {
-        if (accessToken != null) {
-          Get.offNamed('/homefeed');
-        } else {
-          Get.offNamed('/auth');
-        }
-      },
-    );
+    final accessToken = await _userService.getUserAccessToken();
+
+    if (accessToken == null) {
+      return Get.offNamed('/auth');
+    }
+
+    final user = await _userService.getCurrentUser(accessToken);
+
+    if (user == null) {
+      return Get.offNamed('/auth');
+    }
+
+    return Get.offNamed('/homefeed');
   }
 }
