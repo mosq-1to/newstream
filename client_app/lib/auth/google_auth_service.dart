@@ -10,7 +10,7 @@ class GoogleAuthService {
 
   static final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: _scopes,
-    serverClientId: AppConfig().googleAuthServerClientId,
+    serverClientId: AppConfig().env.googleAuthServerClientId,
   );
 
   /// Returns the access token if the user successfully signs in.

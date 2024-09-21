@@ -9,7 +9,7 @@ class NewstreamApi {
     try {
       final response = await http.get(
         Uri.http(
-          AppConfig().newstreamApiUrl,
+          AppConfig().env.newstreamApiUrl,
           'auth/google/callback',
           {'code': code},
         ),
