@@ -12,7 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 void main() async {
-  AppConfig.initialize();
+  AppConfig().initialize();
   runApp(const MyApp());
 }
 
