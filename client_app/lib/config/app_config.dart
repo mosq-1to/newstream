@@ -14,4 +14,8 @@ class AppConfig {
 
   String get googleAuthServerClientId =>
       dotenv.env['GOOGLE_AUTH_SERVER_CLIENT_ID']!;
+
+  static Future<void> initialize() async {
+    await dotenv.load();
+  }
 }
