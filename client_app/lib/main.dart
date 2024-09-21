@@ -3,6 +3,8 @@ import 'package:client_app/auth/auth_bindings.dart';
 import 'package:client_app/auth/auth_page.dart';
 import 'package:client_app/homefeed/homefeed_bindings.dart';
 import 'package:client_app/homefeed/homefeed_page.dart';
+import 'package:client_app/splashscreen/splashscreen_bindings.dart';
+import 'package:client_app/splashscreen/splashscreen_page.dart';
 import 'package:client_app/user/user_service.dart';
 import 'package:client_app/user/user_store.dart';
 import 'package:flutter/widgets.dart';
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       color: const Color(0xFFFFFFFF),
-      initialRoute: '/auth',
+      initialRoute: '/splashscreen',
       initialBinding: BindingsBuilder(() {
         Get.put(NewstreamApi());
         Get.put(UserStore());
@@ -30,6 +32,11 @@ class MyApp extends StatelessWidget {
       }),
       defaultTransition: Transition.fadeIn,
       getPages: [
+        GetPage(
+          name: '/splashscreen',
+          page: () => SplashscreenPage(),
+          binding: SplashscreenBindings(),
+        ),
         GetPage(
           name: '/auth',
           page: () => const AuthPage(),
