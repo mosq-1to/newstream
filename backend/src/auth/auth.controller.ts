@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { SkipAuth } from './decorators/skip-auth.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { UserResponseDto } from './dtos/user-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -10,8 +11,12 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('users/me')
-  getCurrentUser(@Req() req) {
-    return this.authService.getCurrentUser(req.user.id);
+  async getCurrentUser(@Req() req): Promise<UserResponseDto> {
+    const currentUser = await this.authService.getCurrentUser(req.user.id);
+    return {
+      id: currentUser.id,
+      email: currentUser.email,
+    };
   }
 
   @Get('users')
