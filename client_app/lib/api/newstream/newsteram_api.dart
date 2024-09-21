@@ -6,6 +6,12 @@ import 'package:client_app/config/app_config.dart';
 import 'package:http/http.dart' as http;
 
 class NewstreamApi {
+  String? _accessToken;
+
+  void setAccessToken(String token) {
+    _accessToken = token;
+  }
+
   Future<GoogleAuthCodeValidation?> validateGoogleAuthCode(String code) async {
     try {
       final response = await http.get(
@@ -22,7 +28,12 @@ class NewstreamApi {
       }
 
       final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
-      return GoogleAuthCodeValidation.fromJson(responseBody);
+
+      final validationResponse =
+          GoogleAuthCodeValidation.fromJson(responseBody);
+      _accessToken = validationResponse.accessToken;
+
+      return validationResponse;
     } catch (e) {
       print('[Error] NewstreamApi.validateGoogleAuth: $e');
     }
@@ -30,7 +41,7 @@ class NewstreamApi {
     return null;
   }
 
-  Future<CurrentUser?> getCurrentUser(String accessToken) async {
+  Future<CurrentUser?> getCurrentUser() async {
     try {
       final response = await http.get(
         Uri.http(
@@ -38,7 +49,7 @@ class NewstreamApi {
           'auth/users/me',
         ),
         headers: {
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer $_accessToken',
         },
       );
 

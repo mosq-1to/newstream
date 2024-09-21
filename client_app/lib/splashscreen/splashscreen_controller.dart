@@ -9,17 +9,15 @@ class SplashscreenController extends GetxController {
     super.onInit();
 
     final accessToken = await _userService.getUserAccessToken();
-
-    if (accessToken == null) {
-      return Get.offNamed('/auth');
+    if (accessToken != null) {
+      _userService.setAccessToken(accessToken);
     }
 
-    final user = await _userService.getCurrentUser(accessToken);
-
+    final user = await _userService.getCurrentUser();
     if (user == null) {
       return Get.offNamed('/auth');
+    } else {
+      return Get.offNamed('/homefeed');
     }
-
-    return Get.offNamed('/homefeed');
   }
 }

@@ -15,8 +15,12 @@ class UserService {
     return _userRepository.getAccessToken();
   }
 
-  Future<CurrentUser?> getCurrentUser(String accessToken) async {
-    final user = _newstreamApi.getCurrentUser(accessToken);
+  void setAccessToken(String accessToken) {
+    _newstreamApi.setAccessToken(accessToken);
+  }
+
+  Future<CurrentUser?> getCurrentUser() async {
+    final user = _newstreamApi.getCurrentUser();
     return user;
   }
 }

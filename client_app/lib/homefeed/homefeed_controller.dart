@@ -9,13 +9,6 @@ class HomefeedController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-
-    final accessToken = await _userService.getUserAccessToken();
-
-    if (accessToken == null) {
-      return;
-    }
-
-    currentUser.value = await _userService.getCurrentUser(accessToken);
+    currentUser.value = await _userService.getCurrentUser();
   }
 }
