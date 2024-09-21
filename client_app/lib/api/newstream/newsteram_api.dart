@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:client_app/api/newstream/auth/google_auth_code_validation_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:client_app/config/app_config.dart';
 import 'package:http/http.dart' as http;
 
 class NewstreamApi {
@@ -9,7 +9,7 @@ class NewstreamApi {
     try {
       final response = await http.get(
         Uri.http(
-          dotenv.env['NEWSTREAM_API_URL']!,
+          AppConfig().newstreamApiUrl,
           'auth/google/callback',
           {'code': code},
         ),
