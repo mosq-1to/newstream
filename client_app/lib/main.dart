@@ -1,7 +1,10 @@
 import 'package:client_app/api/newstream/newsteram_api.dart';
 import 'package:client_app/auth/auth_bindings.dart';
 import 'package:client_app/auth/auth_page.dart';
+import 'package:client_app/homefeed/homefeed_bindings.dart';
 import 'package:client_app/homefeed/homefeed_page.dart';
+import 'package:client_app/user/user_service.dart';
+import 'package:client_app/user/user_store.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -22,6 +25,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/auth',
       initialBinding: BindingsBuilder(() {
         Get.put(NewstreamApi());
+        Get.put(UserStore());
+        Get.put(UserService(userStore: Get.find<UserStore>()));
       }),
       defaultTransition: Transition.fadeIn,
       getPages: [
@@ -33,6 +38,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/homefeed',
           page: () => HomefeedPage(),
+          binding: HomefeedBindings(),
         ),
       ],
     );

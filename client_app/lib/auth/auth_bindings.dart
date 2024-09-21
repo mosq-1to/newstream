@@ -10,7 +10,8 @@ class AuthBindings implements Bindings {
       () => GoogleAuthService(newstreamApi: Get.find<NewstreamApi>()),
     );
     Get.lazyPut(
-      () => AuthController(googleAuthService: Get.find<GoogleAuthService>()),
+      () => AuthController(
+          googleAuthService: Get.find(), userService: Get.find()),
     );
   }
 }
