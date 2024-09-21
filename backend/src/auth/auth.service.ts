@@ -9,6 +9,10 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  async getCurrentUser(userId: string) {
+    return this.db.user.findUnique({ where: { id: userId } });
+  }
+
   async getUsers() {
     return this.db.user.findMany({});
   }
