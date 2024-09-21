@@ -4,6 +4,6 @@ import 'package:get/get.dart';
 class HomefeedBindings implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => HomefeedController(userService: Get.find()));
+    Get.lazyPut(() => HomefeedController());
   }
 }

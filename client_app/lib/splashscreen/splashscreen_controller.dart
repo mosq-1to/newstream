@@ -2,11 +2,7 @@ import 'package:client_app/user/user_service.dart';
 import 'package:get/get.dart';
 
 class SplashscreenController extends GetxController {
-  final UserService _userService;
-
-  SplashscreenController({
-    required UserService userService,
-  }) : _userService = userService;
+  final UserService _userService = Get.find();
 
   @override
   void onInit() {

@@ -1,15 +1,14 @@
 import 'package:client_app/user/user_store.dart';
+import 'package:get/get.dart';
 
 class UserService {
-  final UserStore _userStore;
-
-  UserService({required UserStore userStore}) : _userStore = userStore;
+  final UserRepository _userRepository = Get.find();
 
   Future<void> saveUserAccessToken(String token) {
-    return _userStore.setAccessToken(token);
+    return _userRepository.setAccessToken(token);
   }
 
   Future<String?> getUserAccessToken() {
-    return _userStore.getAccessToken();
+    return _userRepository.getAccessToken();
   }
 }

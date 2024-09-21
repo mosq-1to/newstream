@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserStore {
+class UserRepository {
   Future<void> setAccessToken(String token) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 

@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/splashscreen',
       initialBinding: BindingsBuilder(() {
         Get.put(NewstreamApi());
-        Get.put(UserStore());
-        Get.put(UserService(userStore: Get.find<UserStore>()));
+        Get.put(UserRepository());
+        Get.put(UserService());
       }),
       defaultTransition: Transition.fadeIn,
       getPages: [

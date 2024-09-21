@@ -1,8 +1,11 @@
 import 'package:client_app/api/newstream/newsteram_api.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthService {
+  final NewstreamApi _newstreamApi = Get.find();
+
   static final String _serverClientId =
       dotenv.env['GOOGLE_AUTH_SERVER_CLIENT_ID']!;
   static const List<String> _scopes = ['email', 'profile'];
@@ -11,10 +14,6 @@ class GoogleAuthService {
     scopes: _scopes,
     serverClientId: _serverClientId,
   );
-  final NewstreamApi _newstreamApi;
-
-  const GoogleAuthService({required NewstreamApi newstreamApi})
-      : _newstreamApi = newstreamApi;
 
   /// Returns the access token if the user successfully signs in.
   Future<String?> signIn() async {

@@ -3,14 +3,8 @@ import 'package:client_app/user/user_service.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
-  final GoogleAuthService _googleAuthService;
-  final UserService _userService;
-
-  AuthController({
-    required GoogleAuthService googleAuthService,
-    required UserService userService,
-  })  : _googleAuthService = googleAuthService,
-        _userService = userService;
+  final GoogleAuthService _googleAuthService = Get.find();
+  final UserService _userService = Get.find();
 
   Future<void> handleGoogleLogin() async {
     final accessToken = await _googleAuthService.signIn();

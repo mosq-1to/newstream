@@ -4,6 +4,6 @@ import 'package:get/get.dart';
 class SplashscreenBindings implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => SplashscreenController(userService: Get.find()));
+    Get.lazyPut(() => SplashscreenController());
   }
 }
