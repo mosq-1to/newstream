@@ -7,12 +7,11 @@ import 'package:client_app/homefeed/homefeed_page.dart';
 import 'package:client_app/splashscreen/splashscreen_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_page.dart';
 import 'package:client_app/user/user_service.dart';
-import 'package:client_app/user/user_store.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 void main() async {
-  AppConfig().initialize();
+  await AppConfig().initialize();
   runApp(const MyApp());
 }
 
@@ -27,7 +26,6 @@ class MyApp extends StatelessWidget {
       initialRoute: '/splashscreen',
       initialBinding: BindingsBuilder(() {
         Get.put(NewstreamApi());
-        Get.put(UserRepository());
         Get.put(UserService());
       }),
       defaultTransition: Transition.fadeIn,

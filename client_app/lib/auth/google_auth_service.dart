@@ -13,35 +13,13 @@ class GoogleAuthService {
     serverClientId: AppConfig().env.googleAuthServerClientId,
   );
 
-  /// Returns the access token if the user successfully signs in.
-  Future<String?> signIn() async {
-    try {
-      final GoogleSignInAccount? account = await _googleSignIn.signIn();
+  Future<void> signIn() async {
+    final GoogleSignInAccount? account = await _googleSignIn.signIn();
 
-      if (account == null) {
-        throw Exception('Failed to sign in with Google');
-      }
-
-      final response =
-          await _newstreamApi.validateGoogleAuthCode(account.serverAuthCode!);
-
-      if (response == null) {
-        throw Exception('Failed to validate sign in with Google');
-      }
-
-      return response.accessToken;
-    } catch (e) {
-      print('[Error] GoogleAuthService.openPrompt: $e');
+    if (account == null) {
+      throw Exception('Failed to sign in with Google');
     }
 
-    return null;
-  }
-
-  Future<void> signOut() async {
-    try {
-      await _googleSignIn.signOut();
-    } catch (e) {
-      print('[Error] GoogleAuthService.signOut: $e');
-    }
+    await _newstreamApi.validateGoogleAuthCode(account.serverAuthCode!);
   }
 }
