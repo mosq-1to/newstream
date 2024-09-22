@@ -1,4 +1,4 @@
-import 'package:client_app/api/newstream/newsteram_api.dart';
+import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
