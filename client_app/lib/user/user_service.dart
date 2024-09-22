@@ -7,7 +7,12 @@ class UserService {
 
   // TODO: Store the user data in the service
   Future<CurrentUser?> getCurrentUser() async {
-    final user = _newstreamApi.getCurrentUser();
-    return user;
+    try {
+      return await _newstreamApi.getCurrentUser();
+    } catch (e) {
+      print('[Error] UserService.getCurrentUser: $e');
+    }
+
+    return null;
   }
 }

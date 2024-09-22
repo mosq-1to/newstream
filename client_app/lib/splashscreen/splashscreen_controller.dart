@@ -7,16 +7,11 @@ class SplashscreenController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    try {
-      final user = await _userService.getCurrentUser();
 
-      if (user != null) {
-        return Get.offNamed('/homefeed');
-      }
-    } catch (e) {
-      print('[Error] SplashscreenController.onInit: $e');
+    if (await _userService.getCurrentUser() == null) {
+      Get.offNamed('/auth');
+    } else {
+      Get.offNamed('/homefeed');
     }
-
-    Get.offNamed('/auth');
   }
 }
