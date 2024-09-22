@@ -1,13 +1,14 @@
-// user_service_test.dart
 import 'package:client_app/api/newstream/auth/current_user_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/user/user_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'newstream_api_test.mocks.mocks.dart'; // Import the generated mock file
+import 'newstream_api_test.mocks.dart';
 
+@GenerateMocks([NewstreamApi])
 void main() {
   group('UserService', () {
     late MockNewstreamApi mockNewstreamApi;
