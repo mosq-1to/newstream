@@ -19,14 +19,14 @@ class GoogleAuthService {
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
 
       if (account == null) {
-        return null;
+        throw Exception('Failed to sign in with Google');
       }
 
       final response =
           await _newstreamApi.validateGoogleAuthCode(account.serverAuthCode!);
 
       if (response == null) {
-        return null;
+        throw Exception('Failed to validate sign in with Google');
       }
 
       return response.accessToken;
