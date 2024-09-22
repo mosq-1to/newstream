@@ -33,6 +33,7 @@ class AuthPage extends StatelessWidget {
               ]),
               const SizedBox(height: 40),
               Button(
+                locator: const Key('auth_page_google_button'),
                 startChild: SvgPicture.asset(
                   'assets/icons/google.svg',
                   width: 24,

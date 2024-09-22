@@ -6,12 +6,15 @@ class Button extends StatefulWidget {
   final Widget? startChild;
   final String text;
   final VoidCallback onPressed;
+  final Key? locator;
 
-  const Button(
-      {super.key,
-      required this.text,
-      required this.onPressed,
-      this.startChild});
+  const Button({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.startChild,
+    this.locator,
+  });
 
   @override
   ButtonState createState() => ButtonState();
@@ -46,6 +49,7 @@ class ButtonState extends State<Button> {
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
       child: AnimatedContainer(
+        key: widget.locator,
         decoration: BoxDecoration(
           color: const Color(0xFF606060).withOpacity(_isPressed ? 0.15 : 0.25),
           borderRadius: BorderRadius.circular(30),
