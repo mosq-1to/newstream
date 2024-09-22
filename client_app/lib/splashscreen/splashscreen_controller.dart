@@ -10,8 +10,6 @@ class SplashscreenController extends GetxController {
     try {
       final user = await _userService.getCurrentUser();
 
-      print('userid ${user?.id}');
-
       if (user != null) {
         return Get.offNamed('/homefeed');
       }
