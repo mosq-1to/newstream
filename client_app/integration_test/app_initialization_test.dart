@@ -15,7 +15,7 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
 
-  group('Login flow', () {
+  group('App initialization', () {
     late MockUserService mockUserService;
     late MockGoogleAuthService mockGoogleAuthService;
 
@@ -32,7 +32,7 @@ void main() {
       },
     );
 
-    testWidgets('Log in via Google', (WidgetTester tester) async {
+    testWidgets('User signs in via Google', (tester) async {
       when(mockGoogleAuthService.signIn()).thenAnswer(
         (_) async => {},
       );
@@ -50,6 +50,18 @@ void main() {
         (realInvocation) async =>
             const CurrentUser(id: 'id', email: 'john@doe.com'),
       );
+      await tester.pumpAndSettle();
+
+      expect(find.text('john@doe.com'), findsOneWidget);
+    });
+
+    testWidgets('User is recognized', (tester) async {
+      when(mockUserService.getCurrentUser()).thenAnswer(
+        (realInvocation) async =>
+            const CurrentUser(id: 'id', email: 'john@doe.com'),
+      );
+
+      await tester.pumpWidget(const MyApp());
       await tester.pumpAndSettle();
 
       expect(find.text('john@doe.com'), findsOneWidget);
