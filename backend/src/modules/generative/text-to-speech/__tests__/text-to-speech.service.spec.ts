@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TextToSpeechService } from './text-to-speech.service';
+import { TextToSpeechService } from '../text-to-speech.service';
 import { ConfigModule } from '@nestjs/config';
 
 describe('TextToSpeechService', () => {

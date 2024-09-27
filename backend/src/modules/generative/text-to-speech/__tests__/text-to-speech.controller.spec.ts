@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TextToSpeechController } from './text-to-speech.controller';
+import { TextToSpeechController } from '../text-to-speech.controller';
 
 describe('TextToSpeechController', () => {
   let controller: TextToSpeechController;
