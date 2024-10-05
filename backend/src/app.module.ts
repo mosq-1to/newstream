@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ArticlesModule } from './modules/articles/articles.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { StoriesModule } from './modules/stories/stories.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ScheduleModule.forRoot({}),
     UsersModule,
     ArticlesModule,
+    StoriesModule,
     TextToSpeechModule,
     AuthModule,
   ],

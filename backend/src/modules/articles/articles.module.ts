@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
-import { ArticlesController } from './articles.controller';
 import { ArticlesApi } from './api/articles.api';
 import { NewsdataApi } from './api/providers/newsdata/newsdata.api';
 import { ArticlesTasks } from './articles.tasks';
+import { DatabaseService } from '../../utils/database/database.service';
 
 @Module({
   providers: [
+    DatabaseService,
     ArticlesService,
     {
       provide: ArticlesApi,
@@ -14,6 +15,5 @@ import { ArticlesTasks } from './articles.tasks';
     },
     ArticlesTasks,
   ],
-  controllers: [ArticlesController],
 })
 export class ArticlesModule {}
