@@ -6,12 +6,14 @@ import { TextToSpeechModule } from './modules/generative/text-to-speech/text-to-
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ArticlesModule } from './modules/articles/articles.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot({}),
     UsersModule,
     ArticlesModule,
     TextToSpeechModule,
