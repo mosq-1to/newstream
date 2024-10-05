@@ -15,6 +15,6 @@ export class ArticlesService {
   }
 
   async saveArticlesToDatabase(articles: ArticleReadModel[]): Promise<void> {
-    this.databaseService.article.createMany({ data: articles });
+    await this.databaseService.article.createMany({ data: articles });
   }
 }
