@@ -22,6 +22,8 @@ model User {
 
 model Article {
   id        String   @id @default(uuid())
+  sourceId  String
+  source    String
   title     String
   url       String
   content   String

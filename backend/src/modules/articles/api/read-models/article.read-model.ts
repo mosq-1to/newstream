@@ -1,9 +1,17 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+
+export enum ArticleSource {
+  Newsdata = 'newsdata',
+}
 
 export class ArticleReadModel {
   @IsString()
   @IsNotEmpty()
-  id: string;
+  sourceId: string;
+
+  @IsEnum(ArticleSource)
+  @IsNotEmpty()
+  source: ArticleSource;
 
   @IsString()
   @IsNotEmpty()

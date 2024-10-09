@@ -1,10 +1,14 @@
-import { NewsdataArticleDto } from './newsdata-article.dto';
-import { ArticleReadModel } from '../../read-models/article.read-model';
+import { NewsdataArticleDto } from './dto/newsdata-article.dto';
+import {
+  ArticleReadModel,
+  ArticleSource,
+} from '../../read-models/article.read-model';
 
 export const mapNewsdataArticleToArticleReadModel = (
   newsdataArticle: NewsdataArticleDto,
 ): ArticleReadModel => ({
-  id: newsdataArticle.article_id,
+  sourceId: newsdataArticle.article_id,
+  source: ArticleSource.Newsdata,
   title: newsdataArticle.title,
   url: newsdataArticle.link,
   content: newsdataArticle.content,

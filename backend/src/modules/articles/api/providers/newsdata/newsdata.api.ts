@@ -1,33 +1,34 @@
 import { ArticlesApi } from '../../articles.api';
 import { ArticleReadModel } from '../../read-models/article.read-model';
-import { NewsdataArticleDto } from './newsdata-article.dto';
 import { mapNewsdataArticleToArticleReadModel } from './newsdata-article.mapper';
+import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
+import { NewsdataLatestNewsDto } from './dto/newsdata-latest-news.dto';
 
+@Injectable()
 export class NewsdataApi implements ArticlesApi {
-  getArticles(): Promise<ArticleReadModel[]> {
-    const mockArticles: NewsdataArticleDto[] = [
-      {
-        article_id: '1',
-        title: 'Newsdata Article',
-        link: 'https://newsdata.io',
-        content: 'Newsdata content',
-      },
-      {
-        article_id: '2',
-        title: 'Newsdata Article 2',
-        link: 'https://newsdata.io/2',
-        content: 'Newsdata content 2',
-      },
-      {
-        article_id: '3',
-        title: 'Newsdata Article 3',
-        link: 'https://newsdata.io/3',
-        content: 'Newsdata content 3',
-      },
-    ];
+  httpService: HttpService['axiosRef'];
 
-    return Promise.resolve(
-      mockArticles.map(mapNewsdataArticleToArticleReadModel),
+  constructor(
+    httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    this.httpService = httpService.axiosRef;
+  }
+
+  async getArticles(): Promise<ArticleReadModel[]> {
+    const response = await this.httpService.get<NewsdataLatestNewsDto>(
+      'https://newsdata.io/api/1/latest?q=cryptocurrencies',
+      {
+        headers: {
+          'X-ACCESS-KEY': this.configService.get('NEWSDATA_API_KEY'),
+        },
+      },
     );
+
+    const articles = response.data.results;
+
+    return Promise.resolve(articles.map(mapNewsdataArticleToArticleReadModel));
   }
 }
