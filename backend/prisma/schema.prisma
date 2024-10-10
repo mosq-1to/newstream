@@ -29,4 +29,6 @@ model Article {
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([sourceId, source])
 }
