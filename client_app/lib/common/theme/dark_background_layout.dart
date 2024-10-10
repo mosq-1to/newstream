@@ -2,10 +2,10 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-class DarkBackgroundContainer extends StatelessWidget {
+class DarkBackgroundLayout extends StatelessWidget {
   final Widget child;
 
-  const DarkBackgroundContainer({super.key, required this.child});
+  const DarkBackgroundLayout({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,15 @@ class DarkBackgroundContainer extends StatelessWidget {
             blurRadius: 100,
           ),
         ),
-        child,
+        Padding(
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top,
+            bottom: MediaQuery.of(context).padding.bottom,
+            left: 32,
+            right: 32,
+          ),
+          child: child,
+        ),
       ],
     );
   }
