@@ -19,5 +19,9 @@ export class ArticlesTasks {
 
     const articles = await this.articlesService.getLatestArticles();
     await this.articlesService.saveArticlesToDatabase(articles);
+
+    console.log(
+      `[${new Date().toISOString()}] Fetched ${articles.length} articles and saved to database`,
+    );
   }
 }
