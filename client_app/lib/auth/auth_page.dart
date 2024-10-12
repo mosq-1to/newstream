@@ -1,5 +1,5 @@
 import 'package:client_app/auth/auth_controller.dart';
-import 'package:client_app/common/theme/dark_background_container.dart';
+import 'package:client_app/common/theme/dark_background_layout.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/common/ui/button.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class AuthPage extends StatelessWidget {
     final authController = Get.find<AuthController>();
 
     return Scaffold(
-      body: DarkBackgroundContainer(
+      body: DarkBackgroundLayout(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -23,7 +23,7 @@ class AuthPage extends StatelessWidget {
               const Column(children: [
                 Text(
                   'Welcome to Newstream',
-                  style: TextStyles.headline,
+                  style: TextStyles.headingLg,
                 ),
                 SizedBox(height: 10),
                 Text(

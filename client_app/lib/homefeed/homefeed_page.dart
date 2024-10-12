@@ -1,5 +1,7 @@
-import 'package:client_app/common/theme/dark_background_container.dart';
+import 'package:client_app/common/theme/dark_background_layout.dart';
+import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/homefeed/homefeed_controller.dart';
+import 'package:client_app/homefeed/widgets/stories_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,14 +10,24 @@ class HomefeedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<HomefeedController>();
 
-    return Obx(
-      () => Scaffold(
-        body: DarkBackgroundContainer(
-          child: Center(
-            child: Text(
-              controller.currentUser.value?.email ?? 'Not logged in',
-            ),
-          ),
+    return Scaffold(
+      body: DarkBackgroundLayout(
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 80),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Recent stories',
+                    style: TextStyles.headingLg,
+                  ),
+                  StoriesList(stories: controller.stories),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
