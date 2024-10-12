@@ -26,7 +26,7 @@ class HomefeedPage extends StatelessWidget {
                       style: TextStyles.headingLg,
                     ),
                   ),
-                  StoriesList(stories: controller.stories),
+                  Obx(() => StoriesList(stories: controller.stories.toList())),
                 ],
               ),
             )
