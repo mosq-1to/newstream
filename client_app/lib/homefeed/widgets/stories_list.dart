@@ -14,12 +14,15 @@ class StoriesList extends StatelessWidget {
     return Column(
       children: stories.map((story) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.only(bottom: 36),
           child: Column(
             children: [
-              Text(
-                story.title,
-                style: TextStyles.body,
+              SizedBox(
+                width: 180,
+                child: Text(
+                  story.title,
+                  style: TextStyles.headingSm,
+                ),
               ),
             ],
           ),

@@ -19,9 +19,12 @@ class HomefeedPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Recent stories',
-                    style: TextStyles.headingLg,
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 36),
+                    child: Text(
+                      'Recent stories',
+                      style: TextStyles.headingLg,
+                    ),
                   ),
                   StoriesList(stories: controller.stories),
                 ],
