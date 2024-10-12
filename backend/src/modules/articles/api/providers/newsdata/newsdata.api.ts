@@ -19,7 +19,7 @@ export class NewsdataApi implements ArticlesApi {
 
   async getArticles(): Promise<ArticleReadModel[]> {
     const response = await this.httpService.get<NewsdataLatestNewsDto>(
-      'https://newsdata.io/api/1/latest?size=10',
+      'https://newsdata.io/api/1/latest?size=10&language=en',
       {
         headers: {
           'X-ACCESS-KEY': this.configService.get('NEWSDATA_API_KEY'),
