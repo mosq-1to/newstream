@@ -5,8 +5,8 @@ import { NewsdataApi } from './api/providers/newsdata/newsdata.api';
 import { ArticlesTasks } from './articles.tasks';
 import { DatabaseService } from '../../utils/database/database.service';
 import { HttpModule } from '@nestjs/axios';
-import { ExtractorScrapingStrategy } from './scraping/strategies/extractor-scraping-strategy';
 import { ArticleScrapingService } from './scraping/article-scraping.service';
+import { ExtractorScrapingStrategy } from './scraping/strategies/extractor/extractor-scraping-strategy';
 
 @Module({
   imports: [HttpModule],
