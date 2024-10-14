@@ -1,10 +1,10 @@
 import { ArticlesApi } from '../../articles.api';
 import { ArticleReadModel } from '../../read-models/article.read-model';
-import { mapNewsdataArticleToArticleReadModel } from './newsdata-article.mapper';
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { NewsdataLatestNewsDto } from './dto/newsdata-latest-news.dto';
+import { NewsdataArticleMapper } from './newsdata-article.mapper';
 
 @Injectable()
 export class NewsdataApi implements ArticlesApi {
@@ -13,6 +13,7 @@ export class NewsdataApi implements ArticlesApi {
   constructor(
     httpService: HttpService,
     private readonly configService: ConfigService,
+    private readonly newsdataArticleMapper: NewsdataArticleMapper,
   ) {
     this.httpService = httpService.axiosRef;
   }
@@ -28,7 +29,19 @@ export class NewsdataApi implements ArticlesApi {
     );
 
     const articles = response.data.results;
+    const articleReadModels = await Promise.allSettled(
+      articles.map(async (article) => {
+        return await this.newsdataArticleMapper.mapNewsdataArticleToArticleReadModel(
+          article,
+        );
+      }),
+    );
+    const successfulArticles = articleReadModels
+      .filter((article) => article.status === 'fulfilled')
+      .map(
+        (article: PromiseFulfilledResult<ArticleReadModel>) => article.value,
+      );
 
-    return Promise.resolve(articles.map(mapNewsdataArticleToArticleReadModel));
+    return successfulArticles.filter((article) => article.content !== null);
   }
 }

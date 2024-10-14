@@ -7,12 +7,14 @@ import { DatabaseService } from '../../utils/database/database.service';
 import { HttpModule } from '@nestjs/axios';
 import { ArticleScrapingService } from './scraping/article-scraping.service';
 import { ExtractorScrapingStrategy } from './scraping/strategies/extractor/extractor-scraping-strategy';
+import { NewsdataArticleMapper } from './api/providers/newsdata/newsdata-article.mapper';
 
 @Module({
   imports: [HttpModule],
   providers: [
     DatabaseService,
     ArticlesService,
+    NewsdataArticleMapper,
     {
       provide: ArticlesApi,
       useClass: NewsdataApi,
