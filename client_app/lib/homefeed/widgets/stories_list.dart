@@ -1,6 +1,5 @@
 import 'package:client_app/api/newstream/stories/story_model.dart';
 import 'package:client_app/common/theme/text_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class StoriesList extends StatelessWidget {
@@ -37,6 +36,14 @@ class StoriesList extends StatelessWidget {
                     child: Image.network(
                       story.thumbnailUrl,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Center(
+                          child: Icon(
+                            Icons.image_not_supported,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
