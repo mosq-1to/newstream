@@ -19,9 +19,7 @@ class StoriesListEntry extends StatelessWidget {
         children: [
           StoriesListEntryMeta(title: title),
           const SizedBox(width: 24),
-          Expanded(
-            child: StoriesListEntryThumbnail(thumbnailUrl: thumbnailUrl),
-          ),
+          StoriesListEntryThumbnail(thumbnailUrl: thumbnailUrl),
         ],
       ),
     );
@@ -37,8 +35,7 @@ class StoriesListEntryMeta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 180,
+    return Expanded(
       child: Text(
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
@@ -60,6 +57,7 @@ class StoriesListEntryThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
+      width: 100,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Image.network(
