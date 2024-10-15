@@ -15,7 +15,7 @@ class HomefeedPage extends StatelessWidget {
         child: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 80),
+              padding: const EdgeInsets.only(top: 42),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
