@@ -9,7 +9,7 @@ class TextStyles {
   );
 
   static const TextStyle headingSm = TextStyle(
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: FontWeight.w500,
     color: Color(0xFFFFFFFF),
     fontFamily: 'Inter',
