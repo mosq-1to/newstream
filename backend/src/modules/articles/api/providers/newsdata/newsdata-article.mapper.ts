@@ -21,6 +21,7 @@ export class NewsdataArticleMapper {
       title: newsdataArticle.title,
       url: newsdataArticle.link,
       content: await this.getArticleFullContent(newsdataArticle),
+      thumbnailUrl: null,
     };
   }
 

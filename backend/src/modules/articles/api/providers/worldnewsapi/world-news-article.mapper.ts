@@ -18,6 +18,7 @@ export class WorldNewsArticleMapper {
       title: worldNewsArticle.title,
       url: worldNewsArticle.url,
       content: worldNewsArticle.text,
+      thumbnailUrl: worldNewsArticle.image,
     };
   }
 }

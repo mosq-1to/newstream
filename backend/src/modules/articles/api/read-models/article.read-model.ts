@@ -24,4 +24,7 @@ export class ArticleReadModel {
 
   @IsString()
   content: string;
+
+  @IsString()
+  thumbnailUrl: string;
 }
