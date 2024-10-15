@@ -17,7 +17,7 @@ class StoriesListEntry extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          StoriesListEntryMeta(title: title),
+          StoriesListEntryMeta(title: title, sourceName: 'The New York Times'),
           const SizedBox(width: 24),
           StoriesListEntryThumbnail(thumbnailUrl: thumbnailUrl),
         ],
@@ -28,19 +28,32 @@ class StoriesListEntry extends StatelessWidget {
 
 class StoriesListEntryMeta extends StatelessWidget {
   final String title;
+  final String sourceName;
 
   const StoriesListEntryMeta({
     required this.title,
+    required this.sourceName,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Text(
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-        title,
-        style: TextStyles.headingSm,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            title,
+            style: TextStyles.headingSm,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            overflow: TextOverflow.ellipsis,
+            sourceName,
+            style: TextStyles.bodySm,
+          ),
+        ],
       ),
     );
   }
