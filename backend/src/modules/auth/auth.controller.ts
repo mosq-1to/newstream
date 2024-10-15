@@ -19,11 +19,6 @@ export class AuthController {
     };
   }
 
-  @Get('users')
-  getUsers() {
-    return this.authService.getUsers();
-  }
-
   @SkipAuth()
   @UseGuards(AuthGuard('google'))
   @Get('google')
