@@ -25,7 +25,7 @@ class TextStyles {
   static const TextStyle bodySm = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w400,
-    color: Color(0xFF575757),
+    color: Color(0xFFFFFFFF),
     fontFamily: 'Inter',
   );
 }

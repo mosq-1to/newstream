@@ -43,15 +43,19 @@ class StoriesListEntryMeta extends StatelessWidget {
         children: [
           Text(
             overflow: TextOverflow.ellipsis,
-            maxLines: 2,
+            maxLines: 3,
             title,
             style: TextStyles.headingSm,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Text(
             overflow: TextOverflow.ellipsis,
             sourceName,
-            style: TextStyles.bodySm,
+            style: TextStyles.bodySm.merge(
+              const TextStyle(
+                color: Color(0xFF575757),
+              ),
+            ),
           ),
         ],
       ),
