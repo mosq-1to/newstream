@@ -16,4 +16,9 @@ class HomefeedController extends GetxController {
     currentUser.value = await _userService.getCurrentUser();
     stories.value = await _newstreamApi.getStories();
   }
+
+  void openStory(Story story) {
+    // Open story
+    print('Story opened: ${story.id}');
+  }
 }

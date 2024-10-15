@@ -4,18 +4,25 @@ import 'package:flutter/material.dart';
 
 class StoriesList extends StatelessWidget {
   final List<Story> stories;
+  final Function(Story) onStoryTap;
 
   const StoriesList({
     required this.stories,
+    required this.onStoryTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: stories.map((story) {
-        return StoriesListEntry(
-          title: story.title,
-          thumbnailUrl: story.thumbnailUrl,
+        return GestureDetector(
+          onTap: () {
+            onStoryTap(story);
+          },
+          child: StoriesListEntry(
+            title: story.title,
+            thumbnailUrl: story.thumbnailUrl,
+          ),
         );
       }).toList(),
     );
