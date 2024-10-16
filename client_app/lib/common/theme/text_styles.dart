@@ -1,6 +1,13 @@
 import 'package:flutter/widgets.dart';
 
 class TextStyles {
+  static const TextStyle headingXl = TextStyle(
+    fontSize: 36,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFFFFFFFF),
+    fontFamily: 'Inter',
+  );
+
   static const TextStyle headingLg = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.w600,

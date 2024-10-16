@@ -1,3 +1,4 @@
+import 'package:client_app/api/newstream/stories/story_model.dart';
 import 'package:client_app/common/theme/dark_background_layout.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/common/ui/tappable.dart';
@@ -16,26 +17,39 @@ class HomefeedPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(top: 42),
           child: Obx(
-            () => ListView(
-              children: [
-                const Text(
-                  'Recent stories',
-                  style: TextStyles.headingLg,
-                ),
-                const SizedBox(height: 36),
-                ...controller.stories.map((story) {
-                  return Tappable(
-                    onTap: () => controller.openStory(story),
-                    child: StoriesListEntry(
-                      title: story.title,
-                      thumbnailUrl: story.thumbnailUrl,
-                    ),
-                  );
-                }),
-              ],
+            () => ListView.builder(
+              itemCount: controller.stories.length + 1, // +1 for the header
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _buildRecentStoriesHeader();
+                } else {
+                  final story = controller.stories[index - 1];
+                  return _buildStoryEntry(story, controller);
+                }
+              },
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildRecentStoriesHeader() {
+    return const Padding(
+      padding: EdgeInsets.only(bottom: 48),
+      child: Text(
+        'Recent stories',
+        style: TextStyles.headingXl,
+      ),
+    );
+  }
+
+  Widget _buildStoryEntry(Story story, HomefeedController controller) {
+    return Tappable(
+      onTap: () => controller.openStory(story),
+      child: StoriesListEntry(
+        title: story.title,
+        thumbnailUrl: story.thumbnailUrl,
       ),
     );
   }
