@@ -14,20 +14,17 @@ class HomefeedPage extends StatelessWidget {
 
     return Scaffold(
       body: DarkBackgroundLayout(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 42),
-          child: Obx(
-            () => ListView.builder(
-              itemCount: controller.stories.length + 1, // +1 for the header
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return _buildRecentStoriesHeader();
-                } else {
-                  final story = controller.stories[index - 1];
-                  return _buildStoryEntry(story, controller);
-                }
-              },
-            ),
+        child: Obx(
+          () => ListView.builder(
+            itemCount: controller.stories.length + 1, // +1 for the header
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return _buildRecentStoriesHeader();
+              } else {
+                final story = controller.stories[index - 1];
+                return _buildStoryEntry(story, controller);
+              }
+            },
           ),
         ),
       ),
@@ -36,7 +33,7 @@ class HomefeedPage extends StatelessWidget {
 
   Widget _buildRecentStoriesHeader() {
     return const Padding(
-      padding: EdgeInsets.only(bottom: 48),
+      padding: EdgeInsets.only(top: 24, bottom: 48),
       child: Text(
         'Recent stories',
         style: TextStyles.headingXl,
