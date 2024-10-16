@@ -1,14 +1,14 @@
-import 'package:client_app/user/user_service.dart';
+import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:get/get.dart';
 
 class SplashscreenController extends GetxController {
-  final UserService _userService = Get.find();
+  final NewstreamApi _newstreamApi = Get.find();
 
   @override
   Future<void> onInit() async {
     super.onInit();
 
-    if (await _userService.getCurrentUser() == null) {
+    if (await _newstreamApi.getCurrentUser() == null) {
       Get.offNamed('/auth');
     } else {
       Get.offNamed('/homefeed');
