@@ -7,6 +7,7 @@ import 'dart:async' as _i3;
 
 import 'package:client_app/api/newstream/auth/current_user_model.dart' as _i4;
 import 'package:client_app/api/newstream/newstream_api.dart' as _i2;
+import 'package:client_app/api/newstream/stories/story_model.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -48,4 +49,13 @@ class MockNewstreamApi extends _i1.Mock implements _i2.NewstreamApi {
         ),
         returnValue: _i3.Future<_i4.CurrentUser?>.value(),
       ) as _i3.Future<_i4.CurrentUser?>);
+
+  @override
+  _i3.Future<List<_i5.Story>> getStories() => (super.noSuchMethod(
+        Invocation.method(
+          #getStories,
+          [],
+        ),
+        returnValue: _i3.Future<List<_i5.Story>>.value(<_i5.Story>[]),
+      ) as _i3.Future<List<_i5.Story>>);
 }
