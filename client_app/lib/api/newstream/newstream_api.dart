@@ -5,6 +5,7 @@ import 'package:client_app/api/newstream/auth/google_auth_code_validation_model.
 import 'package:client_app/api/newstream/stories/story_model.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/user/user_repository.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 // TODO List
@@ -37,7 +38,8 @@ class NewstreamApi {
     await _loadAccessToken();
 
     if (_accessToken == null) {
-      throw Exception('accessToken is not set');
+      printError(info: 'accessToken is not set');
+      return null;
     }
 
     final response = await http.get(
