@@ -9,6 +9,10 @@ class HomefeedController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    fetchStories();
+  }
+
+  Future<void> fetchStories() async {
     stories.value = await _newstreamApi.getStories();
   }
 
