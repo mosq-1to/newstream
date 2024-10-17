@@ -8,14 +8,29 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomefeedPage extends StatelessWidget {
+  final ScrollController _scrollController = ScrollController();
+  final controller = Get.find<HomefeedController>();
+
+  HomefeedPage() {
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final scrollPosition = _scrollController.position.pixels;
+    final maxScrollExtent = _scrollController.position.maxScrollExtent;
+
+    if (scrollPosition == maxScrollExtent - 100) {
+      controller.fetchMoreStories();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<HomefeedController>();
-
     return Scaffold(
       body: DarkBackgroundLayout(
         child: Obx(
           () => ListView.builder(
+            controller: _scrollController,
             itemCount: controller.stories.length + 1, // +1 for the header
             itemBuilder: (context, index) {
               if (index == 0) {
