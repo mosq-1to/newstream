@@ -20,8 +20,8 @@ class HomefeedController extends GetxController {
   Future<void> fetchMoreStories() async {
     //TODO Add real pagination
     final newStories = (await _newstreamApi.getStories())
-        .skip(currentPage.value * 5)
-        .take(5)
+        .skip(currentPage.value * 10)
+        .take(10)
         .toList();
 
     if (newStories.isNotEmpty) {
