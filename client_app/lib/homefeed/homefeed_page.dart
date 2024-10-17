@@ -19,7 +19,7 @@ class HomefeedPage extends StatelessWidget {
     final scrollPosition = _scrollController.position.pixels;
     final maxScrollExtent = _scrollController.position.maxScrollExtent;
 
-    if (scrollPosition == maxScrollExtent - 100) {
+    if (scrollPosition >= maxScrollExtent - 200) {
       controller.fetchMoreStories();
     }
   }
