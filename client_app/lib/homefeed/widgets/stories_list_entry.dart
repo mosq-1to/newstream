@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -77,17 +78,16 @@ class StoriesListEntryThumbnail extends StatelessWidget {
       width: 100,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: Image.network(
-          thumbnailUrl,
+        child: CachedNetworkImage(
+          fadeInDuration: const Duration(milliseconds: 200),
+          imageUrl: thumbnailUrl,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const Center(
-              child: Icon(
-                Icons.image_not_supported,
-                color: Colors.white,
-              ),
-            );
-          },
+          errorWidget: (context, url, error) => const Center(
+            child: Icon(
+              Icons.image_not_supported,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
     );
