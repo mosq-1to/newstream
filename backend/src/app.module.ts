@@ -7,6 +7,7 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ArticlesModule } from './modules/articles/articles.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { StoriesModule } from './modules/stories/stories.module';
+import { TextGenerationModule } from './modules/text-generation/text-generation.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { StoriesModule } from './modules/stories/stories.module';
     ArticlesModule,
     StoriesModule,
     AuthModule,
+    TextGenerationModule,
   ],
   providers: [
     {

@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "fetch-articles": "ts-node ./src/scripts/fetch-articles.ts",
     "scrape-article": "ts-node ./src/scripts/scrape-article.ts",
-    "clean-articles": "ts-node ./src/scripts/clean-articles.ts"
+    "clean-articles": "ts-node ./src/scripts/clean-articles.ts",
+    "prompt": "ts-node ./src/scripts/prompt.ts"
   },
   "dependencies": {
     "@extractus/article-extractor": "^8.0.10",
