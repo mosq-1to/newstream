@@ -1,3 +1,3 @@
 export abstract class TextGenerationStrategy {
-  abstract prompt(query: string): Promise<string>;
+  abstract generateContent(prompt: string): Promise<string>;
 }

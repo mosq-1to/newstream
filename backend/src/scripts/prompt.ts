@@ -6,11 +6,15 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const textGenerationService = app.get(TextGenerationService);
 
-  const response = await textGenerationService.generateText(
-    'Generate a random phrase about the King and the Queen',
-  );
+  if (process.argv.length < 3) {
+    console.error('Please provide a prompt');
+    process.exit(1);
+  }
 
-  console.log(response);
+  const prompt = process.argv[2];
+
+  const response = await textGenerationService.generateContent(prompt);
+  console.log(`\n ${response}`);
 
   await app.close();
 }
