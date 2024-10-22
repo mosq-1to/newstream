@@ -11,5 +11,6 @@ import { TextGenerationService } from './text-generation.service';
       useClass: GeminiTextGenerationStrategy,
     },
   ],
+  exports: [TextGenerationService],
 })
 export class TextGenerationModule {}
