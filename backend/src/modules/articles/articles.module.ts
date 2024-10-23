@@ -9,12 +9,14 @@ import { ExtractorScrapingStrategy } from './scraping/strategies/extractor/extra
 import { NewsdataArticleMapper } from './api/providers/newsdata/newsdata-article.mapper';
 import { WorldNewsApi } from './api/providers/worldnewsapi/worldnews.api';
 import { WorldNewsArticleMapper } from './api/providers/worldnewsapi/world-news-article.mapper';
+import { ArticlesRepository } from './articles.repository';
 
 @Module({
   imports: [HttpModule],
   providers: [
     DatabaseService,
     ArticlesService,
+    ArticlesRepository,
     NewsdataArticleMapper,
     WorldNewsArticleMapper,
     {
@@ -24,5 +26,6 @@ import { WorldNewsArticleMapper } from './api/providers/worldnewsapi/world-news-
     { provide: ArticleScrapingService, useClass: ExtractorScrapingStrategy },
     ArticlesTasks,
   ],
+  exports: [ArticlesService],
 })
 export class ArticlesModule {}

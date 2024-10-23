@@ -1,23 +1,20 @@
-import { ArticlesApi } from './api/articles.api';
 import { ArticleReadModel } from './api/read-models/article.read-model';
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../../utils/database/database.service';
+import { ArticlesRepository } from './articles.repository';
 
 @Injectable()
 export class ArticlesService {
-  constructor(
-    private readonly articlesApi: ArticlesApi,
-    private readonly databaseService: DatabaseService,
-  ) {}
+  constructor(private readonly articlesRepository: ArticlesRepository) {}
 
-  getLatestArticles(): Promise<ArticleReadModel[]> {
-    return this.articlesApi.getArticles();
+  getLatestArticles() {
+    return this.articlesRepository.fetchLatestArticles();
   }
 
-  async saveArticlesToDatabase(articles: ArticleReadModel[]): Promise<void> {
-    await this.databaseService.article.createMany({
-      data: articles,
-      skipDuplicates: true,
-    });
+  async getArticleById(articleId: string) {
+    return this.articlesRepository.getArticleById(articleId);
+  }
+
+  async saveArticles(articles: ArticleReadModel[]) {
+    await this.articlesRepository.saveArticles(articles);
   }
 }

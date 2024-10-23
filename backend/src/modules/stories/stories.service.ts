@@ -1,28 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../../utils/database/database.service';
 import { StoryGenerationService } from '../story-generation/story-generation.service';
+import { Article, Story } from '@prisma/client';
+import { StoriesRepository } from './stories.repository';
 
 @Injectable()
 export class StoriesService {
   constructor(
-    private readonly databaseService: DatabaseService,
+    private readonly storiesRepository: StoriesRepository,
     private readonly storyGenerationService: StoryGenerationService,
   ) {}
 
   async getAllStories() {
-    // For now just returning the articles
-    return this.databaseService.article.findMany({});
+    return this.storiesRepository.getAllStories();
   }
 
-  // This method is used to get a story by its id. For now it just returns the story directly
-  async getStoryById(id: string): Promise<string> {
-    const article = await this.databaseService.article.findUnique({
-      where: { id },
-    });
+  async getOrGenerateStoryByArticleId(
+    articleId: Article['id'],
+  ): Promise<Story> {
+    const story =
+      await this.storiesRepository.getStoryBySourceArticleId(articleId);
 
-    if (!article) {
-      throw new Error('Article not found');
+    if (story) {
+      return story;
     }
-    return this.storyGenerationService.generateStoryFromArticle(article);
+
+    const newStoryData =
+      await this.storyGenerationService.generateStoryFromArticle(articleId);
+
+    return await this.storiesRepository.saveStory(newStoryData);
   }
 }
