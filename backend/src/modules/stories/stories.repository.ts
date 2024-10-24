@@ -29,4 +29,10 @@ export class StoriesRepository {
       data: story,
     });
   }
+
+  async saveStories(stories: StoryWriteDto[]): Promise<Story[]> {
+    return this.databaseService.story.createManyAndReturn({
+      data: stories,
+    });
+  }
 }

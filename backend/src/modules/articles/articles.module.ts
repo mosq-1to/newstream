@@ -10,9 +10,10 @@ import { NewsdataArticleMapper } from './api/providers/newsdata/newsdata-article
 import { WorldNewsApi } from './api/providers/worldnewsapi/worldnews.api';
 import { WorldNewsArticleMapper } from './api/providers/worldnewsapi/world-news-article.mapper';
 import { ArticlesRepository } from './articles.repository';
+import { StoriesModule } from '../stories/stories.module';
 
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, StoriesModule],
   providers: [
     DatabaseService,
     ArticlesService,

@@ -26,7 +26,7 @@ export class ArticlesRepository {
   }
 
   async saveArticles(articles: ArticleReadModel[]) {
-    return this.databaseService.article.createMany({
+    return this.databaseService.article.createManyAndReturn({
       data: articles,
       skipDuplicates: true,
     });

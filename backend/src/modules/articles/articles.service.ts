@@ -1,10 +1,15 @@
 import { ArticleReadModel } from './api/read-models/article.read-model';
 import { Injectable } from '@nestjs/common';
 import { ArticlesRepository } from './articles.repository';
+import { StoriesService } from '../stories/stories.service';
+import { Article } from '@prisma/client';
 
 @Injectable()
 export class ArticlesService {
-  constructor(private readonly articlesRepository: ArticlesRepository) {}
+  constructor(
+    private readonly articlesRepository: ArticlesRepository,
+    private readonly storiesService: StoriesService,
+  ) {}
 
   getLatestArticles() {
     return this.articlesRepository.fetchLatestArticles();
@@ -15,6 +20,11 @@ export class ArticlesService {
   }
 
   async saveArticles(articles: ArticleReadModel[]) {
-    await this.articlesRepository.saveArticles(articles);
+    return this.articlesRepository.saveArticles(articles);
+    //TODO Add notifier here and dont handle stories jobs internally
+  }
+
+  async addCreateStoriesFromArticlesJob(articles: Article[]) {
+    await this.storiesService.addCreateStoriesFromArticlesJob(articles);
   }
 }

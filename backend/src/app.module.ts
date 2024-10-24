@@ -8,6 +8,7 @@ import { ArticlesModule } from './modules/articles/articles.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { StoriesModule } from './modules/stories/stories.module';
 import { TextGenerationModule } from './modules/text-generation/text-generation.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -15,6 +16,12 @@ import { TextGenerationModule } from './modules/text-generation/text-generation.
       isGlobal: true,
     }),
     ScheduleModule.forRoot({}),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     UsersModule,
     ArticlesModule,
     StoriesModule,
