@@ -12,6 +12,7 @@ import { WorldNewsArticleMapper } from './api/providers/worldnewsapi/world-news-
 import { ArticlesRepository } from './articles.repository';
 import { BullModule } from '@nestjs/bullmq';
 import { QueueName } from '../../types/queue-name.enum';
+import { ArticlesController } from './articles.controller';
 
 @Module({
   imports: [HttpModule, BullModule.registerQueue({ name: QueueName.Articles })],
@@ -28,6 +29,7 @@ import { QueueName } from '../../types/queue-name.enum';
     { provide: ArticleScrapingService, useClass: ExtractorScrapingStrategy },
     ArticlesTasks,
   ],
+  controllers: [ArticlesController],
   exports: [ArticlesService],
 })
 export class ArticlesModule {}
