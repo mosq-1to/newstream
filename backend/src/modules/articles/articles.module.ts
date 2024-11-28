@@ -10,10 +10,11 @@ import { NewsdataArticleMapper } from './api/providers/newsdata/newsdata-article
 import { WorldNewsApi } from './api/providers/worldnewsapi/worldnews.api';
 import { WorldNewsArticleMapper } from './api/providers/worldnewsapi/world-news-article.mapper';
 import { ArticlesRepository } from './articles.repository';
-import { StoriesModule } from '../stories/stories.module';
+import { BullModule } from '@nestjs/bullmq';
+import { QueueName } from '../../types/queue-name.enum';
 
 @Module({
-  imports: [HttpModule, StoriesModule],
+  imports: [HttpModule, BullModule.registerQueue({ name: QueueName.Articles })],
   providers: [
     DatabaseService,
     ArticlesService,

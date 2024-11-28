@@ -1,25 +1,24 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Queues } from '../../types/queues.enum';
 import { StoriesRepository } from './stories.repository';
-import { CreateStoriesFromArticlesJob } from './jobs/create-stories-from-articles.job';
-import { mapArticleToStoryWriteDto } from './mappers/map-article-to-story-write-dto';
+import { StoriesGeneratedJob } from './jobs/stories-generated.job';
+import { QueueName } from 'src/types/queue-name.enum';
 
-@Processor(Queues.STORIES_QUEUE)
+@Processor(QueueName.Stories)
 export class StoriesJobProcessor extends WorkerHost {
   constructor(private readonly storiesRepository: StoriesRepository) {
     super();
   }
 
-  async process(job: CreateStoriesFromArticlesJob) {
+  async process(job: StoriesGeneratedJob) {
     switch (job.name) {
-      case CreateStoriesFromArticlesJob.name:
-        await this.processCreateStoriesJob(job);
+      case StoriesGeneratedJob.name:
+        await this.processStoriesGeneratedJob(job);
         break;
     }
   }
 
-  private async processCreateStoriesJob(job: CreateStoriesFromArticlesJob) {
-    const stories = job.data.map(mapArticleToStoryWriteDto);
+  private async processStoriesGeneratedJob(job: StoriesGeneratedJob) {
+    const stories = job.data;
     const result = await this.storiesRepository.saveStories(stories);
     console.log(`CreateStoriesJob: Saved ${result.length} stories`);
   }

@@ -3,7 +3,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queues } from '../../types/queues.enum';
 import { Queue } from 'bullmq';
 import { Article } from '@prisma/client';
-import { CreateStoriesFromArticlesJob } from './jobs/create-stories-from-articles.job';
+import { StoriesGeneratedJob } from './jobs/stories-generated.job';
 
 @Injectable()
 export class StoriesJobScheduler {
@@ -12,6 +12,6 @@ export class StoriesJobScheduler {
   ) {}
 
   async addCreateStoriesFromArticles(articles: Article[]) {
-    await this.storiesQueue.add(CreateStoriesFromArticlesJob.name, articles);
+    await this.storiesQueue.add(StoriesGeneratedJob.name, articles);
   }
 }

@@ -5,13 +5,13 @@ import { DatabaseService } from '../../utils/database/database.service';
 import { StoryGenerationModule } from '../story-generation/story-generation.module';
 import { StoriesRepository } from './stories.repository';
 import { BullModule } from '@nestjs/bullmq';
-import { Queues } from '../../types/queues.enum';
 import { StoriesJobScheduler } from './stories.job-scheduler';
 import { StoriesJobProcessor } from './stories.job-processor';
+import { QueueName } from '../../types/queue-name.enum';
 
 @Module({
   imports: [
-    BullModule.registerQueue({ name: Queues.STORIES_QUEUE }),
+    BullModule.registerQueue({ name: QueueName.Stories }),
     StoryGenerationModule,
   ],
   providers: [
