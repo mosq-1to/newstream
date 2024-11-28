@@ -18,6 +18,12 @@ export class StoriesRepository {
     return this.databaseService.story.findMany();
   }
 
+  async getStoryById(id: Story['id']) {
+    return this.databaseService.story.findUnique({
+      where: { id },
+    });
+  }
+
   async getStoryBySourceArticleId(articleId: Article['id']) {
     return this.databaseService.story.findUnique({
       where: { sourceArticleId: articleId },

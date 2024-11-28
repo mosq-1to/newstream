@@ -12,6 +12,6 @@ export class StoriesController {
 
   @Get(':id')
   async getStoryById(@Param('id') id: string) {
-    return this.storiesService.getOrGenerateStoryByArticleId(id);
+    return this.storiesService.getStoryById(id);
   }
 }

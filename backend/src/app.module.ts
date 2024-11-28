@@ -9,6 +9,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { StoriesModule } from './modules/stories/stories.module';
 import { TextGenerationModule } from './modules/text-generation/text-generation.module';
 import { BullModule } from '@nestjs/bullmq';
+import { StoryGenerationModule } from './modules/story-generation/story-generation.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { BullModule } from '@nestjs/bullmq';
     StoriesModule,
     AuthModule,
     TextGenerationModule,
+    StoryGenerationModule,
   ],
   providers: [
     {

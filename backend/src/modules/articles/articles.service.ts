@@ -20,7 +20,6 @@ export class ArticlesService {
 
   async saveArticles(articles: ArticleReadModel[]) {
     const savedArticles = await this.articlesRepository.saveArticles(articles);
-
     this.emitArticlesCreatedJob(savedArticles);
 
     return savedArticles;

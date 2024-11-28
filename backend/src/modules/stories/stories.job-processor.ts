@@ -1,11 +1,11 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { StoriesRepository } from './stories.repository';
 import { StoriesGeneratedJob } from './jobs/stories-generated.job';
-import { QueueName } from 'src/types/queue-name.enum';
+import { StoriesService } from './stories.service';
+import { QueueName } from '../../types/queue-name.enum';
 
 @Processor(QueueName.Stories)
 export class StoriesJobProcessor extends WorkerHost {
-  constructor(private readonly storiesRepository: StoriesRepository) {
+  constructor(private readonly storiesService: StoriesService) {
     super();
   }
 
@@ -19,7 +19,7 @@ export class StoriesJobProcessor extends WorkerHost {
 
   private async processStoriesGeneratedJob(job: StoriesGeneratedJob) {
     const stories = job.data;
-    const result = await this.storiesRepository.saveStories(stories);
+    const result = await this.storiesService.saveStories(stories);
     console.log(`CreateStoriesJob: Saved ${result.length} stories`);
   }
 }
