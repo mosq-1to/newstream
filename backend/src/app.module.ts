@@ -20,7 +20,7 @@ import { StoryGenerationModule } from './modules/story-generation/story-generati
     BullModule.forRoot({
       connection: {
         host: '127.0.0.1',
-        port: 6379,
+        port: 6380,
       },
     }),
     UsersModule,
