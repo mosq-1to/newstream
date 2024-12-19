@@ -1,6 +1,6 @@
 import { ArticlesService } from '../articles.service';
-import { ArticlesQueue } from '../articles.queue';
 import { Injectable } from '@nestjs/common';
+import { ArticlesQueue } from '../queue/articles.queue';
 
 @Injectable()
 export class FetchArticlesUseCase {

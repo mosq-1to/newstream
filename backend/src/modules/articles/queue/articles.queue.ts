@@ -1,8 +1,8 @@
 import { InjectQueue } from '@nestjs/bullmq';
 import { QueueName } from '../../../types/queue-name.enum';
 import { Queue } from 'bullmq';
-import { ArticlesCreatedJob } from './jobs/articles-created.job';
 import { Injectable } from '@nestjs/common';
+import { ArticlesCreatedJob } from './jobs/articles-created.job';
 
 @Injectable()
 export class ArticlesQueue {

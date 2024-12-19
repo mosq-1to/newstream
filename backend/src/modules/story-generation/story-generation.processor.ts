@@ -1,7 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { QueueName } from '../../types/queue-name.enum';
 import { StoryGenerationService } from './story-generation.service';
-import { ArticlesCreatedJob } from '../articles/jobs/articles-created.job';
+import { ArticlesCreatedJob } from '../articles/queue/jobs/articles-created.job';
 
 @Processor(QueueName.Articles)
 export class StoryGenerationProcessor extends WorkerHost {
