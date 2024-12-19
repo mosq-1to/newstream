@@ -13,6 +13,8 @@ import { ArticlesRepository } from './articles.repository';
 import { BullModule } from '@nestjs/bullmq';
 import { QueueName } from '../../types/queue-name.enum';
 import { ArticlesController } from './articles.controller';
+import { ArticlesQueue } from './queue/articles.queue';
+import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
 
 @Module({
   imports: [HttpModule, BullModule.registerQueue({ name: QueueName.Articles })],
@@ -28,6 +30,8 @@ import { ArticlesController } from './articles.controller';
     },
     { provide: ArticleScrapingService, useClass: ExtractorScrapingStrategy },
     ArticlesTasks,
+    ArticlesQueue,
+    FetchArticlesUseCase,
   ],
   controllers: [ArticlesController],
   exports: [ArticlesService],
