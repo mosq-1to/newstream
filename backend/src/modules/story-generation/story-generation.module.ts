@@ -9,7 +9,7 @@ import { StoryGenerationProcessor } from './story-generation.processor';
   imports: [
     TextGenerationModule,
     BullModule.registerQueue({ name: QueueName.Articles }),
-    BullModule.registerQueue({ name: QueueName.Stories }),
+    BullModule.registerQueue({ name: QueueName.StoryGeneration }),
   ],
   providers: [StoryGenerationService, StoryGenerationProcessor],
   exports: [],

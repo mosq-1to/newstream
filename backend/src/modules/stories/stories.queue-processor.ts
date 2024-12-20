@@ -3,7 +3,7 @@ import { StoriesGeneratedJob } from './jobs/stories-generated.job';
 import { StoriesService } from './stories.service';
 import { QueueName } from '../../types/queue-name.enum';
 
-@Processor(QueueName.Stories)
+@Processor(QueueName.StoryGeneration)
 export class StoriesQueueProcessor extends WorkerHost {
   constructor(private readonly storiesService: StoriesService) {
     super();

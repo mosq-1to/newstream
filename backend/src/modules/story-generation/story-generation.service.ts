@@ -12,7 +12,8 @@ import { GenerateStoryContentPrompt } from './prompts/generate-story-content.pro
 export class StoryGenerationService {
   constructor(
     private readonly textGenerationService: TextGenerationService,
-    @InjectQueue(QueueName.Stories) private readonly storiesQueue: Queue,
+    @InjectQueue(QueueName.StoryGeneration)
+    private readonly storiesQueue: Queue,
   ) {}
 
   async generateStoryFromArticle(article: Article): Promise<StoryWriteDto> {

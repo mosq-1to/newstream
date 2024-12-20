@@ -10,7 +10,7 @@ import { QueueName } from '../../types/queue-name.enum';
 
 @Module({
   imports: [
-    BullModule.registerQueue({ name: QueueName.Stories }),
+    BullModule.registerQueue({ name: QueueName.StoryGeneration }),
     StoryGenerationModule,
   ],
   providers: [

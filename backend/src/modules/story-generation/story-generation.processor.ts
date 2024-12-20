@@ -18,12 +18,15 @@ export class StoryGenerationProcessor extends WorkerHost {
   }
 
   private async processArticlesCreatedJob(job: ArticlesCreatedJob) {
-    const articles = job.data;
-    const stories = await Promise.all(
-      articles.map((article) =>
-        this.storyGenerationService.generateStoryFromArticle(article),
-      ),
-    );
-    void this.storyGenerationService.emitStoriesGeneratedJob(stories);
+    for (const articles of job.data) {
+      try {
+        const story =
+          await this.storyGenerationService.generateStoryFromArticle(articles);
+        void this.storyGenerationService.emitStoriesGeneratedJob([story]);
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    }
   }
 }
