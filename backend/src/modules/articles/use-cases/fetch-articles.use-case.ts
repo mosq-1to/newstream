@@ -11,9 +11,8 @@ export class FetchArticlesUseCase {
 
   public async fetchArticles() {
     const articles = await this.articlesService.getLatestArticles();
-    const savedArticles = await this.articlesService.saveArticles(articles);
-    void this.articlesQueue.emitArticlesCreated(savedArticles);
+    void this.articlesQueue.addSaveArticlesJob(articles);
 
-    return savedArticles;
+    return articles;
   }
 }

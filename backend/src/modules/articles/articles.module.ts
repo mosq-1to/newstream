@@ -15,6 +15,7 @@ import { QueueName } from '../../types/queue-name.enum';
 import { ArticlesController } from './articles.controller';
 import { ArticlesQueue } from './queue/articles.queue';
 import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
+import { ArticlesJobProcessor } from './queue/articles.job-processor';
 
 @Module({
   imports: [HttpModule, BullModule.registerQueue({ name: QueueName.Articles })],
@@ -32,6 +33,7 @@ import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
     ArticlesTasks,
     ArticlesQueue,
     FetchArticlesUseCase,
+    ArticlesJobProcessor,
   ],
   controllers: [ArticlesController],
   exports: [ArticlesService],
