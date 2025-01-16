@@ -3,8 +3,9 @@ import { TextGenerationModule } from '../text-generation/text-generation.module'
 import { StoryGenerationService } from './story-generation.service';
 import { BullModule } from '@nestjs/bullmq';
 import { QueueName } from '../../types/queue-name.enum';
-import { StoryGenerationJobProcessor } from './story-generation.job-processor';
+import { StoryGenerationJobProcessor } from './queue/story-generation.job-processor';
 import { StoryGenerationQueue } from './queue/story-generation.queue';
+import { StoryGenerationQueueListener } from './queue/story-generation.queue-listener';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { StoryGenerationQueue } from './queue/story-generation.queue';
   providers: [
     StoryGenerationService,
     StoryGenerationJobProcessor,
+    StoryGenerationQueueListener,
     StoryGenerationQueue,
   ],
   exports: [],
