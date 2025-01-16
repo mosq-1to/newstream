@@ -5,7 +5,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { QueueName } from '../../types/queue-name.enum';
 import { StoryGenerationJobProcessor } from './queue/story-generation.job-processor';
 import { StoryGenerationQueue } from './queue/story-generation.queue';
-import { StoryGenerationQueueListener } from './queue/story-generation.queue-listener';
+import { ArticlesQueueListener } from './queue/articles.queue-listener';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { StoryGenerationQueueListener } from './queue/story-generation.queue-lis
   providers: [
     StoryGenerationService,
     StoryGenerationJobProcessor,
-    StoryGenerationQueueListener,
+    ArticlesQueueListener,
     StoryGenerationQueue,
   ],
   exports: [],
