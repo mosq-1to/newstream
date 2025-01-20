@@ -13,11 +13,14 @@ export class StoryGenerationQueue {
   ) {}
 
   async addGenerateStoryJob(articles: Article[]) {
-    console.log('Adding generate story job for articles:', articles.length);
-    for (const article of articles) {
-      await this.storyGenerationQueue.add(GenerateStoryJob.name, article, {
-        jobId: `article-${article.id}`,
-      });
-    }
+    await this.storyGenerationQueue.addBulk(
+      articles.map((article) => ({
+        name: GenerateStoryJob.name,
+        data: article,
+        opts: {
+          jobId: `article-${article.id}`,
+        },
+      })),
+    );
   }
 }
