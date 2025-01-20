@@ -29,8 +29,6 @@ export class StoryGenerationService {
       console.error('Failed to generate story content:', e);
     }
 
-    console.log('Generated story content:', storyContent.slice(0, 100));
-
     return {
       title: article.title,
       thumbnailUrl: article.thumbnailUrl,

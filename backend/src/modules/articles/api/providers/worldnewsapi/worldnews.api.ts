@@ -22,7 +22,7 @@ export class WorldNewsApi implements ArticlesApi {
     const apiKey = this.configService.get('WORLDNEWS_API_KEY');
 
     const response = await this.httpService.get<WorldNewsSearchNewsDto>(
-      `https://api.worldnewsapi.com/search-news?api-key=${apiKey}&language=en&number=5`,
+      `https://api.worldnewsapi.com/search-news?api-key=${apiKey}&language=en&number=20`,
     );
 
     const articles = response.data.news;

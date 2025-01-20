@@ -16,12 +16,14 @@ export class StoryGenerationQueueListener extends QueueEventsHost {
   async handleCompletedJob({ jobId }: { jobId: string }) {
     console.log('Completed job:', jobId);
   }
+
   @OnQueueEvent('failed')
   async handleFailedJob(...args) {
-    console.log('Failed job:', args);
+    console.error('Failed job:', args);
   }
-  @OnQueueEvent('active')
-  async handleActiveJob(...args) {
-    console.log('Active job:', args);
+
+  @OnQueueEvent('drained')
+  async handleDrainedEvent() {
+    console.error('Completed all jobs job');
   }
 }
