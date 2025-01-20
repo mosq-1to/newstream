@@ -20,21 +20,16 @@ export class StoryGenerationService {
     console.log('Generating story from article:', article.id);
     const prompt = new GenerateStoryContentPrompt(article.content);
 
-    let storyContent = '';
     try {
-      storyContent = await this.textGenerationService.generateContent(
-        prompt.input,
-      );
+      return {
+        title: article.title,
+        thumbnailUrl: article.thumbnailUrl,
+        content: await this.textGenerationService.generateContent(prompt.input),
+        sourceArticleId: article.id,
+      };
     } catch (e) {
-      console.error('Failed to generate story content:', e);
+      throw new Error(e);
     }
-
-    return {
-      title: article.title,
-      thumbnailUrl: article.thumbnailUrl,
-      content: storyContent,
-      sourceArticleId: article.id,
-    };
   }
 
   public emitStoriesGeneratedJob(stories: StoryWriteDto[]) {
