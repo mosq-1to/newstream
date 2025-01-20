@@ -5,7 +5,6 @@ import { DatabaseService } from '../../utils/database/database.service';
 import { StoryGenerationModule } from '../story-generation/story-generation.module';
 import { StoriesRepository } from './stories.repository';
 import { BullModule } from '@nestjs/bullmq';
-import { StoriesQueueProcessor } from './stories.queue-processor';
 import { QueueName } from '../../types/queue-name.enum';
 
 @Module({
@@ -13,12 +12,7 @@ import { QueueName } from '../../types/queue-name.enum';
     BullModule.registerQueue({ name: QueueName.StoryGeneration }),
     StoryGenerationModule,
   ],
-  providers: [
-    DatabaseService,
-    StoriesService,
-    StoriesRepository,
-    StoriesQueueProcessor,
-  ],
+  providers: [DatabaseService, StoriesService, StoriesRepository],
   controllers: [StoriesController],
   exports: [StoriesService],
 })

@@ -12,12 +12,12 @@ export class StoryGenerationQueue {
     private readonly storyGenerationQueue: Queue,
   ) {}
 
-  async addGenerateStoryJob(article: Article | Article[]) {
-    if (Array.isArray(article)) {
-      return await this.storyGenerationQueue.addBulk([
-        { name: GenerateStoryJob.name, data: article },
-      ]);
+  async addGenerateStoryJob(articles: Article[]) {
+    console.log('Adding generate story job for articles:', articles.length);
+    for (const article of articles) {
+      await this.storyGenerationQueue.add(GenerateStoryJob.name, article, {
+        jobId: `article-${article.id}`,
+      });
     }
-    return await this.storyGenerationQueue.add(GenerateStoryJob.name, article);
   }
 }

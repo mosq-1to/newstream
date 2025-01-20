@@ -10,20 +10,16 @@ export class StoryGenerationJobProcessor extends WorkerHost {
   }
 
   async process(job: GenerateStoryJob) {
+    console.log('Processing job:', job.name);
     switch (job.name) {
       case GenerateStoryJob.name:
-        return await this.processGenerateStoryJob(job);
-    }
-  }
-
-  private async processGenerateStoryJob(job: GenerateStoryJob) {
-    try {
-      return await this.storyGenerationService.generateStoryFromArticle(
-        job.data,
-      );
-    } catch (e) {
-      console.error(e);
-      throw e;
+        return await this.storyGenerationService.generateStoryFromArticle(
+          job.data,
+        );
+      default:
+        throw new Error(
+          'StoryGenerationJobProcessor.process(): Unknown job name',
+        );
     }
   }
 }

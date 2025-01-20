@@ -10,6 +10,8 @@ import { StoriesModule } from './modules/stories/stories.module';
 import { TextGenerationModule } from './modules/text-generation/text-generation.module';
 import { BullModule } from '@nestjs/bullmq';
 import { StoryGenerationModule } from './modules/story-generation/story-generation.module';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from '@bull-board/express';
 
 @Module({
   imports: [
@@ -22,6 +24,10 @@ import { StoryGenerationModule } from './modules/story-generation/story-generati
         host: '127.0.0.1',
         port: 6380,
       },
+    }),
+    BullBoardModule.forRoot({
+      route: '/queues',
+      adapter: ExpressAdapter,
     }),
     UsersModule,
     ArticlesModule,

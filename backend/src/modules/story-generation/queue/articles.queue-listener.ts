@@ -7,6 +7,8 @@ import {
 import { StoryGenerationQueue } from './story-generation.queue';
 import { QueueName } from '../../../types/queue-name.enum';
 import { Queue } from 'bullmq';
+import { SaveArticlesJob } from '../../articles/queue/jobs/save-articles.job';
+import { Article } from '@prisma/client';
 
 @QueueEventsListener(QueueName.Articles)
 export class ArticlesQueueListener extends QueueEventsHost {
@@ -21,18 +23,11 @@ export class ArticlesQueueListener extends QueueEventsHost {
   @OnQueueEvent('completed')
   async handleCompletedJob({ jobId }: { jobId: string }) {
     const job = await this.articlesQueue.getJob(jobId);
-    console.log('SaveArticlesJob completed');
-    console.log(job.name);
-    console.log(job.returnvalue);
-
-    // try {
-    //   switch (job.name) {
-    //     case SaveArticlesJob.name:
-    //       await this.storyGenerationQueue.addGenerateStoryJob(result);
-    //   }
-    // } catch (e) {
-    //   console.error(e);
-    //   throw e;
-    // }
+    switch (job.name) {
+      case SaveArticlesJob.name:
+        await this.storyGenerationQueue.addGenerateStoryJob(
+          job.returnvalue as Article[],
+        );
+    }
   }
 }

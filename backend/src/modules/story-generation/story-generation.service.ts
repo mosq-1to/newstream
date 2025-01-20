@@ -17,11 +17,19 @@ export class StoryGenerationService {
   ) {}
 
   async generateStoryFromArticle(article: Article): Promise<StoryWriteDto> {
+    console.log('Generating story from article:', article.id);
     const prompt = new GenerateStoryContentPrompt(article.content);
 
-    const storyContent = await this.textGenerationService.generateContent(
-      prompt.input,
-    );
+    let storyContent = '';
+    try {
+      storyContent = await this.textGenerationService.generateContent(
+        prompt.input,
+      );
+    } catch (e) {
+      console.error('Failed to generate story content:', e);
+    }
+
+    console.log('Generated story content:', storyContent.slice(0, 100));
 
     return {
       title: article.title,
