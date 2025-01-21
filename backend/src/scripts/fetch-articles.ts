@@ -7,8 +7,7 @@ async function bootstrap() {
   const articlesService = app.get(ArticlesService);
 
   const articles = await articlesService.getLatestArticles();
-  const savedArticles = await articlesService.saveArticles(articles);
-  await articlesService.addCreateStoriesFromArticlesJob(savedArticles);
+  await articlesService.saveArticles(articles);
   await app.close();
 }
 

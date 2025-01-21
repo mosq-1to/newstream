@@ -9,6 +9,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { StoriesModule } from './modules/stories/stories.module';
 import { TextGenerationModule } from './modules/text-generation/text-generation.module';
 import { BullModule } from '@nestjs/bullmq';
+import { StoryGenerationModule } from './modules/story-generation/story-generation.module';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from '@bull-board/express';
 
 @Module({
   imports: [
@@ -18,15 +21,20 @@ import { BullModule } from '@nestjs/bullmq';
     ScheduleModule.forRoot({}),
     BullModule.forRoot({
       connection: {
-        host: 'localhost',
-        port: 6379,
+        host: '127.0.0.1',
+        port: 6380,
       },
+    }),
+    BullBoardModule.forRoot({
+      route: '/queues',
+      adapter: ExpressAdapter,
     }),
     UsersModule,
     ArticlesModule,
     StoriesModule,
     AuthModule,
     TextGenerationModule,
+    StoryGenerationModule,
   ],
   providers: [
     {

@@ -1,14 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../utils/database/database.service';
 import { Article, Story } from '@prisma/client';
-
-// TODO Move to a separate file
-export interface StoryWriteDto {
-  title: string;
-  thumbnailUrl: string;
-  content: string;
-  sourceArticleId: string;
-}
+import { StoryWriteDto } from './interface/story-write.dto';
 
 @Injectable()
 export class StoriesRepository {
@@ -16,6 +9,12 @@ export class StoriesRepository {
 
   async getAllStories() {
     return this.databaseService.story.findMany();
+  }
+
+  async getStoryById(id: Story['id']) {
+    return this.databaseService.story.findUnique({
+      where: { id },
+    });
   }
 
   async getStoryBySourceArticleId(articleId: Article['id']) {
@@ -33,6 +32,7 @@ export class StoriesRepository {
   async saveStories(stories: StoryWriteDto[]): Promise<Story[]> {
     return this.databaseService.story.createManyAndReturn({
       data: stories,
+      skipDuplicates: true,
     });
   }
 }

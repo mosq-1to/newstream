@@ -1,11 +1,38 @@
 import { Module } from '@nestjs/common';
 import { TextGenerationModule } from '../text-generation/text-generation.module';
-import { GenerateStoryContentPrompt } from './prompts/generate-story-content.prompt';
 import { StoryGenerationService } from './story-generation.service';
+import { BullModule } from '@nestjs/bullmq';
+import { QueueName } from '../../types/queue-name.enum';
+import { StoryGenerationJobProcessor } from './queue/story-generation.job-processor';
+import { StoryGenerationQueue } from './queue/story-generation.queue';
+import { ArticlesQueueListener } from './queue/articles.queue-listener';
+import { StoryGenerationQueueListener } from './queue/story-generation.queue-listener';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { StoriesModule } from '../stories/stories.module';
 
 @Module({
-  imports: [TextGenerationModule, GenerateStoryContentPrompt],
-  providers: [StoryGenerationService],
-  exports: [StoryGenerationService],
+  imports: [
+    TextGenerationModule,
+    BullModule.registerQueue({ name: QueueName.Articles }),
+    BullBoardModule.forFeature({
+      name: QueueName.Articles,
+      adapter: BullMQAdapter,
+    }),
+    BullModule.registerQueue({ name: QueueName.StoryGeneration }),
+    BullBoardModule.forFeature({
+      name: QueueName.StoryGeneration,
+      adapter: BullMQAdapter,
+    }),
+    StoriesModule,
+  ],
+  providers: [
+    StoryGenerationQueueListener,
+    StoryGenerationService,
+    StoryGenerationJobProcessor,
+    ArticlesQueueListener,
+    StoryGenerationQueue,
+  ],
+  exports: [],
 })
 export class StoryGenerationModule {}

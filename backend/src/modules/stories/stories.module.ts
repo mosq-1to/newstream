@@ -2,25 +2,11 @@ import { Module } from '@nestjs/common';
 import { StoriesService } from './stories.service';
 import { StoriesController } from './stories.controller';
 import { DatabaseService } from '../../utils/database/database.service';
-import { StoryGenerationModule } from '../story-generation/story-generation.module';
 import { StoriesRepository } from './stories.repository';
-import { BullModule } from '@nestjs/bullmq';
-import { Queues } from '../../types/queues.enum';
-import { StoriesJobScheduler } from './stories.job-scheduler';
-import { StoriesJobProcessor } from './stories.job-processor';
 
 @Module({
-  imports: [
-    BullModule.registerQueue({ name: Queues.STORIES_QUEUE }),
-    StoryGenerationModule,
-  ],
-  providers: [
-    DatabaseService,
-    StoriesService,
-    StoriesRepository,
-    StoriesJobScheduler,
-    StoriesJobProcessor,
-  ],
+  imports: [],
+  providers: [DatabaseService, StoriesService, StoriesRepository],
   controllers: [StoriesController],
   exports: [StoriesService],
 })

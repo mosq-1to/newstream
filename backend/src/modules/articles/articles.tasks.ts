@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { EVERYDAY_AT_10_AND_20 } from '../../utils/time/cron-expressions';
-import { ArticlesService } from './articles.service';
 import { ConfigService } from '@nestjs/config';
+import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
 
 @Injectable()
 export class ArticlesTasks {
   constructor(
-    private readonly articlesService: ArticlesService,
+    private readonly fetchArticlesUseCase: FetchArticlesUseCase,
     private readonly configService: ConfigService,
   ) {}
 
@@ -17,11 +17,10 @@ export class ArticlesTasks {
       return;
     }
 
-    const articles = await this.articlesService.getLatestArticles();
-    await this.articlesService.saveArticles(articles);
+    const articles = await this.fetchArticlesUseCase.fetchArticles();
 
     console.log(
-      `[${new Date().toISOString()}] Fetched ${articles.length} articles and saved to database`,
+      `[${new Date().toISOString()}] Fetched ${articles.length} articles and saved to database in the background`,
     );
   }
 }
