@@ -1,19 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { TextGenerationService } from '../text-generation/text-generation.service';
-import { Article } from '@prisma/client';
-import { StoryWriteDto } from '../stories/stories.repository';
-import { InjectQueue } from '@nestjs/bullmq';
-import { QueueName } from '../../types/queue-name.enum';
-import { StoriesGeneratedJob } from '../stories/jobs/stories-generated.job';
-import { Queue } from 'bullmq';
+import { Article, Story } from '@prisma/client';
 import { GenerateStoryContentPrompt } from './prompts/generate-story-content.prompt';
+import { StoriesService } from '../stories/stories.service';
+import { StoryWriteDto } from '../stories/interface/story-write.dto';
 
 @Injectable()
 export class StoryGenerationService {
   constructor(
     private readonly textGenerationService: TextGenerationService,
-    @InjectQueue(QueueName.StoryGeneration)
-    private readonly storiesQueue: Queue,
+    private readonly storiesService: StoriesService,
   ) {}
 
   async generateStoryFromArticle(article: Article): Promise<StoryWriteDto> {
@@ -32,7 +28,7 @@ export class StoryGenerationService {
     }
   }
 
-  public emitStoriesGeneratedJob(stories: StoryWriteDto[]) {
-    void this.storiesQueue.add(StoriesGeneratedJob.name, stories);
+  async saveStories(stories: StoryWriteDto[]): Promise<Story[]> {
+    return await this.storiesService.saveStories(stories);
   }
 }

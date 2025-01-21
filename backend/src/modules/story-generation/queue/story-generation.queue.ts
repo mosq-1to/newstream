@@ -20,7 +20,7 @@ export class StoryGenerationQueue {
         opts: {
           jobId: `article-${article.id}`,
           attempts: 30,
-          backoff: { type: 'fixed', delay: 3000 },
+          backoff: { type: 'exponential', delay: 1000 },
         },
       })),
     );

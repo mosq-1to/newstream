@@ -9,6 +9,7 @@ import { ArticlesQueueListener } from './queue/articles.queue-listener';
 import { StoryGenerationQueueListener } from './queue/story-generation.queue-listener';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { StoriesModule } from '../stories/stories.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
       name: QueueName.StoryGeneration,
       adapter: BullMQAdapter,
     }),
+    StoriesModule,
   ],
   providers: [
     StoryGenerationQueueListener,

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { StoriesRepository, StoryWriteDto } from './stories.repository';
+import { StoriesRepository } from './stories.repository';
+import { StoryWriteDto } from './interface/story-write.dto';
 
 @Injectable()
 export class StoriesService {

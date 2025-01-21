@@ -12,9 +12,9 @@ export class StoryGenerationJobProcessor extends WorkerHost {
   async process(job: GenerateStoryJob) {
     switch (job.name) {
       case GenerateStoryJob.name:
-        return await this.storyGenerationService.generateStoryFromArticle(
-          job.data,
-        );
+        const story =
+          await this.storyGenerationService.generateStoryFromArticle(job.data);
+        return await this.storyGenerationService.saveStories([story]);
       default:
         throw new Error(
           'StoryGenerationJobProcessor.process(): Unknown job name',
