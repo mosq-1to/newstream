@@ -14,4 +14,9 @@ export class StoriesController {
   async getStoryById(@Param('id') id: string) {
     return this.storiesService.getStoryById(id);
   }
+
+  @Get(':id/stream')
+  async streamStoryById(@Param('id') id: string) {
+    return this.storiesService.streamStoryById(id);
+  }
 }

@@ -17,4 +17,9 @@ export class StoriesService {
   async saveStories(stories: StoryWriteDto[]) {
     return this.storiesRepository.saveStories(stories);
   }
+
+  async streamStoryById(id: string) {
+    const story = await this.getStoryById(id);
+    return story.content; // Return its content for the time being
+  }
 }
