@@ -28,11 +28,12 @@ export class KokoroService implements OnModuleInit {
     )) as unknown as KokoroTTS;
   }
 
-  public async generateSpeech(text: string) {
+  public async generateSpeech(text: string): Promise<Buffer> {
     if (!this.kokoro) {
       throw new Error('Kokoro not initialized');
     }
     const audio = await this.kokoro.generate(text, { voice: 'af_bella' });
-    return await audio.toWav();
+    const arrayBuffer = await audio.toWav();
+    return Buffer.from(arrayBuffer);
   }
 }
