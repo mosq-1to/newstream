@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { KokoroService } from './tts/kokoro.service';
 
 @Injectable()
 export class AudioGenerationService {
-  public generateSpeech(text: string) {
-    // TODO Implement the text-to-speech generation
-    return text;
+  constructor(private readonly kokoroService: KokoroService) {}
+
+  public async generateSpeech(text: string) {
+    return await this.kokoroService.generateSpeech(text);
   }
 }
