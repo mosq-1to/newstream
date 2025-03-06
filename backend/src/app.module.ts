@@ -13,6 +13,7 @@ import { StoryGenerationModule } from './modules/story-generation/story-generati
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 import { AudioGenerationModule } from './modules/audio-generation/audio-generation.module';
+import { AudioProcessingModule } from './modules/audio-processing/audio-processing.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AudioGenerationModule } from './modules/audio-generation/audio-generati
     TextGenerationModule,
     StoryGenerationModule,
     AudioGenerationModule,
+    AudioProcessingModule,
   ],
   providers: [
     {

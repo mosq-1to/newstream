@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { KokoroService } from './tts/kokoro.service';
+import type { KokoroService } from './tts/kokoro.service';
 
 @Injectable()
 export class AudioGenerationService {
