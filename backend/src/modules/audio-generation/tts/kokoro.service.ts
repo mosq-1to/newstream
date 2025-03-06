@@ -12,6 +12,8 @@ interface KokoroTTS {
     },
   ): Promise<{
     toWav: () => Promise<ArrayBuffer>;
+    toBlob: () => Promise<Blob>;
+    save: (path: string) => Promise<void>;
   }>;
 }
 
@@ -28,12 +30,24 @@ export class KokoroService implements OnModuleInit {
     )) as unknown as KokoroTTS;
   }
 
-  public async generateSpeech(text: string): Promise<Buffer> {
+  public async generateSpeech(text: string): Promise<string[]> {
+    const textChunks = text.split('.'); // Split text into chunks of 3 sentences temporarily
+
     if (!this.kokoro) {
       throw new Error('Kokoro not initialized');
     }
-    const audio = await this.kokoro.generate(text, { voice: 'af_bella' });
-    const arrayBuffer = await audio.toWav();
-    return Buffer.from(arrayBuffer);
+
+    const kokoro = this.kokoro;
+    const filePaths: string[] = [];
+
+    for (const chunk of textChunks) {
+      const audio = await kokoro.generate(chunk);
+      const filePath = `temp-${new Date().getTime()}.wav`;
+      console.log({ filePath });
+      await audio.save(filePath);
+      filePaths.push(filePath);
+    }
+
+    return filePaths;
   }
 }
