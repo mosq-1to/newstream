@@ -29,11 +29,11 @@ export class AudioProcessingService {
             .format('wav')
             .on('end', () => {
               // Clean up concat file
-              unlink(concatFilePath, () => {});
+              void this.cleanupFiles([concatFilePath]);
               resolve(outputFilePath);
             })
             .on('error', (err) => {
-              unlink(concatFilePath, () => {});
+              void this.cleanupFiles([concatFilePath]);
               reject(err);
             })
             .output(outputFilePath)

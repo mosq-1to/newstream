@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AudioGenerationService } from './audio-generation.service';
-import { AudioGenerationController } from './audiio-generation.controller';
+import { AudioGenerationController } from './audio-generation.controller';
 import { KokoroService } from './tts/kokoro.service';
 import { AudioProcessingModule } from '../audio-processing/audio-processing.module';
 

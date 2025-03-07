@@ -24,6 +24,6 @@ export class StoriesService {
 
   async streamStoryById(id: string) {
     const story = await this.getStoryById(id);
-    return this.audioGenerationService.generateSpeech(story.content);
+    return this.audioGenerationService.generateSpeechStream(story.content);
   }
 }

@@ -24,11 +24,17 @@ export class StoriesController {
   // for debug
   @SkipAuth()
   @Get(':storyId/stream')
-  streamStoryById(@Param('storyId') storyId: string, @Res() res: Response) {
-    const files = this.audioGenerationService.generateSpeech(
+  async streamStoryById(
+    @Param('storyId') storyId: string,
+    @Res() res: Response,
+  ) {
+    console.log('streamStoryById', storyId);
+    const audioStream = await this.audioGenerationService.generateSpeechStream(
       'Lorem ipsunm dolor. Lorem ipsum dolor sit amet',
     );
 
     res.setHeader('Content-Type', 'audio/wav');
+    res.setHeader('Content-Disposition', 'inline; filename="merged.wav"');
+    audioStream.pipe(res);
   }
 }
