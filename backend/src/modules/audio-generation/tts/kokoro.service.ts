@@ -43,7 +43,6 @@ export class KokoroService implements OnModuleInit {
     for (const chunk of textChunks) {
       const audio = await kokoro.generate(chunk);
       const filePath = `temp-${new Date().getTime()}.wav`;
-      console.log({ filePath });
       await audio.save(filePath);
       filePaths.push(filePath);
     }
