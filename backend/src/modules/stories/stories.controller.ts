@@ -28,7 +28,6 @@ export class StoriesController {
     @Param('storyId') storyId: string,
     @Res() res: Response,
   ) {
-    console.log('streamStoryById', storyId);
     const audioStream = await this.audioGenerationService.generateSpeechStream(
       'Lorem ipsunm dolor. Lorem ipsum dolor sit amet',
     );
