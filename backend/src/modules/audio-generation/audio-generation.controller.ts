@@ -1,6 +1,24 @@
-import { Controller, Header, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Header,
+  Param,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { AudioGenerationService } from './audio-generation.service';
 import type { Response } from 'express';
+import * as path from 'path';
+import { createReadStream } from 'fs';
+import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
+import { IsString } from 'class-validator';
+
+// DTO for text input
+class GenerateSpeechDto {
+  @IsString()
+  text: string;
+}
 
 @Controller('test/tts')
 export class AudioGenerationController {
@@ -21,5 +39,98 @@ export class AudioGenerationController {
     );
 
     audioStream.pipe(res);
+  }
+
+  /**
+   * Generate a speech audio and convert it to HLS format
+   * Returns the stream ID that can be used to access the HLS playlist
+   */
+  @Post('hls')
+  @SkipAuth()
+  async generateSpeechHls(
+    @Body() generateSpeechDto: GenerateSpeechDto,
+    @Res() res: Response,
+  ) {
+    // Use the text from request body or a default if not provided
+    const text =
+      generateSpeechDto?.text ||
+      'The sky above the port was the color of television, tuned to a dead channel.\n' +
+        '"It\'s not like I\'m using," Case heard someone say, as he shouldered his way through the crowd around the door of the Chat. "It\'s like my body\'s developed this massive drug deficiency."';
+
+    const streamId = await this.audioGenerationService.generateSpeechHls(text);
+
+    // Return the stream ID and playlist URL
+    res.json({
+      streamId,
+      playlistUrl: `/test/tts/hls/${streamId}/playlist.m3u8`,
+    });
+  }
+
+  /**
+   * Get the HLS playlist file
+   */
+  @Get('hls/:streamId/:filename')
+  @SkipAuth()
+  async getHlsFile(
+    @Param('streamId') streamId: string,
+    @Param('filename') filename: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const filePath = await this.audioGenerationService.getHlsFilePath(
+        streamId,
+        filename,
+      );
+
+      // Set the appropriate content type based on file extension
+      const ext = path.extname(filename);
+      if (ext === '.m3u8') {
+        res.header('Content-Type', 'application/vnd.apple.mpegurl');
+      } else if (ext === '.ts') {
+        res.header('Content-Type', 'video/mp2t');
+      }
+
+      // Set cache control headers for HLS
+      res.header('Cache-Control', 'public, max-age=3600');
+
+      // Stream the file
+      const fileStream = createReadStream(filePath);
+      fileStream.pipe(res);
+    } catch (error) {
+      res.status(404).json({ error: 'File not found' });
+    }
+  }
+
+  /**
+   * Delete an HLS stream when it's no longer needed
+   */
+  @Post('hls/:streamId/cleanup')
+  @SkipAuth()
+  async cleanupHlsStream(
+    @Param('streamId') streamId: string,
+    @Res() res: Response,
+  ) {
+    await this.audioGenerationService.cleanupHlsStream(streamId);
+    res.json({ success: true });
+  }
+
+  /**
+   * Serve the HLS player demo page
+   */
+  @Get('demo')
+  @SkipAuth()
+  @Header('Content-Type', 'text/html')
+  async serveDemo(@Res() res: Response) {
+    try {
+      const demoPath = path.join(__dirname, 'demo', 'hls-player.html');
+      const fileStream = createReadStream(demoPath);
+      fileStream.pipe(res);
+    } catch (error) {
+      res
+        .status(404)
+        .send(
+          'Demo page not found. Please make sure to build the application with assets.',
+        );
+    }
   }
 }
