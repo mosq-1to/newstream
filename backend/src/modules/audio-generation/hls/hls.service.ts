@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import * as os from 'os';
 import ffmpeg from 'fluent-ffmpeg';
 import { v4 as uuidv4 } from 'uuid';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class HlsService {
   private readonly HLS_OUTPUT_DIR: string;
 
-  constructor() {
-    // Create HLS output directory in system temp folder
-    this.HLS_OUTPUT_DIR = path.join(os.tmpdir(), 'newstream-hls-output');
+  constructor(private configService: ConfigService) {
+    // Get HLS output directory from environment or use system temp folder as fallback
+    this.HLS_OUTPUT_DIR =
+      this.configService.getOrThrow<string>('HLS_OUTPUT_DIR');
 
     // Create the HLS output directory if it doesn't exist
     void this.ensureDirectoryExists(this.HLS_OUTPUT_DIR);
