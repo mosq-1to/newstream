@@ -9,11 +9,13 @@ export class StoriesController {
   constructor(private readonly storiesService: StoriesService) {}
 
   @Get()
+  @SkipAuth()
   async getAllStories() {
     return this.storiesService.getAllStories();
   }
 
   @Get(':storyId')
+  @SkipAuth()
   async getStoryById(@Param('storyId') storyId: string) {
     return this.storiesService.getStoryById(storyId);
   }
@@ -48,6 +50,7 @@ export class StoriesController {
         storyId,
         segmentId,
       );
+
     const fileStream = createReadStream(filePath);
     fileStream.pipe(res);
   }

@@ -6,17 +6,21 @@ import { Readable } from 'stream';
 import { HlsService } from './hls/hls.service';
 import * as path from 'path';
 import { existsSync } from 'fs';
-import { tmpdir } from 'os';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AudioGenerationService {
+  private readonly HLS_OUTPUT_DIR: string;
   constructor(
     private readonly kokoroService: KokoroService,
     private readonly audioProcessingService: AudioProcessingService,
     private readonly hlsService: HlsService,
-  ) {}
-
-  HLS_OUTPUT_DIR = path.join(tmpdir(), 'newstream-hls-output');
+    private readonly configService: ConfigService,
+  ) {
+    // Get HLS output directory from environment or use system temp folder as fallback
+    this.HLS_OUTPUT_DIR =
+      this.configService.getOrThrow<string>('HLS_OUTPUT_DIR');
+  }
 
   public async generateSpeechStream(text: string): Promise<Readable> {
     const filePaths = await this.kokoroService.generateSpeech(text);
@@ -107,7 +111,7 @@ export class AudioGenerationService {
     segmentId: string,
   ): Promise<string> {
     const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId);
-    const filePath = path.join(streamDir, 'segments', `${segmentId}`);
+    const filePath = path.join(streamDir, 'stream', 'segments', `${segmentId}`);
 
     // Verify file exists
     if (!existsSync(filePath)) {

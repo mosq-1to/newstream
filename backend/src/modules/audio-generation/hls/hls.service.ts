@@ -28,12 +28,14 @@ export class HlsService {
     streamId: string,
   ): Promise<{ streamId: string; playlistPath: string }> {
     // Create a directory for this stream
-    const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId);
+    const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId, 'stream');
     await this.ensureDirectoryExists(streamDir);
     const streamSegmentsDir = path.join(streamDir, 'segments');
     await this.ensureDirectoryExists(streamSegmentsDir);
     // Output playlist file
     const playlistFile = path.join(streamDir, 'playlist.m3u8');
+
+    console.log('convertToHls', streamSegmentsDir);
 
     return new Promise((resolve, reject) => {
       ffmpeg(inputFilePath)
@@ -45,7 +47,7 @@ export class HlsService {
           path.join(streamSegmentsDir, 'segment_%03d.ts'),
           '-hls_list_size 0',
           '-hls_base_url',
-          'segments/',
+          'stream/segments/',
           '-acodec aac',
           '-ar 44100',
           '-ab 128k',
