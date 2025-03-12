@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+* Don't add comments to the code unless something is not obvious.
+* Don't give me any description to the code you've provided if it doesn't require the comment.
