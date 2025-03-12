@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
-import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -21,14 +20,13 @@ export class HlsService {
   /**
    * Converts an audio file to HLS format
    * @param inputFilePath Path to the input audio file
-   * @returns ID of the generated HLS stream and path to the playlist file
+   * @param streamId Custom ID for the HLS stream
+   * @returns ID of the HLS stream and path to the playlist file
    */
   async convertToHls(
     inputFilePath: string,
+    streamId: string,
   ): Promise<{ streamId: string; playlistPath: string }> {
-    // Create a unique ID for this stream
-    const streamId = uuidv4();
-
     // Create a directory for this stream
     const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId);
     await this.ensureDirectoryExists(streamDir);
@@ -77,27 +75,6 @@ export class HlsService {
       return filePath;
     } catch (error) {
       throw new Error(`File not found: ${filePath}`);
-    }
-  }
-
-  /**
-   * Cleans up HLS stream files after they're no longer needed
-   */
-  async cleanupStream(streamId: string): Promise<void> {
-    const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId);
-
-    try {
-      const files = await fs.readdir(streamDir);
-
-      // Delete all files in the directory
-      await Promise.all(
-        files.map((file) => fs.unlink(path.join(streamDir, file))),
-      );
-
-      // Delete the directory
-      await fs.rmdir(streamDir);
-    } catch (error) {
-      // Ignore errors if directory doesn't exist
     }
   }
 

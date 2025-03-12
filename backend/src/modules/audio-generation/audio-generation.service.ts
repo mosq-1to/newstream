@@ -49,16 +49,23 @@ export class AudioGenerationService {
   /**
    * Generate speech and convert it to HLS format
    * @param text Text to convert to speech
-   * @returns Stream ID that can be used to access the HLS playlist
+   * @param streamId Required stream ID for the HLS stream
+   * @returns m3u8 playlist path
    */
-  public async generateSpeechHls(text: string): Promise<string> {
+  public async generateSpeechHls(
+    text: string,
+    streamId: string,
+  ): Promise<string> {
     const filePaths = await this.kokoroService.generateSpeech(text);
     const mergedFilePath =
       await this.audioProcessingService.mergeWavFiles(filePaths);
 
     try {
       // Convert the merged audio file to HLS format
-      const { streamId } = await this.hlsService.convertToHls(mergedFilePath);
+      const { playlistPath } = await this.hlsService.convertToHls(
+        mergedFilePath,
+        streamId,
+      );
 
       // Clean up the temporary files
       void this.audioProcessingService.cleanupFiles([
@@ -66,7 +73,7 @@ export class AudioGenerationService {
         mergedFilePath,
       ]);
 
-      return streamId;
+      return playlistPath;
     } catch (error) {
       // Clean up on error
       void this.audioProcessingService.cleanupFiles([
@@ -110,12 +117,5 @@ export class AudioGenerationService {
     }
 
     return filePath;
-  }
-
-  /**
-   * Clean up an HLS stream when it's no longer needed
-   */
-  public async cleanupHlsStream(streamId: string): Promise<void> {
-    await this.hlsService.cleanupStream(streamId);
   }
 }
