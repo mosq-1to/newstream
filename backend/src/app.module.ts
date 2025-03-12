@@ -12,6 +12,8 @@ import { BullModule } from '@nestjs/bullmq';
 import { StoryGenerationModule } from './modules/story-generation/story-generation.module';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
+import { AudioGenerationModule } from './modules/audio-generation/audio-generation.module';
+import { AudioProcessingModule } from './modules/audio-processing/audio-processing.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { ExpressAdapter } from '@bull-board/express';
     AuthModule,
     TextGenerationModule,
     StoryGenerationModule,
+    AudioGenerationModule,
+    AudioProcessingModule,
   ],
   providers: [
     {

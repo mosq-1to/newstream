@@ -1,5 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Header, Param, Res } from '@nestjs/common';
 import { StoriesService } from './stories.service';
+import { Response } from 'express';
+import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 
 @Controller('stories')
 export class StoriesController {
@@ -10,13 +12,20 @@ export class StoriesController {
     return this.storiesService.getAllStories();
   }
 
-  @Get(':id')
-  async getStoryById(@Param('id') id: string) {
-    return this.storiesService.getStoryById(id);
+  @Get(':storyId')
+  async getStoryById(@Param('storyId') storyId: string) {
+    return this.storiesService.getStoryById(storyId);
   }
 
-  @Get(':id/stream')
-  async streamStoryById(@Param('id') id: string) {
-    return this.storiesService.streamStoryById(id);
+  @SkipAuth()
+  @Get(':storyId/stream')
+  @Header('Content-Type', 'audio/wav')
+  @Header('Content-Disposition', 'inline; filename="stream.wav"')
+  async streamStoryById(
+    @Param('storyId') storyId: string,
+    @Res() res: Response,
+  ) {
+    const audioStream = await this.storiesService.streamStoryById(storyId);
+    audioStream.pipe(res);
   }
 }

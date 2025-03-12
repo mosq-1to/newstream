@@ -13,7 +13,6 @@ export class StoryGenerationService {
   ) {}
 
   async generateStoryFromArticle(article: Article): Promise<StoryWriteDto> {
-    console.log('Generating story from article:', article.id);
     const prompt = new GenerateStoryContentPrompt(article.content);
 
     try {

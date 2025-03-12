@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { StoriesRepository } from './stories.repository';
 import { StoryWriteDto } from './interface/story-write.dto';
+import { AudioGenerationService } from '../audio-generation/audio-generation.service';
 
 @Injectable()
 export class StoriesService {
-  constructor(private readonly storiesRepository: StoriesRepository) {}
+  constructor(
+    private readonly storiesRepository: StoriesRepository,
+    private readonly audioGenerationService: AudioGenerationService,
+  ) {}
 
   async getAllStories() {
     return this.storiesRepository.getAllStories();
@@ -20,6 +24,6 @@ export class StoriesService {
 
   async streamStoryById(id: string) {
     const story = await this.getStoryById(id);
-    return story.content; // Return its content for the time being
+    return this.audioGenerationService.generateSpeechStream(story.content);
   }
 }
