@@ -31,7 +31,8 @@ export class HlsService {
     // Create a directory for this stream
     const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId);
     await this.ensureDirectoryExists(streamDir);
-
+    const streamSegmentsDir = path.join(streamDir, 'segments');
+    await this.ensureDirectoryExists(streamSegmentsDir);
     // Output playlist file
     const playlistFile = path.join(streamDir, 'playlist.m3u8');
 
@@ -42,8 +43,10 @@ export class HlsService {
           '-hls_time 4',
           '-hls_playlist_type vod',
           '-hls_segment_filename',
-          path.join(streamDir, 'segment_%03d.ts'),
+          path.join(streamSegmentsDir, 'segment_%03d.ts'),
           '-hls_list_size 0',
+          '-hls_base_url',
+          'segments/',
           '-acodec aac',
           '-ar 44100',
           '-ab 128k',

@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { KokoroService } from './tts/kokoro.service';
 import { AudioProcessingService } from '../audio-processing/audio-processing.service';
 import { createReadStream } from 'fs';
 import { Readable } from 'stream';
 import { HlsService } from './hls/hls.service';
+import * as path from 'path';
+import { existsSync } from 'fs';
+import { tmpdir } from 'os';
 
 @Injectable()
 export class AudioGenerationService {
@@ -12,6 +15,8 @@ export class AudioGenerationService {
     private readonly audioProcessingService: AudioProcessingService,
     private readonly hlsService: HlsService,
   ) {}
+
+  HLS_OUTPUT_DIR = path.join(tmpdir(), 'newstream-hls-output');
 
   public async generateSpeechStream(text: string): Promise<Readable> {
     const filePaths = await this.kokoroService.generateSpeech(text);
@@ -73,13 +78,38 @@ export class AudioGenerationService {
   }
 
   /**
-   * Get the path to an HLS stream file (playlist or segment)
+   * Get the file path for an HLS playlist
    */
-  public async getHlsFilePath(
+  async getPlaylistFilePath(streamId: string): Promise<string> {
+    const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId);
+    const filePath = path.join(streamDir, 'playlist.m3u8');
+
+    // Verify file exists
+    if (!existsSync(filePath)) {
+      throw new NotFoundException(`Playlist not found for stream: ${streamId}`);
+    }
+
+    return filePath;
+  }
+
+  /**
+   * Get the file path for an HLS segment
+   */
+  async getSegmentFilePath(
     streamId: string,
-    filename: string,
+    segmentId: string,
   ): Promise<string> {
-    return this.hlsService.getStreamFilePath(streamId, filename);
+    const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId);
+    const filePath = path.join(streamDir, 'segments', `${segmentId}`);
+
+    // Verify file exists
+    if (!existsSync(filePath)) {
+      throw new NotFoundException(
+        `Segment ${segmentId} not found for stream: ${streamId}`,
+      );
+    }
+
+    return filePath;
   }
 
   /**
