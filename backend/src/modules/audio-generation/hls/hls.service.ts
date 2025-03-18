@@ -35,8 +35,6 @@ export class HlsService {
     // Output playlist file
     const playlistFile = path.join(streamDir, 'playlist.m3u8');
 
-    console.log('convertToHls', streamSegmentsDir);
-
     return new Promise((resolve, reject) => {
       ffmpeg(inputFilePath)
         .outputOptions([
