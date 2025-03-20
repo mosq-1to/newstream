@@ -26,7 +26,7 @@ export class KokoroService implements OnModuleInit {
   async onModuleInit() {
     const kokoroTTS = (await import('kokoro-js')).KokoroTTS;
     this.kokoro = (await kokoroTTS.from_pretrained(
-      'onnx-community/Kokoro-82M-ONNX',
+      'onnx-community/Kokoro-82M-v1.0-ONNX',
     )) as unknown as KokoroTTS;
   }
 
