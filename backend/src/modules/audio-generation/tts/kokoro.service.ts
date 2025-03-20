@@ -7,7 +7,7 @@ interface KokoroTTS {
       voice,
       speed,
     }?: {
-      voice?: 'af_bella';
+      voice?: 'af_heart';
       speed?: number;
     },
   ): Promise<{
@@ -24,10 +24,18 @@ export class KokoroService implements OnModuleInit {
   constructor() {}
 
   async onModuleInit() {
-    const kokoroTTS = (await import('kokoro-js')).KokoroTTS;
-    this.kokoro = (await kokoroTTS.from_pretrained(
-      'onnx-community/Kokoro-82M-v1.0-ONNX',
-    )) as unknown as KokoroTTS;
+    try {
+      const kokoroTTS = (await import('kokoro-js')).KokoroTTS;
+      this.kokoro = (await kokoroTTS.from_pretrained(
+        'onnx-community/Kokoro-82M-v1.0-ONNX',
+        {
+          dtype: 'q8',
+          device: 'cpu',
+        },
+      )) as unknown as KokoroTTS;
+    } catch (error) {
+      console.error('Error initializing Kokoro', error);
+    }
   }
 
   public async generateSpeech(text: string): Promise<string[]> {
@@ -41,7 +49,7 @@ export class KokoroService implements OnModuleInit {
     const filePaths: string[] = [];
 
     for (const chunk of textChunks) {
-      const audio = await kokoro.generate(chunk);
+      const audio = await kokoro.generate(chunk, { voice: 'af_heart' });
       const filePath = `temp-${new Date().getTime()}.wav`;
       await audio.save(filePath);
       filePaths.push(filePath);
