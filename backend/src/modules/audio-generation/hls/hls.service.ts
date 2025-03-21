@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { promises as fs } from 'fs';
+import fs from 'fs';
 import * as path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
 import { ConfigService } from '@nestjs/config';
@@ -64,6 +64,66 @@ export class HlsService {
     });
   }
 
+  async generatePlaylist(streamId: string): Promise<string> {
+    // Create a directory for this stream
+    const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId, 'stream');
+    const streamSegmentsDir = path.join(streamDir, 'segments');
+
+    // Ensure both directories exist
+    await this.ensureDirectoryExists(streamDir);
+    await this.ensureDirectoryExists(streamSegmentsDir);
+
+    // Output playlist file
+    const playlistFile = path.join(streamDir, 'playlist.m3u8');
+
+    console.log('playlistFile', playlistFile);
+    console.log('it exists', fs.existsSync(playlistFile));
+
+    // Ensure the playlist file is writable by creating it first
+    try {
+      fs.writeFileSync(playlistFile, '', { flag: 'w' });
+    } catch (error) {
+      throw new Error(`Failed to create playlist file: ${error.message}`);
+    }
+    console.log('it exists after creation', fs.existsSync(playlistFile));
+
+    const wavPaths = fs
+      .readdirSync(streamSegmentsDir)
+      .map((p) => path.join(streamSegmentsDir, p));
+
+    console.log('wavPaths', wavPaths);
+
+    // Create a temporary concat file
+    const concatFile = path.join(this.HLS_OUTPUT_DIR, `${streamId}_concat.txt`);
+    const concatContent = wavPaths.map((p) => `file '${p}'`).join('\n');
+    fs.writeFileSync(concatFile, concatContent);
+
+    return new Promise((resolve, reject) => {
+      ffmpeg()
+        .input(concatFile)
+        .inputOptions(['-f', 'concat', '-safe', '0'])
+        .outputOptions([
+          '-f hls',
+          '-hls_time 4',
+          '-hls_playlist_type event',
+          '-hls_segment_filename',
+          path.join(streamSegmentsDir, 'segment_%03d.ts'),
+          '-hls_list_size 0',
+          '-hls_base_url',
+          'stream/segments/',
+          '-hls_flags append_list',
+        ])
+        .output(playlistFile)
+        .on('end', () => {
+          resolve(playlistFile);
+        })
+        .on('error', (err) => {
+          reject(new Error(`FFmpeg error: ${err.message}`));
+        })
+        .run();
+    });
+  }
+
   /**
    * Gets the path to a segment or playlist file
    */
@@ -71,7 +131,7 @@ export class HlsService {
     const filePath = path.join(this.HLS_OUTPUT_DIR, streamId, filename);
 
     try {
-      await fs.access(filePath);
+      fs.accessSync(filePath);
       return filePath;
     } catch (error) {
       throw new Error(`File not found: ${filePath}`);
@@ -83,7 +143,7 @@ export class HlsService {
    */
   private async ensureDirectoryExists(directory: string): Promise<void> {
     try {
-      await fs.mkdir(directory, { recursive: true });
+      fs.mkdirSync(directory, { recursive: true });
     } catch (error) {
       // Ignore if directory already exists
     }

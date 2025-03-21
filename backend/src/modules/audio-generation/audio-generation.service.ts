@@ -1,8 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { KokoroService } from './tts/kokoro.service';
 import { AudioProcessingService } from '../audio-processing/audio-processing.service';
-import { createReadStream } from 'fs';
-import { Readable } from 'stream';
 import { HlsService } from './hls/hls.service';
 import * as path from 'path';
 import { existsSync } from 'fs';
@@ -22,33 +20,33 @@ export class AudioGenerationService {
       this.configService.getOrThrow<string>('HLS_OUTPUT_DIR');
   }
 
-  public async generateSpeechStream(text: string): Promise<Readable> {
-    const filePaths = await this.kokoroService.generateSpeech(text);
-    const mergedFilePath =
-      await this.audioProcessingService.mergeWavFiles(filePaths);
+  // public async generateSpeechStream(text: string): Promise<Readable> {
+  //   const filePaths = await this.kokoroService.generateSpeech(text);
+  //   const mergedFilePath =
+  //     await this.audioProcessingService.mergeWavFiles(filePaths);
 
-    // Create a readable stream from the merged file
-    const readableStream = createReadStream(mergedFilePath);
+  //   // Create a readable stream from the merged file
+  //   const readableStream = createReadStream(mergedFilePath);
 
-    // Set up cleanup to happen after the stream is consumed
-    readableStream.on('end', () => {
-      // Clean up all the files (original files and merged file)
-      void this.audioProcessingService.cleanupFiles([
-        ...filePaths,
-        mergedFilePath,
-      ]);
-    });
+  //   // Set up cleanup to happen after the stream is consumed
+  //   readableStream.on('end', () => {
+  //     // Clean up all the files (original files and merged file)
+  //     void this.audioProcessingService.cleanupFiles([
+  //       ...filePaths,
+  //       mergedFilePath,
+  //     ]);
+  //   });
 
-    readableStream.on('error', () => {
-      // Also clean up on error
-      void this.audioProcessingService.cleanupFiles([
-        ...filePaths,
-        mergedFilePath,
-      ]);
-    });
+  //   readableStream.on('error', () => {
+  //     // Also clean up on error
+  //     void this.audioProcessingService.cleanupFiles([
+  //       ...filePaths,
+  //       mergedFilePath,
+  //     ]);
+  //   });
 
-    return readableStream;
-  }
+  //   return readableStream;
+  // }
 
   /**
    * Generate speech and convert it to HLS format
@@ -60,31 +58,19 @@ export class AudioGenerationService {
     text: string,
     streamId: string,
   ): Promise<string> {
-    const filePaths = await this.kokoroService.generateSpeech(text);
-    const mergedFilePath =
-      await this.audioProcessingService.mergeWavFiles(filePaths);
+    const outputDir = path.join(
+      this.HLS_OUTPUT_DIR,
+      streamId,
+      'stream/segments',
+    );
+    const speechStream = await this.kokoroService.generateSpeech(
+      text,
+      outputDir,
+    );
 
-    try {
-      // Convert the merged audio file to HLS format
-      const { playlistPath } = await this.hlsService.convertToHls(
-        mergedFilePath,
-        streamId,
-      );
-
-      // Clean up the temporary files
-      void this.audioProcessingService.cleanupFiles([
-        ...filePaths,
-        mergedFilePath,
-      ]);
-
-      return playlistPath;
-    } catch (error) {
-      // Clean up on error
-      void this.audioProcessingService.cleanupFiles([
-        ...filePaths,
-        mergedFilePath,
-      ]);
-      throw error;
+    for await (const filePath of speechStream) {
+      console.log('filePath', filePath);
+      return await this.hlsService.generatePlaylist(streamId);
     }
   }
 
