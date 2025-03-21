@@ -1,3 +1,4 @@
+import { WorldNewsArticleDto } from './../../articles/api/providers/worldnewsapi/dto/world-news-article.dto';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as path from 'path';
@@ -64,6 +65,23 @@ export class HlsService {
     });
   }
 
+  private async initializeEmptyPlaylist(streamId: string): Promise<string> {
+    const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId, 'stream');
+    await this.ensureDirectoryExists(streamDir);
+    const playlistFile = path.join(streamDir, 'playlist.m3u8');
+
+    const initialContent = [
+      '#EXTM3U',
+      '#EXT-X-VERSION:3',
+      '#EXT-X-PLAYLIST-TYPE:EVENT', // Signals this is a live event
+      '#EXT-X-TARGETDURATION:4', // Must match your segment duration
+      '#EXT-X-MEDIA-SEQUENCE:0',
+    ].join('\n');
+
+    fs.writeFileSync(playlistFile, initialContent);
+    return playlistFile;
+  }
+
   async generatePlaylist(streamId: string): Promise<string> {
     // Create a directory for this stream
     const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId, 'stream');
@@ -76,22 +94,13 @@ export class HlsService {
     // Output playlist file
     const playlistFile = path.join(streamDir, 'playlist.m3u8');
 
-    console.log('playlistFile', playlistFile);
-    console.log('it exists', fs.existsSync(playlistFile));
-
-    // Ensure the playlist file is writable by creating it first
-    try {
-      fs.writeFileSync(playlistFile, '', { flag: 'w' });
-    } catch (error) {
-      throw new Error(`Failed to create playlist file: ${error.message}`);
-    }
-    console.log('it exists after creation', fs.existsSync(playlistFile));
-
     const wavPaths = fs
       .readdirSync(streamSegmentsDir)
       .map((p) => path.join(streamSegmentsDir, p));
 
-    console.log('wavPaths', wavPaths);
+    if (wavPaths.length === 0) {
+      return this.initializeEmptyPlaylist(streamId);
+    }
 
     // Create a temporary concat file
     const concatFile = path.join(this.HLS_OUTPUT_DIR, `${streamId}_concat.txt`);

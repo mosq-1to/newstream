@@ -28,7 +28,10 @@ export class StoriesController {
     @Res() res: Response,
   ) {
     res.header('Content-Type', 'application/vnd.apple.mpegurl');
-    res.header('Cache-Control', 'public, max-age=2');
+    res.header(
+      'Cache-Control',
+      'no-cache, no-store, must-revalidate, public, max-age=2',
+    );
 
     const playlistPath =
       await this.storiesService.getPlaylistPathByStoryId(storyId);
