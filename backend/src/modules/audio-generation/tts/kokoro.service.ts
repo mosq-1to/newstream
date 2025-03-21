@@ -1,60 +1,47 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-
-interface KokoroTTS {
-  generate(
-    text: string,
-    {
-      voice,
-      speed,
-    }?: {
-      voice?: 'af_heart';
-      speed?: number;
-    },
-  ): Promise<{
-    toWav: () => Promise<ArrayBuffer>;
-    toBlob: () => Promise<Blob>;
-    save: (path: string) => Promise<void>;
-  }>;
-}
+import { KokoroTTS, ITextSplitterStream } from 'kokoro-js';
 
 @Injectable()
 export class KokoroService implements OnModuleInit {
   private kokoro: KokoroTTS;
+  private TextSplitterStream: ITextSplitterStream;
 
   constructor() {}
 
   async onModuleInit() {
     try {
-      const kokoroTTS = (await import('kokoro-js')).KokoroTTS;
-      this.kokoro = (await kokoroTTS.from_pretrained(
+      const kokoroImport = await import('kokoro-js');
+
+      const tts = kokoroImport.KokoroTTS;
+      this.kokoro = await tts.from_pretrained(
         'onnx-community/Kokoro-82M-v1.0-ONNX',
         {
           dtype: 'q8',
           device: 'cpu',
         },
-      )) as unknown as KokoroTTS;
+      );
+
+      this.TextSplitterStream = kokoroImport.TextSplitterStream;
     } catch (error) {
       console.error('Error initializing Kokoro', error);
     }
   }
 
-  public async generateSpeech(text: string): Promise<string[]> {
-    const textChunks = text.split('.'); // Split text into chunks of 3 sentences temporarily
+  public async generateSpeech(text: string) {
+    const splitter = new this.TextSplitterStream();
+    const stream = this.kokoro.stream(splitter);
 
-    if (!this.kokoro) {
-      throw new Error('Kokoro not initialized');
-    }
+    void (async () => {
+      let i = 0;
+      for await (const { text, phonemes, audio } of stream) {
+        console.log({ text, phonemes });
+        await audio.save(`audio-${i++}.wav`);
+      }
+    })();
 
-    const kokoro = this.kokoro;
-    const filePaths: string[] = [];
+    splitter.push(text);
+    splitter.close();
 
-    for (const chunk of textChunks) {
-      const audio = await kokoro.generate(chunk, { voice: 'af_heart' });
-      const filePath = `temp-${new Date().getTime()}.wav`;
-      await audio.save(filePath);
-      filePaths.push(filePath);
-    }
-
-    return filePaths;
+    return [];
   }
 }
