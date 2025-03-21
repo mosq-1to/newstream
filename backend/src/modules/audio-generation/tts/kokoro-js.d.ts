@@ -14,7 +14,7 @@ declare module 'kokoro-js' {
       toBlob: () => Promise<Blob>;
       save: (path: string) => Promise<void>;
     }>;
-    stream: (splitter: ITextSplitterStreamInstance) => AsyncGenerator<{
+    stream: (splitter: TextSplitterStreamInstance) => AsyncGenerator<{
       text: string;
       phonemes: string[];
       audio: {
@@ -25,13 +25,13 @@ declare module 'kokoro-js' {
     }>;
   }
 
-  export interface ITextSplitterStreamInstance {
+  export interface TextSplitterStreamInstance {
     push: (text: string) => void;
     close: () => void;
   }
 
-  export interface ITextSplitterStream {
-    new (): ITextSplitterStreamInstance;
+  export interface TextSplitterStream {
+    new (): TextSplitterStreamInstance;
   }
 
   export const KokoroTTS: {
@@ -41,5 +41,5 @@ declare module 'kokoro-js' {
     ) => Promise<KokoroTTS>;
   };
 
-  export const TextSplitterStream: ITextSplitterStream;
+  export const TextSplitterStream: TextSplitterStream;
 }
