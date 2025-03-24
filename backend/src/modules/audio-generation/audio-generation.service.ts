@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { KokoroService } from './tts/kokoro.service';
-import { AudioProcessingService } from '../audio-processing/audio-processing.service';
 import { HlsService } from './hls/hls.service';
 import * as path from 'path';
 import { existsSync } from 'fs';
@@ -11,7 +10,6 @@ export class AudioGenerationService {
   private readonly HLS_OUTPUT_DIR: string;
   constructor(
     private readonly kokoroService: KokoroService,
-    private readonly audioProcessingService: AudioProcessingService,
     private readonly hlsService: HlsService,
     private readonly configService: ConfigService,
   ) {
@@ -20,40 +18,6 @@ export class AudioGenerationService {
       this.configService.getOrThrow<string>('HLS_OUTPUT_DIR');
   }
 
-  // public async generateSpeechStream(text: string): Promise<Readable> {
-  //   const filePaths = await this.kokoroService.generateSpeech(text);
-  //   const mergedFilePath =
-  //     await this.audioProcessingService.mergeWavFiles(filePaths);
-
-  //   // Create a readable stream from the merged file
-  //   const readableStream = createReadStream(mergedFilePath);
-
-  //   // Set up cleanup to happen after the stream is consumed
-  //   readableStream.on('end', () => {
-  //     // Clean up all the files (original files and merged file)
-  //     void this.audioProcessingService.cleanupFiles([
-  //       ...filePaths,
-  //       mergedFilePath,
-  //     ]);
-  //   });
-
-  //   readableStream.on('error', () => {
-  //     // Also clean up on error
-  //     void this.audioProcessingService.cleanupFiles([
-  //       ...filePaths,
-  //       mergedFilePath,
-  //     ]);
-  //   });
-
-  //   return readableStream;
-  // }
-
-  /**
-   * Generate speech and convert it to HLS format
-   * @param text Text to convert to speech
-   * @param streamId Required stream ID for the HLS stream
-   * @returns m3u8 playlist path
-   */
   public async generateSpeechHls(
     text: string,
     streamId: string,
