@@ -3,23 +3,22 @@ import fs from 'fs';
 import * as path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
 import { ConfigService } from '@nestjs/config';
+import { ensureDirectoryExists } from '../../../utils/files/ensure-directory-exists';
 
 @Injectable()
 export class HlsService {
   private readonly HLS_OUTPUT_DIR: string;
 
   constructor(private configService: ConfigService) {
-    // Get HLS output directory from environment or use system temp folder as fallback
     this.HLS_OUTPUT_DIR =
       this.configService.getOrThrow<string>('HLS_OUTPUT_DIR');
 
-    // Create the HLS output directory if it doesn't exist
-    void this.ensureDirectoryExists(this.HLS_OUTPUT_DIR);
+    ensureDirectoryExists(this.HLS_OUTPUT_DIR);
   }
 
   private async initializeEmptyPlaylist(streamId: string): Promise<string> {
     const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId, 'stream');
-    await this.ensureDirectoryExists(streamDir);
+    ensureDirectoryExists(streamDir);
     const playlistFile = path.join(streamDir, 'playlist.m3u8');
 
     const initialContent = [
@@ -40,8 +39,8 @@ export class HlsService {
     const streamSegmentsDir = path.join(streamDir, 'segments');
 
     // Ensure both directories exist
-    await this.ensureDirectoryExists(streamDir);
-    await this.ensureDirectoryExists(streamSegmentsDir);
+    ensureDirectoryExists(streamDir);
+    ensureDirectoryExists(streamSegmentsDir);
 
     // Output playlist file
     const playlistFile = path.join(streamDir, 'playlist.m3u8');
@@ -83,30 +82,5 @@ export class HlsService {
         })
         .run();
     });
-  }
-
-  /**
-   * Gets the path to a segment or playlist file
-   */
-  async getStreamFilePath(streamId: string, filename: string): Promise<string> {
-    const filePath = path.join(this.HLS_OUTPUT_DIR, streamId, filename);
-
-    try {
-      fs.accessSync(filePath);
-      return filePath;
-    } catch (error) {
-      throw new Error(`File not found: ${filePath}`);
-    }
-  }
-
-  /**
-   * Helper method to ensure a directory exists
-   */
-  private async ensureDirectoryExists(directory: string): Promise<void> {
-    try {
-      fs.mkdirSync(directory, { recursive: true });
-    } catch (error) {
-      // Ignore if directory already exists
-    }
   }
 }

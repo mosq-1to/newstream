@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { KokoroTTS } from 'kokoro-js';
 import path from 'path';
-import fs from 'fs/promises';
+import { ensureDirectoryExists } from '../../../utils/files/ensure-directory-exists';
 
 @Injectable()
 export class KokoroService implements OnModuleInit {
@@ -26,32 +26,19 @@ export class KokoroService implements OnModuleInit {
   public async *generateSpeech(text: string, outputDir: string) {
     const splitter = new (await import('kokoro-js')).TextSplitterStream();
     const stream = this.kokoro.stream(splitter);
-    await this.ensureDirectoryExists(outputDir);
-    console.log('outputDir', outputDir);
+    ensureDirectoryExists(outputDir);
 
     splitter.push(text);
     splitter.close();
 
     let i = 1;
-    for await (const { text, phonemes, audio } of stream) {
-      console.log({ text, phonemes });
+    for await (const { audio } of stream) {
       const filePath = path.join(
         outputDir,
         `segment_${String(i++).padStart(3, '0')}.wav`,
       );
       await audio.save(filePath);
       yield filePath;
-    }
-  }
-
-  /**
-   * Helper method to ensure a directory exists
-   */
-  private async ensureDirectoryExists(directory: string): Promise<void> {
-    try {
-      await fs.mkdir(directory, { recursive: true });
-    } catch (error) {
-      // Ignore if directory already exists
     }
   }
 }
