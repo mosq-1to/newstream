@@ -7,13 +7,15 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - DATABASE_URL=postgresql://newstream:newstream@dev-db:5432/newstream
+      - DATABASE_URL=postgresql://newstream:newstream@dev-db:5432/newstream?schema=public
       - REDIS_URL=redis://redis:6379
     volumes:
       - ./.env:/app/.env
     depends_on:
-      - dev-db
-      - redis
+      dev-db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   dev-db:
     image: postgres:13
@@ -23,6 +25,11 @@ services:
       POSTGRES_USER: newstream
       POSTGRES_PASSWORD: newstream
       POSTGRES_DB: newstream
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U newstream']
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:latest
