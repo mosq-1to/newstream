@@ -3,14 +3,23 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - '3000:3000'
     environment:
       - DATABASE_URL=postgresql://newstream:newstream@dev-db:5432/newstream?schema=public
       - REDIS_URL=redis://redis:6379
+      - NODE_ENV=development
     volumes:
       - ./.env:/app/.env
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+      - ./prisma/migrations:/app/prisma/migrations
+      - ./test:/app/test
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tsconfig.build.json:/app/tsconfig.build.json
+    command: npm run start:dev
     depends_on:
       dev-db:
         condition: service_healthy
