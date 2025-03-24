@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { KokoroService } from './tts/kokoro.service';
+import { KokoroService } from './kokoro/kokoro.service';
 import { HlsService } from './hls/hls.service';
 import * as path from 'path';
 import { existsSync } from 'fs';

@@ -1,4 +1,3 @@
-import { WorldNewsArticleDto } from './../../articles/api/providers/worldnewsapi/dto/world-news-article.dto';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as path from 'path';
