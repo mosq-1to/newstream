@@ -2,22 +2,16 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
-import { ConfigService } from '@nestjs/config';
 import { ensureDirectoryExists } from '../files/ensure-directory-exists';
 
 @Injectable()
 export class HlsService {
-  private readonly HLS_OUTPUT_DIR: string;
-
-  constructor(private configService: ConfigService) {
-    this.HLS_OUTPUT_DIR =
-      this.configService.getOrThrow<string>('HLS_OUTPUT_DIR');
-
-    ensureDirectoryExists(this.HLS_OUTPUT_DIR);
+  constructor(private readonly outputDir: string) {
+    ensureDirectoryExists(this.outputDir);
   }
 
   private async initializeEmptyPlaylist(streamId: string): Promise<string> {
-    const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId, 'stream');
+    const streamDir = path.join(this.outputDir, streamId, 'stream');
     ensureDirectoryExists(streamDir);
     const playlistFile = path.join(streamDir, 'playlist.m3u8');
 
@@ -35,7 +29,7 @@ export class HlsService {
 
   async generatePlaylist(streamId: string): Promise<string> {
     // Create a directory for this stream
-    const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId, 'stream');
+    const streamDir = path.join(this.outputDir, streamId, 'stream');
     const streamSegmentsDir = path.join(streamDir, 'segments');
 
     // Ensure both directories exist
@@ -54,7 +48,7 @@ export class HlsService {
     }
 
     // Create a temporary concat file
-    const concatFile = path.join(this.HLS_OUTPUT_DIR, `${streamId}_concat.txt`);
+    const concatFile = path.join(this.outputDir, `${streamId}_concat.txt`);
     const concatContent = wavPaths.map((p) => `file '${p}'`).join('\n');
     fs.writeFileSync(concatFile, concatContent);
 
