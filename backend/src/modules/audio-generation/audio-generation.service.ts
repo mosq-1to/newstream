@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { KokoroService } from './kokoro/kokoro.service';
-import { HlsService } from './hls/hls.service';
+import { KokoroService } from 'src/ai-models/kokoro/kokoro.service';
+import { HlsService } from '../../utils/audio/hls.service';
 import * as path from 'path';
 import { existsSync } from 'fs';
 import { ConfigService } from '@nestjs/config';

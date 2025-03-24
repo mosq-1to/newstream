@@ -3,7 +3,7 @@ import fs from 'fs';
 import * as path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
 import { ConfigService } from '@nestjs/config';
-import { ensureDirectoryExists } from '../../../utils/files/ensure-directory-exists';
+import { ensureDirectoryExists } from '../files/ensure-directory-exists';
 
 @Injectable()
 export class HlsService {

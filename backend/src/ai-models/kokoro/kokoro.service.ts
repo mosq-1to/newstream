@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { KokoroTTS } from 'kokoro-js';
 import path from 'path';
-import { ensureDirectoryExists } from '../../../utils/files/ensure-directory-exists';
+import { ensureDirectoryExists } from 'src/utils/files/ensure-directory-exists';
 
 @Injectable()
 export class KokoroService implements OnModuleInit {

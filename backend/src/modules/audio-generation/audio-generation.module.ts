@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AudioGenerationService } from './audio-generation.service';
 import { AudioGenerationController } from './audio-generation.controller';
-import { KokoroService } from './kokoro/kokoro.service';
-import { HlsService } from './hls/hls.service';
+import { HlsService } from '../../utils/audio/hls.service';
+import { KokoroService } from 'src/ai-models/kokoro/kokoro.service';
 
 @Module({
   providers: [AudioGenerationService, KokoroService, HlsService],
