@@ -22,7 +22,7 @@ import { AudioGenerationModule } from './modules/audio-generation/audio-generati
     ScheduleModule.forRoot({}),
     BullModule.forRoot({
       connection: {
-        host: 'redis',
+        host: 'localhost',
         port: 6379,
       },
     }),
