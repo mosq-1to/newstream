@@ -160,6 +160,91 @@
             opacity: 0.6;
             text-align: center;
         }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stories-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .story-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .story-item:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .story-thumbnail {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 1rem;
+        }
+
+        .story-info {
+            flex: 1;
+        }
+
+        .story-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .story-play {
+            color: var(--primary-color);
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
+        .story-play:hover {
+            color: var(--accent-color);
+        }
+
+        .story-content-preview {
+            font-size: 0.875rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
     </style>
 </head>
 <body>
@@ -168,18 +253,38 @@
         <p class="subtitle">Convert text to speech and stream using HTTP Live Streaming (HLS)</p>
     </header>
 
-    <div class="card">
-        <h2>Enter text to convert to speech</h2>
-        <textarea id="text-input" placeholder="Type or paste your text here...">The sky above the port was the color of television, tuned to a dead channel. "It's not like I'm using," Case heard someone say, as he shouldered his way through the crowd around the door of the Chat. "It's like my body's developed this massive drug deficiency."</textarea>
-        
-        <button id="generate-btn">Generate Speech</button>
-        
-        <div id="status"></div>
-        
-        <div id="player-container">
-            <h2>Audio Player</h2>
-            <audio id="audio-player" controls></audio>
+    <div class="tabs">
+        <div class="tab active" data-tab="stories">Stories</div>
+        <div class="tab" data-tab="custom">Custom Text</div>
+    </div>
+
+    <div class="tab-content active" id="stories-tab">
+        <div class="card">
+            <h2>Available Stories</h2>
+            <p>Select a story to listen to:</p>
+            
+            <div id="stories-loading" class="status-processing" style="display: block;">
+                Loading stories...
+            </div>
+            
+            <ul id="stories-list" class="stories-list"></ul>
         </div>
+    </div>
+
+    <div class="tab-content" id="custom-tab">
+        <div class="card">
+            <h2>Enter text to convert to speech</h2>
+            <textarea id="text-input" placeholder="Type or paste your text here...">The sky above the port was the color of television, tuned to a dead channel. "It's not like I'm using," Case heard someone say, as he shouldered his way through the crowd around the door of the Chat. "It's like my body's developed this massive drug deficiency."</textarea>
+            
+            <button id="generate-btn">Generate Speech</button>
+            
+            <div id="status"></div>
+        </div>
+    </div>
+    
+    <div id="player-container" class="card">
+        <h2 id="player-title">Audio Player</h2>
+        <audio id="audio-player" controls></audio>
     </div>
 
     <div class="footer">
@@ -193,9 +298,28 @@
             const status = document.getElementById('status');
             const playerContainer = document.getElementById('player-container');
             const audioPlayer = document.getElementById('audio-player');
+            const playerTitle = document.getElementById('player-title');
+            const storiesList = document.getElementById('stories-list');
+            const storiesLoading = document.getElementById('stories-loading');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
             
             let hls = null;
             let currentStreamId = null;
+            
+            // Tab switching functionality
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to current tab and content
+                    tab.classList.add('active');
+                    const tabId = `${tab.dataset.tab}-tab`;
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
             
             // Check if HLS.js is supported
             if (!Hls.isSupported()) {
@@ -230,7 +354,147 @@
                 }
             }
             
-            // Handle button click
+            // Function to load and play a story
+            async function playStory(storyId, storyTitle) {
+                // Show loading state
+                playerContainer.style.display = 'none';
+                updateStatus('Loading story audio stream...', 'processing');
+                
+                // Clean up previous stream
+                await cleanupPreviousStream();
+                
+                try {
+                    // Set the player title
+                    playerTitle.textContent = `Playing: ${storyTitle}`;
+                    
+                    // Create HLS instance and load the playlist
+                    const playlistUrl = `/stories/${storyId}/stream`;
+                    
+                    hls = new Hls({
+                        maxLoadingDelay: 4,
+                        maxMaxBufferLength: 30,
+                        enableWorker: true,
+                        pLoader: function(config) {
+                            const loader = new Hls.DefaultConfig.loader(config);
+                            const originalLoad = loader.load.bind(loader);
+                            
+                            loader.load = function(context, config, callbacks) {
+                                if (context.type === 'fragment') {
+                                    const url = context.url;
+                                    const segmentMatch = url.match(/\/([^\/]+)$/);
+                                    
+                                    if (segmentMatch) {
+                                        const segmentFilename = segmentMatch[1];
+                                        context.url = `/stories/${storyId}/stream/segments/${segmentFilename}`;
+                                    }
+                                }
+                                
+                                return originalLoad(context, config, callbacks);
+                            };
+                            
+                            return loader;
+                        }
+                    });
+                    
+                    hls.loadSource(playlistUrl);
+                    hls.attachMedia(audioPlayer);
+                    
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        updateStatus('Story audio ready to play!', 'success');
+                        playerContainer.style.display = 'block';
+                        
+                        // Start playback
+                        const playPromise = audioPlayer.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.warn('Auto-play was prevented:', error);
+                                updateStatus('Audio ready! Click play to start.', 'success');
+                            });
+                        }
+                    });
+                    
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        if (data.fatal) {
+                            switch(data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    updateStatus('Network error while loading audio.', 'error');
+                                    hls.startLoad();
+                                    break;
+                                    
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    updateStatus('Media error. Trying to recover...', 'error');
+                                    hls.recoverMediaError();
+                                    break;
+                                    
+                                default:
+                                    updateStatus(`HLS playback error: ${data.details}`, 'error');
+                                    cleanupPreviousStream();
+                                    break;
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error playing story:', error);
+                    updateStatus(`Error: ${error.message}`, 'error');
+                }
+            }
+            
+            // Fetch and display all stories
+            async function fetchStories() {
+                try {
+                    const response = await fetch('/stories');
+                    
+                    if (!response.ok) {
+                        throw new Error(`Server responded with status: ${response.status}`);
+                    }
+                    
+                    const stories = await response.json();
+                    
+                    // Hide loading indicator
+                    storiesLoading.style.display = 'none';
+                    
+                    // Display stories
+                    if (stories.length === 0) {
+                        storiesList.innerHTML = '<p>No stories available. Try generating some first.</p>';
+                    } else {
+                        storiesList.innerHTML = stories.map(story => `
+                            <li class="story-item" data-id="${story.id}">
+                                <img class="story-thumbnail" src="${story.thumbnailUrl || 'https://via.placeholder.com/80x60'}" alt="${story.title}">
+                                <div class="story-info">
+                                    <div class="story-title">${story.title}</div>
+                                    <div class="story-content-preview">${story.content.substring(0, 120)}...</div>
+                                </div>
+                                <button class="story-play" data-id="${story.id}" data-title="${story.title}">▶ Play</button>
+                            </li>
+                        `).join('');
+                        
+                        // Add event listeners to play buttons
+                        document.querySelectorAll('.story-play').forEach(button => {
+                            button.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                const storyId = button.dataset.id;
+                                const storyTitle = button.dataset.title;
+                                playStory(storyId, storyTitle);
+                            });
+                        });
+                        
+                        // Add event listeners to story items
+                        document.querySelectorAll('.story-item').forEach(item => {
+                            item.addEventListener('click', () => {
+                                const storyId = item.dataset.id;
+                                const storyTitle = item.querySelector('.story-title').textContent;
+                                playStory(storyId, storyTitle);
+                            });
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error fetching stories:', error);
+                    storiesLoading.textContent = `Error loading stories: ${error.message}`;
+                    storiesLoading.className = 'status-error';
+                }
+            }
+            
+            // Handle button click for custom text generation
             generateBtn.addEventListener('click', async () => {
                 const text = textInput.value.trim();
                 
@@ -264,13 +528,33 @@
                     const data = await response.json();
                     currentStreamId = data.streamId;
                     
+                    // Set the player title
+                    playerTitle.textContent = 'Custom Text Audio';
+                    
                     // Create HLS instance and load the playlist
                     updateStatus('Loading audio stream...', 'processing');
                     
                     hls = new Hls({
                         maxLoadingDelay: 4,
                         maxMaxBufferLength: 30,
-                        enableWorker: true
+                        enableWorker: true,
+                        pLoader: function(config) {
+                            const loader = new Hls.DefaultConfig.loader(config);
+                            const originalLoad = loader.load.bind(loader);
+                            
+                            loader.load = function(context, config, callbacks) {
+                                // Check if this is a segment request
+                                if (context.type === 'fragment') {
+                                    // We don't need to modify the URL for the custom text, 
+                                    // as it's already handled by the tts/hls endpoint
+                                }
+                                
+                                // Call the original load method
+                                return originalLoad(context, config, callbacks);
+                            };
+                            
+                            return loader;
+                        }
                     });
                     
                     hls.loadSource(data.playlistUrl);
@@ -324,6 +608,9 @@
             window.addEventListener('beforeunload', () => {
                 cleanupPreviousStream();
             });
+            
+            // Fetch stories when the page loads
+            fetchStories();
         });
     </script>
 </body>

@@ -1,13 +1,22 @@
 import { Module } from '@nestjs/common';
 import { AudioGenerationService } from './audio-generation.service';
 import { AudioGenerationController } from './audio-generation.controller';
-import { KokoroService } from './tts/kokoro.service';
-import { AudioProcessingModule } from '../audio-processing/audio-processing.module';
-import { HlsService } from './hls/hls.service';
+import { HlsService } from '../../utils/audio/hls.service';
+import { ConfigService } from '@nestjs/config';
+import { KokoroService } from '../../ai-models/kokoro/kokoro.service';
 
 @Module({
-  imports: [AudioProcessingModule],
-  providers: [AudioGenerationService, KokoroService, HlsService],
+  providers: [
+    AudioGenerationService,
+    KokoroService,
+    {
+      provide: HlsService,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return new HlsService(configService.get<string>('HLS_OUTPUT_DIR'));
+      },
+    },
+  ],
   controllers: [AudioGenerationController],
   exports: [AudioGenerationService],
 })
