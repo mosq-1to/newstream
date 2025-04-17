@@ -14,7 +14,7 @@ export class KokoroService implements OnModuleInit {
       this.kokoro = await tts.from_pretrained(
         'onnx-community/Kokoro-82M-v1.0-ONNX',
         {
-          dtype: 'q8',
+          dtype: 'fp32',
           device: 'cpu',
         },
       );

@@ -21,7 +21,8 @@
     "fetch-articles": "ts-node ./src/scripts/fetch-articles.ts",
     "scrape-article": "ts-node ./src/scripts/scrape-article.ts",
     "clean-articles": "ts-node ./src/scripts/clean-articles.ts",
-    "prompt": "ts-node ./src/scripts/prompt.ts"
+    "prompt": "ts-node ./src/scripts/prompt.ts",
+    "migrate": "prisma migrate dev"
   },
   "dependencies": {
     "@bull-board/api": "^6.7.0",
