@@ -22,8 +22,18 @@ export class StoriesService {
     return this.storiesRepository.saveStories(stories);
   }
 
-  async streamStoryById(id: string) {
+  async getPlaylistPathByStoryId(id: string) {
     const story = await this.getStoryById(id);
-    return this.audioGenerationService.generateSpeechStream(story.content);
+    return this.audioGenerationService.generateSpeechHls(
+      story.content,
+      story.id,
+    );
+  }
+
+  async getSegmentFilePathByStoryIdAndSegmentId(
+    storyId: string,
+    segmentId: string,
+  ) {
+    return this.audioGenerationService.getSegmentFilePath(storyId, segmentId);
   }
 }

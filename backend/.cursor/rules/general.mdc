@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+* Don't add comments to the code unless something is not obvious.
+* Don't give me the changelog of your changes in the codebase, just the **meat**.

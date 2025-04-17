@@ -13,7 +13,6 @@ import { StoryGenerationModule } from './modules/story-generation/story-generati
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 import { AudioGenerationModule } from './modules/audio-generation/audio-generation.module';
-import { AudioProcessingModule } from './modules/audio-processing/audio-processing.module';
 
 @Module({
   imports: [
@@ -23,8 +22,8 @@ import { AudioProcessingModule } from './modules/audio-processing/audio-processi
     ScheduleModule.forRoot({}),
     BullModule.forRoot({
       connection: {
-        host: '127.0.0.1',
-        port: 6380,
+        host: 'localhost',
+        port: 6379,
       },
     }),
     BullBoardModule.forRoot({
@@ -38,7 +37,6 @@ import { AudioProcessingModule } from './modules/audio-processing/audio-processi
     TextGenerationModule,
     StoryGenerationModule,
     AudioGenerationModule,
-    AudioProcessingModule,
   ],
   providers: [
     {
