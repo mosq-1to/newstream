@@ -6,15 +6,9 @@ import { ensureDirectoryExists } from '../files/ensure-directory-exists';
 
 @Injectable()
 export class HlsService {
-  constructor(private readonly outputDir: string) {
-    ensureDirectoryExists(this.outputDir);
-  }
-
-  private async initializeEmptyPlaylist(streamId: string): Promise<string> {
-    const streamDir = path.join(this.outputDir, streamId, 'stream');
-    ensureDirectoryExists(streamDir);
-    const playlistFile = path.join(streamDir, 'playlist.m3u8');
-
+  private async createEmptyPlaylistFile(
+    playlistFilePath: string,
+  ): Promise<string> {
     const initialContent = [
       '#EXTM3U',
       '#EXT-X-VERSION:3',
@@ -23,32 +17,24 @@ export class HlsService {
       '#EXT-X-MEDIA-SEQUENCE:0',
     ].join('\n');
 
-    fs.writeFileSync(playlistFile, initialContent);
-    return playlistFile;
+    fs.writeFileSync(playlistFilePath, initialContent);
+    return playlistFilePath;
   }
 
-  async generatePlaylist(streamId: string): Promise<string> {
-    // Create a directory for this stream
-    const streamDir = path.join(this.outputDir, streamId, 'stream');
-    const streamSegmentsDir = path.join(streamDir, 'segments');
-
-    // Ensure both directories exist
-    ensureDirectoryExists(streamDir);
-    ensureDirectoryExists(streamSegmentsDir);
-
-    // Output playlist file
-    const playlistFile = path.join(streamDir, 'playlist.m3u8');
-
-    const wavPaths = fs
-      .readdirSync(streamSegmentsDir)
-      .map((p) => path.join(streamSegmentsDir, p));
+  async createPlaylistFile(
+    outputDir: string,
+    wavPaths: string[],
+  ): Promise<string> {
+    ensureDirectoryExists(outputDir);
+    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
 
     if (wavPaths.length === 0) {
-      return this.initializeEmptyPlaylist(streamId);
+      return this.createEmptyPlaylistFile(playlistFilePath);
     }
 
     // Create a temporary concat file
-    const concatFile = path.join(this.outputDir, `${streamId}_concat.txt`);
+    // todo - maybe I can avoid writing concat file passing it directly
+    const concatFile = path.join(outputDir, `concat.txt`);
     const concatContent = wavPaths.map((p) => `file '${p}'`).join('\n');
     fs.writeFileSync(concatFile, concatContent);
 
@@ -61,15 +47,15 @@ export class HlsService {
           '-hls_time 4',
           '-hls_playlist_type event',
           '-hls_segment_filename',
-          path.join(streamSegmentsDir, 'segment_%03d.ts'),
+          path.join(outputDir, 'segment_%03d.ts'),
           '-hls_list_size 0',
-          '-hls_base_url',
-          'stream/segments/',
+          // '-hls_base_url',
+          // '',
           '-hls_flags append_list',
         ])
-        .output(playlistFile)
+        .output(playlistFilePath)
         .on('end', () => {
-          resolve(playlistFile);
+          resolve(playlistFilePath);
         })
         .on('error', (err) => {
           reject(new Error(`FFmpeg error: ${err.message}`));

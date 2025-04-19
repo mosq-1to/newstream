@@ -34,6 +34,7 @@ export class AudioGenerationService {
 
     for await (const filePath of speechStream) {
       console.log('filePath', filePath);
+      // @ts-ignore
       return await this.hlsService.generatePlaylist(streamId);
     }
   }
