@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { KokoroTTS } from 'kokoro-js';
+import { KokoroTTS, TextSplitterStream } from 'kokoro-js';
 import path from 'path';
 import { ensureDirectoryExists } from '../../utils/files/ensure-directory-exists';
 
@@ -10,8 +10,7 @@ export class KokoroService implements OnModuleInit {
 
   async onModuleInit() {
     try {
-      const tts = (await import('kokoro-js')).KokoroTTS;
-      this.kokoro = await tts.from_pretrained(
+      this.kokoro = await KokoroTTS.from_pretrained(
         'onnx-community/Kokoro-82M-v1.0-ONNX',
         {
           dtype: 'fp32',
@@ -24,7 +23,7 @@ export class KokoroService implements OnModuleInit {
   }
 
   public async *generateSpeech(text: string, outputDir: string) {
-    const splitter = new (await import('kokoro-js')).TextSplitterStream();
+    const splitter = new TextSplitterStream();
     const stream = this.kokoro.stream(splitter);
     ensureDirectoryExists(outputDir);
 
