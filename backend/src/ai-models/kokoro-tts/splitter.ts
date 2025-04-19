@@ -133,7 +133,7 @@ function updateStack(
 export class TextSplitterStream {
   private _buffer: string = '';
   private _sentences: string[] = [];
-  private _resolver: ((value: unknown) => void) | null = null;
+  private _resolver: ((value?: unknown) => void) | null = null;
   private _closed: boolean = false;
 
   constructor() {}
