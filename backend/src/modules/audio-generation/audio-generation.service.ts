@@ -3,7 +3,7 @@ import { HlsService } from '../../utils/audio/hls.service';
 import * as path from 'path';
 import { existsSync } from 'fs';
 import { ConfigService } from '@nestjs/config';
-import { KokoroService } from '../../ai-models/kokoro/kokoro.service';
+import { KokoroService } from '../../ai/kokoro/kokoro.service';
 
 @Injectable()
 export class AudioGenerationService {

@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { KokoroTTS, TextSplitterStream } from '../kokoro-tts/kokoro';
+import { KokoroTTS, TextSplitterStream } from './lib/kokoro';
 import path from 'path';
 import { ensureDirectoryExists } from '../../utils/files/ensure-directory-exists';
 

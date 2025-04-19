@@ -10,7 +10,7 @@
         "outDir": "dist"
       },
       {
-        "include": "ai-models/kokoro-tts/voices/*.bin",
+        "include": "ai/kokoro/voices/*.bin",
         "outDir": "dist"
       }
     ],
