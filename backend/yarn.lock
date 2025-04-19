@@ -308,34 +308,34 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bull-board/api@6.9.1", "@bull-board/api@^6.7.0":
-  version "6.9.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-6.9.1.tgz#5e5a72e5ac46467da199948c0af07098e16a7052"
-  integrity sha512-t9aByYT4jErvFO7Kgkdkolu4eqPO609Vm/JaND/oM9x4Rr4rVi1srgvocvH1VRo4MO5QRI2ubwvTthb+BSu1ew==
+"@bull-board/api@6.9.2", "@bull-board/api@^6.7.0":
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-6.9.2.tgz#4313430d4105ae439601c6f050a9388483948cd2"
+  integrity sha512-cWnOl6taWHSHadHjRoCRBwatIb68DahvD/Fko4RP6bvOqbmIRF6FeuBOqJ6OOEceTvROqvh3Nn96tAksnicB6g==
   dependencies:
     redis-info "^3.0.8"
 
 "@bull-board/express@^6.7.0":
-  version "6.9.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/express/-/express-6.9.1.tgz#1752865a2d1be8b2d0a7d8067a14c1568dac91b8"
-  integrity sha512-Ff9nk8ok7IUfmK7LrFl685vBn6QCmrj+7TZOU9haFMl9X3fEpYXWV8eU9u67P0OkhCI8OvMbybbtPkgo0LCTIA==
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/@bull-board/express/-/express-6.9.2.tgz#481a1c974ac9a5fbde4f438a568fbc0df9fc03fb"
+  integrity sha512-Gc5LwdLQeOcP85hcZyQ8s3+gpqkiN32oK3/exbxBWaaQ4lXH6DvbAsImOmY/qk4VFGV4wiuCwajghqG057IFFw==
   dependencies:
-    "@bull-board/api" "6.9.1"
-    "@bull-board/ui" "6.9.1"
+    "@bull-board/api" "6.9.2"
+    "@bull-board/ui" "6.9.2"
     ejs "^3.1.10"
     express "^4.21.1 || ^5.0.0"
 
 "@bull-board/nestjs@^6.7.0":
-  version "6.9.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/nestjs/-/nestjs-6.9.1.tgz#f4eff4baf486f6ce045cc1390f23fde0226d2259"
-  integrity sha512-5oMcRkP96ZN/6JQh+zBaZ6YbWBMS+ksQq4+t82YJsGyN+aDTQymD5lHWSgUySa1z4iPC5IM4N5J65wANHZMuLw==
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/@bull-board/nestjs/-/nestjs-6.9.2.tgz#397390a8f11d86c4470cd4bea1350a84229ea196"
+  integrity sha512-RY3J4HPNQ1TQBPLfKgo74gOk2b17EcSVWyK8+auidayH2LuunXByA3yyBKp5LXDWf0OSkFsKrj5sJ+jNfzwlFg==
 
-"@bull-board/ui@6.9.1":
-  version "6.9.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-6.9.1.tgz#3c5afd667a4cbe81692cd405b6974623230fde84"
-  integrity sha512-m4ZLy/IXjE0Cnyupg6ANVGHeYV8K2mc3HFutkp/yNH8nY9RIz6y3I9ewLhkb6Y4UHAlAAAsN+JFkod+nfqBYDg==
+"@bull-board/ui@6.9.2":
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-6.9.2.tgz#871a5ec031b6e01c0b66d7920fd584e343460bd9"
+  integrity sha512-vRIUat5JM39TR38YSnEresCFDMxvJMfBmAD9zQjS4xiwHtlRqNjY7fGIKWb9Agq0gQzSvYqOo2bPqz7pO0hOBw==
   dependencies:
-    "@bull-board/api" "6.9.1"
+    "@bull-board/api" "6.9.2"
 
 "@colors/colors@1.5.0":
   version "1.5.0"
@@ -2206,9 +2206,9 @@ buffer@^5.5.0:
     ieee754 "^1.1.13"
 
 bullmq@^5.21.2:
-  version "5.49.0"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-5.49.0.tgz#3fbed7659f0760bb0b6ffabffc8f2d17626dc2f4"
-  integrity sha512-qwNOgUfD3kHI33bU2HOsn6YKEoSdUfHTledQUy95V8HogVdgGg/HS3+TQh7Y7YH19h5yK2Oo/FFEnzyXJhgy3w==
+  version "5.49.1"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-5.49.1.tgz#bb5ee3ad6e05a2e2be9e744f03e556de28b09f32"
+  integrity sha512-tui5dgCZjL0LA5GTFhvuvcLxZnhfkptK/6xs7H/DnhFMgriXerHhwNphCb9Bs/0IuXaM1FabD9tFaNmDqHL0XA==
   dependencies:
     cron-parser "^4.9.0"
     ioredis "^5.4.1"
@@ -2831,9 +2831,9 @@ ejs@^3.1.10:
     jake "^10.8.5"
 
 electron-to-chromium@^1.5.73:
-  version "1.5.137"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.137.tgz#53a7fef3ea9f7eb5fcf704454050ff930c43ed92"
-  integrity sha512-/QSJaU2JyIuTbbABAo/crOs+SuAZLS+fVVS10PVrIT9hrRkmZl8Hb0xPSkKRUUWHQtYzXHpQUW3Dy5hwMzGZkA==
+  version "1.5.138"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.138.tgz#319e775179bd0889ed96a04d4390d355fb315a44"
+  integrity sha512-FWlQc52z1dXqm+9cCJ2uyFgJkESd+16j6dBEjsgDNuHjBpuIzL8/lRc0uvh1k8RNI6waGo6tcy2DvwkTBJOLDg==
 
 elevenlabs@^0.8.0:
   version "0.8.2"
@@ -4558,9 +4558,9 @@ levn@^0.4.1:
     type-check "~0.4.0"
 
 libphonenumber-js@^1.10.53:
-  version "1.12.6"
-  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.12.6.tgz#32a211b976dde3ccdf201c3c0b6e60351167c8bf"
-  integrity sha512-PJiS4ETaUfCOFLpmtKzAbqZQjCCKVu2OhTV4SVNNE7c2nu/dACvtCqj4L0i/KWNnIgRv7yrILvBj5Lonv5Ncxw==
+  version "1.12.7"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.12.7.tgz#e4372cdee413b64bb1600dfde293a7fdc1ba812a"
+  integrity sha512-0nYZSNj/QEikyhcM5RZFXGlCB/mr4PVamnT1C2sKBnDDTYndrvbybYjvg+PMqAndQHlLbwQ3socolnL3WWTUFA==
 
 lines-and-columns@^1.1.6:
   version "1.2.4"
@@ -4666,9 +4666,9 @@ log-symbols@^4.1.0:
     is-unicode-supported "^0.1.0"
 
 long@^5.0.0, long@^5.2.3:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/long/-/long-5.3.1.tgz#9d4222d3213f38a5ec809674834e0f0ab21abe96"
-  integrity sha512-ka87Jz3gcx/I7Hal94xaN2tZEOPoUOEVftkQqZx2EeQRN7LGdfLlI3FvZ+7WDplm+vK2Urx9ULrvSowtdCieng==
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/long/-/long-5.3.2.tgz#1d84463095999262d7d7b7f8bfd4a8cc55167f83"
+  integrity sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==
 
 lru-cache@^10.2.0:
   version "10.4.3"
@@ -5093,9 +5093,9 @@ onnxruntime-web@1.22.0-dev.20250409-89f8206ba4:
     protobufjs "^7.2.4"
 
 openai@^4.51.0:
-  version "4.95.0"
-  resolved "https://registry.yarnpkg.com/openai/-/openai-4.95.0.tgz#e391f02561874b7cd5e8becd56feec77d88be32f"
-  integrity sha512-tWHLTA+/HHyWlP8qg0mQLDSpI2NQLhk6zHLJL8yb59qn2pEI8rbEiAGSDPViLvi3BRDoQZIX5scaJ3xYGr2nhw==
+  version "4.95.1"
+  resolved "https://registry.yarnpkg.com/openai/-/openai-4.95.1.tgz#7157697c2b150a546b13eb860180c4a6058051da"
+  integrity sha512-IqJy+ymeW+k/Wq+2YVN3693OQMMcODRtHEYOlz263MdUwnN/Dwdl9c2EXSxLLtGEHkSHAfvzpDMHI5MaWJKXjQ==
   dependencies:
     "@types/node" "^18.11.18"
     "@types/node-fetch" "^2.6.4"
