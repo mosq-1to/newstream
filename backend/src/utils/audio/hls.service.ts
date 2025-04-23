@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
-import { ensureDirectoryExists } from '../files/ensure-directory-exists';
 
 @Injectable()
 export class HlsService {
@@ -25,7 +24,6 @@ export class HlsService {
     outputDir: string,
     wavPaths: string[],
   ): Promise<string> {
-    ensureDirectoryExists(outputDir);
     const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
 
     if (wavPaths.length === 0) {
