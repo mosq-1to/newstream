@@ -2,7 +2,8 @@ import { Job } from 'bullmq';
 import { Story } from '@prisma/client';
 
 export class GenerateStoryAudioJob extends Job<{ storyId: Story['id'] }> {
-  public readonly name = 'generate-story-audio';
+  public static getName = (storyId: string) =>
+    `generate-story-audio-${storyId}`;
 }
 
 export class GenerateStoryAudioProcessChunkJob extends Job<{
@@ -10,5 +11,6 @@ export class GenerateStoryAudioProcessChunkJob extends Job<{
   text: string;
   chunkIndex: number;
 }> {
-  public readonly name = 'generate-story-audio-process-chunk';
+  public static getName = (storyId: string, chunkIndex: number) =>
+    `generate-story-audio-${storyId}-process-chunk-${chunkIndex}`;
 }
