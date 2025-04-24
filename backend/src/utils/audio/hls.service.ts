@@ -5,9 +5,7 @@ import ffmpeg from 'fluent-ffmpeg';
 
 @Injectable()
 export class HlsService {
-  private async createEmptyPlaylistFile(
-    playlistFilePath: string,
-  ): Promise<string> {
+  private async createEmptyPlaylistFile(playlistFilePath: string): Promise<string> {
     const initialContent = [
       '#EXTM3U',
       '#EXT-X-VERSION:3',
@@ -20,10 +18,7 @@ export class HlsService {
     return playlistFilePath;
   }
 
-  async createPlaylistFile(
-    outputDir: string,
-    wavPaths: string[],
-  ): Promise<string> {
+  async createPlaylistFile(outputDir: string, wavPaths: string[]): Promise<string> {
     const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
 
     if (wavPaths.length === 0) {
