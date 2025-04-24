@@ -14,6 +14,7 @@ import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 import { AudioGenerationModule } from './modules/audio-generation/audio-generation.module';
 import { StreamModule } from './modules/stream/stream.module';
+import { StorageModule } from './modules/storage/storage.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { StreamModule } from './modules/stream/stream.module';
     StoryGenerationModule,
     AudioGenerationModule,
     StreamModule,
+    StorageModule,
   ],
   providers: [
     {

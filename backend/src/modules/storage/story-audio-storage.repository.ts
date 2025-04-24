@@ -5,7 +5,7 @@ import { ensureDirectoryExists } from '../../utils/files/ensure-directory-exists
 import fs from 'fs';
 
 @Injectable()
-export class StreamRepository {
+export class StoryAudioStorageRepository {
   constructor(private readonly configService: ConfigService) {}
 
   getStoryPaths(storyId: string) {

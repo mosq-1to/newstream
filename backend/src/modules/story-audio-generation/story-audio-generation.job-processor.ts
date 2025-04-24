@@ -8,7 +8,7 @@ import {
 @Processor(QueueName.StoryAudioGeneration, { concurrency: 500 })
 export class StoryAudioGenerationJobProcessor extends WorkerHost {
   async process(job: GenerateStoryAudioJob | GenerateStoryAudioProcessChunkJob) {
-    // todo - think of a better way to extract the type of a job
+    // todo - think of a better way to extract the type of a job, perhaps use single job per queue
     if (job.name.startsWith('generate-story-audio-')) {
       if (job.name.includes('-process-chunk-')) {
         return this.processGenerateStoryAudioChunkJob(job as GenerateStoryAudioProcessChunkJob);
@@ -25,9 +25,9 @@ export class StoryAudioGenerationJobProcessor extends WorkerHost {
   ) => {
     /**
      * Steps:
-     * 1. generate speech from the chunk (AudioGenerationModule)
-     * 2. save the wav file in audio storage
-     * 3. Regenerate hls files for the story in the storage.
+     * 1. save the wav file in audio storage (StorageModule -> AudioStorageService, output: filePath)
+     * 2. generate speech from the chunk (AudioGenerationService, input: filePath, text)
+     * 3. Regenerate hls files for the story in the storage. (AudioGenerationService, input: wavFilesDir, outputDir)
      */
   };
 }

@@ -42,4 +42,4 @@ hls-output/
 **/segment_*.ts
 **/*.m3u8
 
-storage/
+/storage/
