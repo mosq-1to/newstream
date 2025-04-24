@@ -8,7 +8,7 @@ import { StoryAudioStorageRepository } from '../storage/story-audio-storage.repo
 import path from 'path';
 import { AudioGenerationService } from '../audio-generation/audio-generation.service';
 
-@Processor(QueueName.StoryAudioGeneration, { concurrency: 500 })
+@Processor(QueueName.StoryAudioGeneration)
 export class StoryAudioGenerationJobProcessor extends WorkerHost {
   constructor(
     private readonly storyAudioStorageRepository: StoryAudioStorageRepository,
@@ -42,12 +42,5 @@ export class StoryAudioGenerationJobProcessor extends WorkerHost {
       console.error('GenerateStoryAudioProcessChunkJob', e);
       throw e;
     }
-
-    /**
-     * Steps:
-     * 1. save the wav file in audio storage (StorageModule -> AudioStorageService, output: filePath)
-     * 2. generate speech from the chunk (AudioGenerationService, input: filePath, text)
-     * 3. Regenerate hls files for the story in the storage. (AudioGenerationService, input: wavFilesDir, outputDir)
-     */
   };
 }
