@@ -1,7 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { KokoroTTS, TextSplitterStream } from './lib/kokoro';
-import path from 'path';
-import { ensureDirectoryExists } from '../../utils/files/ensure-directory-exists';
+import { KokoroTTS } from './lib/kokoro';
 
 @Injectable()
 export class KokoroService implements OnModuleInit {
@@ -16,22 +14,6 @@ export class KokoroService implements OnModuleInit {
       });
     } catch (error) {
       console.error('Error initializing Kokoro', error);
-    }
-  }
-
-  public async *generateSpeechStream(text: string, outputDir: string) {
-    const splitter = new TextSplitterStream();
-    const stream = this.kokoro.stream(splitter);
-    ensureDirectoryExists(outputDir);
-
-    splitter.push(text);
-    splitter.close();
-
-    let i = 1;
-    for await (const { audio } of stream) {
-      const filePath = path.join(outputDir, `segment_${String(i++).padStart(3, '0')}.wav`);
-      await audio.save(filePath);
-      yield filePath;
     }
   }
 
