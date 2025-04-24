@@ -14,23 +14,16 @@ export class AudioGenerationService {
     private readonly configService: ConfigService,
   ) {
     // Get HLS output directory from environment or use system temp folder as fallback
-    this.HLS_OUTPUT_DIR =
-      this.configService.getOrThrow<string>('HLS_OUTPUT_DIR');
+    this.HLS_OUTPUT_DIR = this.configService.getOrThrow<string>('HLS_OUTPUT_DIR');
   }
 
-  public async generateSpeechHls(
-    text: string,
-    streamId: string,
-  ): Promise<string> {
-    const outputDir = path.join(
-      this.HLS_OUTPUT_DIR,
-      streamId,
-      'stream/segments',
-    );
-    const speechStream = await this.kokoroService.generateSpeech(
-      text,
-      outputDir,
-    );
+  public async generateSpeechFromText(text: string, outputFilePath: string): Promise<void> {
+    return await this.kokoroService.generateSpeech(text, outputFilePath);
+  }
+
+  public async generateSpeechHls(text: string, streamId: string): Promise<string> {
+    const outputDir = path.join(this.HLS_OUTPUT_DIR, streamId, 'stream/segments');
+    const speechStream = await this.kokoroService.generateSpeechStream(text, outputDir);
 
     for await (const filePath of speechStream) {
       console.log('filePath', filePath);
@@ -57,18 +50,13 @@ export class AudioGenerationService {
   /**
    * Get the file path for an HLS segment
    */
-  async getSegmentFilePath(
-    streamId: string,
-    segmentId: string,
-  ): Promise<string> {
+  async getSegmentFilePath(streamId: string, segmentId: string): Promise<string> {
     const streamDir = path.join(this.HLS_OUTPUT_DIR, streamId);
     const filePath = path.join(streamDir, 'stream', 'segments', `${segmentId}`);
 
     // Verify file exists
     if (!existsSync(filePath)) {
-      throw new NotFoundException(
-        `Segment ${segmentId} not found for stream: ${streamId}`,
-      );
+      throw new NotFoundException(`Segment ${segmentId} not found for stream: ${streamId}`);
     }
 
     return filePath;

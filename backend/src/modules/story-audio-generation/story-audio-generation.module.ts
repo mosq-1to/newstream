@@ -7,6 +7,8 @@ import { FlowProducerName } from '../../types/flow-producer.enum';
 import { StoryAudioGenerationQueue } from './story-audio-generation.queue';
 import { StoriesModule } from '../stories/stories.module';
 import { StoryAudioGenerationJobProcessor } from './story-audio-generation.job-processor';
+import { StorageModule } from '../storage/storage.module';
+import { AudioGenerationModule } from '../audio-generation/audio-generation.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { StoryAudioGenerationJobProcessor } from './story-audio-generation.job-p
     BullModule.registerFlowProducer({
       name: FlowProducerName.StoryAudioGeneration,
     }),
+    StorageModule,
+    AudioGenerationModule,
   ],
   providers: [StoryAudioGenerationQueue, StoryAudioGenerationJobProcessor],
   exports: [StoryAudioGenerationQueue],

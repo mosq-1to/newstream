@@ -10,19 +10,16 @@ export class KokoroService implements OnModuleInit {
 
   async onModuleInit() {
     try {
-      this.kokoro = await KokoroTTS.from_pretrained(
-        'onnx-community/Kokoro-82M-v1.0-ONNX',
-        {
-          dtype: 'fp32',
-          device: 'cpu',
-        },
-      );
+      this.kokoro = await KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', {
+        dtype: 'fp32',
+        device: 'cpu',
+      });
     } catch (error) {
       console.error('Error initializing Kokoro', error);
     }
   }
 
-  public async *generateSpeech(text: string, outputDir: string) {
+  public async *generateSpeechStream(text: string, outputDir: string) {
     const splitter = new TextSplitterStream();
     const stream = this.kokoro.stream(splitter);
     ensureDirectoryExists(outputDir);
@@ -32,12 +29,14 @@ export class KokoroService implements OnModuleInit {
 
     let i = 1;
     for await (const { audio } of stream) {
-      const filePath = path.join(
-        outputDir,
-        `segment_${String(i++).padStart(3, '0')}.wav`,
-      );
+      const filePath = path.join(outputDir, `segment_${String(i++).padStart(3, '0')}.wav`);
       await audio.save(filePath);
       yield filePath;
     }
+  }
+
+  public async generateSpeech(text: string, outputFilePath: string) {
+    const audio = await this.kokoro.generate(text);
+    await audio.save(outputFilePath);
   }
 }

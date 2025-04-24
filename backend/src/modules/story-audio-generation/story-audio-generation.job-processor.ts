@@ -6,10 +6,14 @@ import {
 } from './jobs/generate-story-audio.job';
 import { StoryAudioStorageRepository } from '../storage/story-audio-storage.repository';
 import path from 'path';
+import { AudioGenerationService } from '../audio-generation/audio-generation.service';
 
 @Processor(QueueName.StoryAudioGeneration, { concurrency: 500 })
 export class StoryAudioGenerationJobProcessor extends WorkerHost {
-  constructor(private readonly storyAudioStorageRepository: StoryAudioStorageRepository) {
+  constructor(
+    private readonly storyAudioStorageRepository: StoryAudioStorageRepository,
+    private readonly audioGenerationService: AudioGenerationService,
+  ) {
     super();
   }
 
@@ -29,8 +33,15 @@ export class StoryAudioGenerationJobProcessor extends WorkerHost {
   private readonly processGenerateStoryAudioChunkJob = async (
     job: GenerateStoryAudioProcessChunkJob,
   ) => {
-    const { wavOutputDir } = this.storyAudioStorageRepository.getStoryPaths(job.data.storyId);
-    const wavFilePath = path.join(wavOutputDir, `audio-${job.data.chunkIndex}`);
+    try {
+      const { wavOutputDir } = this.storyAudioStorageRepository.getStoryPaths(job.data.storyId);
+      const wavFilePath = path.join(wavOutputDir, `audio-${job.data.chunkIndex}.wav`);
+
+      await this.audioGenerationService.generateSpeechFromText(job.data.text, wavFilePath);
+    } catch (e) {
+      console.error('GenerateStoryAudioProcessChunkJob', e);
+      throw e;
+    }
 
     /**
      * Steps:
