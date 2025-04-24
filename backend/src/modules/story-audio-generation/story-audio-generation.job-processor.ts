@@ -7,20 +7,27 @@ import {
 
 @Processor(QueueName.StoryAudioGeneration, { concurrency: 500 })
 export class StoryAudioGenerationJobProcessor extends WorkerHost {
-  async process(
-    job: GenerateStoryAudioJob | GenerateStoryAudioProcessChunkJob,
-  ) {
+  async process(job: GenerateStoryAudioJob | GenerateStoryAudioProcessChunkJob) {
     // todo - think of a better way to extract the type of a job
     if (job.name.startsWith('generate-story-audio-')) {
       if (job.name.includes('-process-chunk-')) {
-        return console.log('GenerateStoryAudioProcessChunkJob');
+        return this.processGenerateStoryAudioChunkJob(job as GenerateStoryAudioProcessChunkJob);
       } else {
         return console.log('GenerateStoryAudioJob');
       }
     } else {
-      throw new Error(
-        'StoryAudioGenerationJobProcessor.process(): Unknown job name',
-      );
+      throw new Error('StoryAudioGenerationJobProcessor.process(): Unknown job name');
     }
   }
+
+  private readonly processGenerateStoryAudioChunkJob = async (
+    job: GenerateStoryAudioProcessChunkJob,
+  ) => {
+    /**
+     * Steps:
+     * 1. generate speech from the chunk (AudioGenerationModule)
+     * 2. save the wav file in audio storage
+     * 3. Regenerate hls files for the story in the storage.
+     */
+  };
 }
