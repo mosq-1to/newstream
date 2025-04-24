@@ -368,7 +368,7 @@
                     playerTitle.textContent = `Playing: ${storyTitle}`;
                     
                     // Create HLS instance and load the playlist
-                    const playlistUrl = `/stories/${storyId}/stream`;
+                    const playlistUrl = `/stream/story/${storyId}/playlist.m3u8`;
                     
                     hls = new Hls({
                         maxLoadingDelay: 4,
@@ -385,7 +385,7 @@
                                     
                                     if (segmentMatch) {
                                         const segmentFilename = segmentMatch[1];
-                                        context.url = `/stories/${storyId}/stream/segments/${segmentFilename}`;
+                                        context.url = `/stream/story/${storyId}/${segmentFilename}`;
                                     }
                                 }
                                 

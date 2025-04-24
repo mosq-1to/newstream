@@ -19,4 +19,9 @@ export class StreamService {
 
     return await this.hlsService.createPlaylistFile(hlsOutputDir, wavFiles);
   }
+
+  public async getStorySegmentFile(storyId: string, filename: string) {
+    const { hlsOutputDir } = this.storyAudioStorageRepository.getStoryPaths(storyId);
+    return `${hlsOutputDir}/${filename}`;
+  }
 }
