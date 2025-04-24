@@ -4,9 +4,15 @@ import {
   GenerateStoryAudioJob,
   GenerateStoryAudioProcessChunkJob,
 } from './jobs/generate-story-audio.job';
+import { StoryAudioStorageRepository } from '../storage/story-audio-storage.repository';
+import path from 'path';
 
 @Processor(QueueName.StoryAudioGeneration, { concurrency: 500 })
 export class StoryAudioGenerationJobProcessor extends WorkerHost {
+  constructor(private readonly storyAudioStorageRepository: StoryAudioStorageRepository) {
+    super();
+  }
+
   async process(job: GenerateStoryAudioJob | GenerateStoryAudioProcessChunkJob) {
     // todo - think of a better way to extract the type of a job, perhaps use single job per queue
     if (job.name.startsWith('generate-story-audio-')) {
@@ -23,6 +29,9 @@ export class StoryAudioGenerationJobProcessor extends WorkerHost {
   private readonly processGenerateStoryAudioChunkJob = async (
     job: GenerateStoryAudioProcessChunkJob,
   ) => {
+    const { wavOutputDir } = this.storyAudioStorageRepository.getStoryPaths(job.data.storyId);
+    const wavFilePath = path.join(wavOutputDir, `audio-${job.data.chunkIndex}`);
+
     /**
      * Steps:
      * 1. save the wav file in audio storage (StorageModule -> AudioStorageService, output: filePath)

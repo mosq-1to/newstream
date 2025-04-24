@@ -57,8 +57,6 @@ export class StoryAudioGenerationQueue {
     //todo - think about less resource intensive way
     const jobs = (await this.storyAudioGenerationQueue.getJobs()) as Job[];
 
-    return jobs.some(
-      (job) => job.name === GenerateStoryAudioJob.getName(storyId),
-    );
+    return jobs.some((job) => job.name === GenerateStoryAudioJob.getName(storyId));
   }
 }
