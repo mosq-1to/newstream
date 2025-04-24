@@ -14,7 +14,7 @@ export class HlsService {
       '#EXT-X-MEDIA-SEQUENCE:0',
     ].join('\n');
 
-    fs.writeFileSync(playlistFilePath, initialContent);
+    await fs.promises.writeFile(playlistFilePath, initialContent);
     return playlistFilePath;
   }
 
@@ -28,12 +28,12 @@ export class HlsService {
     // Create a temporary concat file
     // todo - maybe I can avoid writing concat file passing it directly
     const concatFile = path.join(outputDir, `concat.txt`);
-    const concatContent = wavPaths.map((p) => `file '${p}'`).join('\n');
-    fs.writeFileSync(concatFile, concatContent);
+    const concatContent = wavPaths.map((p) => `file '${path.resolve(p)}'`).join('\n');
+    await fs.promises.writeFile(concatFile, concatContent);
 
     return new Promise((resolve, reject) => {
       ffmpeg()
-        .input(concatFile)
+        .input(path.resolve(concatFile))
         .inputOptions(['-f', 'concat', '-safe', '0'])
         .outputOptions([
           '-f hls',
@@ -49,9 +49,11 @@ export class HlsService {
         .output(playlistFilePath)
         .on('end', () => {
           resolve(playlistFilePath);
+          void fs.promises.rm(concatFile);
         })
         .on('error', (err) => {
           reject(new Error(`FFmpeg error: ${err.message}`));
+          void fs.promises.rm(concatFile);
         })
         .run();
     });
