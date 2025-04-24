@@ -13,7 +13,7 @@ export class StreamController {
   @Get('story/:storyId/playlist.m3u8')
   async getStoryStream(@Param('storyId') storyId: string, @Res() res: Response) {
     res.header('Content-Type', 'application/vnd.apple.mpegurl');
-    res.header('Cache-Control', 'no-cache, no-store, must-revalidate, public, max-age=2');
+    res.header('Cache-Control', 'no-cache, no-store, must-revalidate, public, max-age=1000');
     const playlistPath = await this.streamService.getStoryPlaylistFile(storyId);
     const fileStream = createReadStream(playlistPath);
     fileStream.pipe(res);

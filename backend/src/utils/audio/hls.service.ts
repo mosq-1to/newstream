@@ -89,11 +89,9 @@ export class HlsService {
         .output(playlistFilePath)
         .on('end', () => {
           resolve(playlistFilePath);
-          void fs.promises.rm(concatFile);
         })
         .on('error', (err) => {
           reject(new Error(`FFmpeg error: ${err.message}`));
-          void fs.promises.rm(concatFile);
         })
         .run();
     });
