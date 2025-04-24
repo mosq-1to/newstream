@@ -6,6 +6,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { FlowProducerName } from '../../types/flow-producer.enum';
 import { StoryAudioGenerationQueue } from './story-audio-generation.queue';
 import { StoriesModule } from '../stories/stories.module';
+import { StoryAudioGenerationJobProcessor } from './story-audio-generation.job-processor';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { StoriesModule } from '../stories/stories.module';
       name: FlowProducerName.StoryAudioGeneration,
     }),
   ],
-  providers: [StoryAudioGenerationQueue],
+  providers: [StoryAudioGenerationQueue, StoryAudioGenerationJobProcessor],
   exports: [StoryAudioGenerationQueue],
 })
 export class StoryAudioGenerationModule {}
