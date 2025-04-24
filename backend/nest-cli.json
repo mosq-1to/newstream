@@ -10,7 +10,7 @@
         "outDir": "dist"
       },
       {
-        "include": "ai/kokoro/voices/*.bin",
+        "include": "ai/kokoro/lib/voices/*.bin",
         "outDir": "dist"
       }
     ],
