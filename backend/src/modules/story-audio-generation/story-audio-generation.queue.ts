@@ -33,7 +33,7 @@ export class StoryAudioGenerationQueue {
     splitter.push(story.content);
     const textChunks = [...splitter];
 
-    const childrenTree = textChunks.reverse().reduce((acc, text, index) => {
+    const childrenTree = textChunks.reduce((acc, text, index) => {
       return [
         {
           name: GenerateStoryAudioProcessChunkJob.getName(storyId, index),
@@ -47,8 +47,6 @@ export class StoryAudioGenerationQueue {
         },
       ];
     }, []);
-
-    console.log(JSON.stringify(childrenTree, null, 2));
 
     return await this.storyAudioGenerationFlowProducer.add({
       name: GenerateStoryAudioJob.getName(storyId),

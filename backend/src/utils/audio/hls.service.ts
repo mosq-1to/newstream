@@ -5,7 +5,42 @@ import ffmpeg from 'fluent-ffmpeg';
 
 @Injectable()
 export class HlsService {
-  private createEmptyPlaylistFile(playlistFilePath: string): string {
+  public getPlaylistFile = async (outputDir: string) => {
+    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
+
+    if (!fs.existsSync(playlistFilePath)) {
+      return this.initializeHlsDirectory(outputDir);
+    }
+
+    return playlistFilePath;
+  };
+
+  private async appendToPlaylist(outputDir, duration, tsFilename) {
+    const playlistPath = path.join(outputDir, 'playlist.m3u8');
+    const line = `\n#EXTINF:${duration.toFixed(3)},\n${tsFilename}\n`;
+    fs.appendFileSync(playlistPath, line);
+  }
+
+  public async appendPlaylistFile(outputDir, wavPath) {
+    try {
+      const tsPath = path.join(outputDir, `${path.basename(wavPath, '.wav')}.ts`);
+      await this.convertWavToTs(wavPath, tsPath);
+      const duration = await this.getDuration(tsPath);
+      await this.appendToPlaylist(outputDir, duration, path.basename(tsPath));
+    } catch (error) {
+      console.error('Error processing wav:', error);
+      throw error;
+    }
+  }
+
+  public closePlaylistFile(outputDir: string) {
+    const playlistPath = path.join(outputDir, 'playlist.m3u8');
+    fs.appendFileSync(playlistPath, '#EXT-X-ENDLIST\n');
+  }
+
+  private initializeHlsDirectory(outputDir: string): string {
+    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
+
     const initialContent = [
       '#EXTM3U',
       '#EXT-X-VERSION:3',
@@ -18,93 +53,26 @@ export class HlsService {
     return playlistFilePath;
   }
 
-  async createPlaylistFile(
-    outputDir: string,
-    wavPaths: string[],
-    shouldEndFile = false,
-  ): Promise<string> {
-    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
-
-    if (wavPaths.length === 0) {
-      return this.createEmptyPlaylistFile(playlistFilePath);
-    }
-
-    const concatFile = path.join(outputDir, `concat.txt`);
-    const concatContent = wavPaths.map((p) => `file '${path.resolve(p)}'`).join('\n');
-    fs.writeFileSync(concatFile, concatContent);
-
+  private convertWavToTs(wavPath, tsPath) {
     return new Promise((resolve, reject) => {
-      const ffmpegCommand = ffmpeg()
-        .input(path.resolve(concatFile))
-        .inputOptions(['-f', 'concat', '-safe', '0'])
-        .outputOptions([
-          '-f hls',
-          '-hls_time 4',
-          '-hls_playlist_type event',
-          '-hls_segment_filename',
-          path.join(outputDir, `segment_%03d.ts`),
-          '-hls_list_size 0',
-        ]);
-
-      const flags = '-hls_flags omit_endlist+append_list';
-      ffmpegCommand.outputOptions([flags]);
-
-      // Check if playlist already exists to determine starting segment index
-      if (fs.existsSync(playlistFilePath)) {
-        const content = fs.readFileSync(playlistFilePath, 'utf-8');
-        const lastSegmentMatch = content.match(/segment_(\d+)\.ts/g);
-
-        if (lastSegmentMatch && lastSegmentMatch.length > 0) {
-          // Get the last segment number and start from the next one
-          const lastSegment = lastSegmentMatch[lastSegmentMatch.length - 1];
-          const lastIndex = parseInt(lastSegment.match(/\d+/)[0], 10);
-          ffmpegCommand.outputOptions([`-start_number ${lastIndex + 1}`]);
-        }
-      }
-
-      ffmpegCommand
-        .output(playlistFilePath)
-        .on('end', async () => {
-          if (shouldEndFile) {
-            await this.addEndMarkerToPlaylist(playlistFilePath);
-          }
-
-          console.log('saved new playlist.m3u8');
-          resolve(playlistFilePath);
-        })
-        .on('error', (err) => {
-          console.error('FFmpeg error:', err.message);
-          reject(new Error(`FFmpeg error: ${err.message}`));
-        })
-        .run();
+      ffmpeg(wavPath)
+        .audioCodec('aac')
+        .audioBitrate('128k')
+        .format('mpegts')
+        .outputOptions('-f mpegts')
+        .save(tsPath)
+        .on('end', resolve)
+        .on('error', reject);
     });
   }
 
-  private async addEndMarkerToPlaylist(playlistFilePath: string): Promise<void> {
-    try {
-      // Read the current playlist content
-      const playlistContent = fs.readFileSync(playlistFilePath, 'utf-8');
-
-      // Check if the end marker already exists
-      if (playlistContent.includes('#EXT-X-ENDLIST')) {
-        return; // End marker already exists, no need to add it again
-      }
-
-      // Append the end marker to the playlist
-      fs.appendFileSync(playlistFilePath, '\n#EXT-X-ENDLIST\n');
-    } catch (error) {
-      console.error(`Error adding end marker to playlist: ${error.message}`);
-      throw error;
-    }
+  private getDuration(filePath) {
+    return new Promise((resolve, reject) => {
+      ffmpeg.ffprobe(filePath, (err, metadata) => {
+        if (err) return reject(err);
+        const duration = metadata.format.duration;
+        resolve(duration);
+      });
+    });
   }
-
-  public getPlaylistFile = async (outputDir: string) => {
-    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
-
-    if (!fs.existsSync(playlistFilePath)) {
-      return this.createEmptyPlaylistFile(playlistFilePath);
-    }
-
-    return playlistFilePath;
-  };
 }
