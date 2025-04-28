@@ -9,6 +9,8 @@ import { StoriesModule } from '../stories/stories.module';
 import { StoryAudioGenerationJobProcessor } from './story-audio-generation.job-processor';
 import { StorageModule } from '../storage/storage.module';
 import { AudioGenerationModule } from '../audio-generation/audio-generation.module';
+import { StoryStreamFilesGenerationModule } from '../story-stream-files-generation/story-stream-files-generation.module';
+import { HlsService } from '../../utils/audio/hls.service';
 
 @Module({
   imports: [
@@ -23,8 +25,9 @@ import { AudioGenerationModule } from '../audio-generation/audio-generation.modu
     }),
     StorageModule,
     AudioGenerationModule,
+    StoryStreamFilesGenerationModule,
   ],
-  providers: [StoryAudioGenerationQueue, StoryAudioGenerationJobProcessor],
+  providers: [StoryAudioGenerationQueue, StoryAudioGenerationJobProcessor, HlsService],
   exports: [StoryAudioGenerationQueue],
 })
 export class StoryAudioGenerationModule {}

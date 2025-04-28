@@ -5,7 +5,7 @@ import ffmpeg from 'fluent-ffmpeg';
 
 @Injectable()
 export class HlsService {
-  private async createEmptyPlaylistFile(playlistFilePath: string): Promise<string> {
+  private createEmptyPlaylistFile(playlistFilePath: string): string {
     const initialContent = [
       '#EXTM3U',
       '#EXT-X-VERSION:3',
@@ -14,55 +14,24 @@ export class HlsService {
       '#EXT-X-MEDIA-SEQUENCE:0',
     ].join('\n');
 
-    await fs.promises.writeFile(playlistFilePath, initialContent);
+    fs.writeFileSync(playlistFilePath, initialContent);
     return playlistFilePath;
   }
 
-  private getExistingSegments(outputDir: string): string[] {
-    try {
-      // Read all files in the directory
-      const files = fs.readdirSync(outputDir);
-
-      // Filter for segment files and sort them by segment number
-      return files
-        .filter((file) => file.startsWith('segment_') && file.endsWith('.ts'))
-        .sort((a, b) => {
-          // Extract segment numbers for sorting
-          const numA = parseInt(a.replace('segment_', '').replace('.ts', ''), 10);
-          const numB = parseInt(b.replace('segment_', '').replace('.ts', ''), 10);
-          return numA - numB;
-        });
-    } catch (error) {
-      // If directory doesn't exist or can't be read, return empty array
-      return [];
-    }
-  }
-
-  async createPlaylistFile(outputDir: string, wavPaths: string[]): Promise<string> {
+  async createPlaylistFile(
+    outputDir: string,
+    wavPaths: string[],
+    shouldEndFile = false,
+  ): Promise<string> {
     const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
 
     if (wavPaths.length === 0) {
       return this.createEmptyPlaylistFile(playlistFilePath);
     }
 
-    // Get existing segments to determine the starting index for new segments
-    const existingSegments = this.getExistingSegments(outputDir);
-    const startIndex = existingSegments.length;
-
-    // Create a temporary concat file with only new WAV files
     const concatFile = path.join(outputDir, `concat.txt`);
-
-    // If we have existing segments, only process the new WAV files
-    // This assumes WAV files are processed in order and match the segment order
-    const newWavPaths = wavPaths.slice(startIndex);
-
-    // If no new WAV files to process, just return the existing playlist
-    if (newWavPaths.length === 0) {
-      return playlistFilePath;
-    }
-
-    const concatContent = newWavPaths.map((p) => `file '${path.resolve(p)}'`).join('\n');
-    await fs.promises.writeFile(concatFile, concatContent);
+    const concatContent = wavPaths.map((p) => `file '${path.resolve(p)}'`).join('\n');
+    fs.writeFileSync(concatFile, concatContent);
 
     return new Promise((resolve, reject) => {
       const ffmpegCommand = ffmpeg()
@@ -75,25 +44,67 @@ export class HlsService {
           '-hls_segment_filename',
           path.join(outputDir, `segment_%03d.ts`),
           '-hls_list_size 0',
-          '-hls_flags append_list',
-          // Start segment numbering from the next available index
-          `-start_number ${startIndex}`,
         ]);
 
-      // If we have existing segments, use the append mode
-      if (existingSegments.length > 0) {
-        ffmpegCommand.outputOptions(['-hls_flags append_list+discont_start']);
+      const flags = '-hls_flags omit_endlist+append_list';
+      ffmpegCommand.outputOptions([flags]);
+
+      // Check if playlist already exists to determine starting segment index
+      if (fs.existsSync(playlistFilePath)) {
+        const content = fs.readFileSync(playlistFilePath, 'utf-8');
+        const lastSegmentMatch = content.match(/segment_(\d+)\.ts/g);
+
+        if (lastSegmentMatch && lastSegmentMatch.length > 0) {
+          // Get the last segment number and start from the next one
+          const lastSegment = lastSegmentMatch[lastSegmentMatch.length - 1];
+          const lastIndex = parseInt(lastSegment.match(/\d+/)[0], 10);
+          ffmpegCommand.outputOptions([`-start_number ${lastIndex + 1}`]);
+        }
       }
 
       ffmpegCommand
         .output(playlistFilePath)
-        .on('end', () => {
+        .on('end', async () => {
+          if (shouldEndFile) {
+            await this.addEndMarkerToPlaylist(playlistFilePath);
+          }
+
+          console.log('saved new playlist.m3u8');
           resolve(playlistFilePath);
         })
         .on('error', (err) => {
+          console.error('FFmpeg error:', err.message);
           reject(new Error(`FFmpeg error: ${err.message}`));
         })
         .run();
     });
   }
+
+  private async addEndMarkerToPlaylist(playlistFilePath: string): Promise<void> {
+    try {
+      // Read the current playlist content
+      const playlistContent = fs.readFileSync(playlistFilePath, 'utf-8');
+
+      // Check if the end marker already exists
+      if (playlistContent.includes('#EXT-X-ENDLIST')) {
+        return; // End marker already exists, no need to add it again
+      }
+
+      // Append the end marker to the playlist
+      fs.appendFileSync(playlistFilePath, '\n#EXT-X-ENDLIST\n');
+    } catch (error) {
+      console.error(`Error adding end marker to playlist: ${error.message}`);
+      throw error;
+    }
+  }
+
+  public getPlaylistFile = async (outputDir: string) => {
+    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
+
+    if (!fs.existsSync(playlistFilePath)) {
+      return this.createEmptyPlaylistFile(playlistFilePath);
+    }
+
+    return playlistFilePath;
+  };
 }

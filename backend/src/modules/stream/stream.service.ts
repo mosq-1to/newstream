@@ -12,12 +12,10 @@ export class StreamService {
   ) {}
 
   public async getStoryPlaylistFile(storyId: string) {
-    const { hlsOutputDir, wavFiles } = this.storyAudioStorageRepository.getStoryPaths(storyId);
+    const { hlsOutputDir } = this.storyAudioStorageRepository.getStoryPaths(storyId);
 
-    // todo - idea - perhaps I could return the playlist.m3u8 file and rewrite it only once new segments are added
     await this.storyAudioGenerationQueue.addGenerateStoryAudioJob(storyId);
-
-    return await this.hlsService.createPlaylistFile(hlsOutputDir, wavFiles);
+    return await this.hlsService.getPlaylistFile(hlsOutputDir);
   }
 
   public async getStorySegmentFile(storyId: string, filename: string) {

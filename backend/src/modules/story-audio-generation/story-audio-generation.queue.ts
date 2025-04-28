@@ -33,14 +33,9 @@ export class StoryAudioGenerationQueue {
     splitter.push(story.content);
     const textChunks = [...splitter];
 
-    return await this.storyAudioGenerationFlowProducer.add({
-      name: GenerateStoryAudioJob.getName(storyId),
-      queueName: QueueName.StoryAudioGeneration,
-      data: {
-        storyId,
-      },
-      children: [
-        ...textChunks.map((text, index) => ({
+    const childrenTree = textChunks.reverse().reduce((acc, text, index) => {
+      return [
+        {
           name: GenerateStoryAudioProcessChunkJob.getName(storyId, index),
           queueName: QueueName.StoryAudioGeneration,
           data: {
@@ -48,8 +43,20 @@ export class StoryAudioGenerationQueue {
             text,
             chunkIndex: index,
           },
-        })),
-      ],
+          children: acc,
+        },
+      ];
+    }, []);
+
+    console.log(JSON.stringify(childrenTree, null, 2));
+
+    return await this.storyAudioGenerationFlowProducer.add({
+      name: GenerateStoryAudioJob.getName(storyId),
+      queueName: QueueName.StoryAudioGeneration,
+      data: {
+        storyId,
+      },
+      children: childrenTree,
     });
   }
 

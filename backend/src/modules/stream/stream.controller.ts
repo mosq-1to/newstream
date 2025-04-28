@@ -13,7 +13,7 @@ export class StreamController {
   @Get('story/:storyId/playlist.m3u8')
   async getStoryStream(@Param('storyId') storyId: string, @Res() res: Response) {
     res.header('Content-Type', 'application/vnd.apple.mpegurl');
-    res.header('Cache-Control', 'no-cache, no-store, must-revalidate, public, max-age=1000');
+    res.header('Cache-Control', 'no-cache, no-store, must-revalidate, public, max-age=2');
     const playlistPath = await this.streamService.getStoryPlaylistFile(storyId);
     const fileStream = createReadStream(playlistPath);
     fileStream.pipe(res);
@@ -29,6 +29,15 @@ export class StreamController {
     res.header('Content-Type', 'video/mp2t');
     res.header('Cache-Control', 'public, max-age=3600');
     const filePath = await this.streamService.getStorySegmentFile(storyId, segmentFilename);
+    const fileStream = createReadStream(filePath);
+    fileStream.pipe(res);
+  }
+
+  @SkipAuth()
+  @Get('demo')
+  async getDemo(@Res() res: Response) {
+    res.header('Content-Type', 'text/html');
+    const filePath = `${__dirname}/demo/hls-player.html`;
     const fileStream = createReadStream(filePath);
     fileStream.pipe(res);
   }
