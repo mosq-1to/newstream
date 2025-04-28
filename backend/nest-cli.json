@@ -8,6 +8,10 @@
       {
         "include": "**/*.html",
         "outDir": "dist"
+      },
+      {
+        "include": "ai/kokoro/lib/voices/*.bin",
+        "outDir": "dist"
       }
     ],
     "watchAssets": true

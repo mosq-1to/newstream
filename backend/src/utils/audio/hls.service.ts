@@ -2,79 +2,75 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
-import { ensureDirectoryExists } from '../files/ensure-directory-exists';
 
 @Injectable()
 export class HlsService {
-  constructor(private readonly outputDir: string) {
-    ensureDirectoryExists(this.outputDir);
+  public async getPlaylistFile(outputDir: string): Promise<string> {
+    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
+
+    return fs.existsSync(playlistFilePath)
+      ? playlistFilePath
+      : this.initializeHlsDirectory(outputDir);
   }
 
-  private async initializeEmptyPlaylist(streamId: string): Promise<string> {
-    const streamDir = path.join(this.outputDir, streamId, 'stream');
-    ensureDirectoryExists(streamDir);
-    const playlistFile = path.join(streamDir, 'playlist.m3u8');
+  public async appendPlaylistFile(outputDir: string, wavPath: string): Promise<void> {
+    try {
+      const tsFilename = `${path.basename(wavPath, '.wav')}.ts`;
+      const tsPath = path.join(outputDir, tsFilename);
 
+      await this.convertWavToTs(wavPath, tsPath);
+      const duration = await this.getDuration(tsPath);
+      this.appendToPlaylist(outputDir, duration, path.basename(tsPath));
+    } catch (error) {
+      console.error('Error processing wav:', error);
+      throw error;
+    }
+  }
+
+  public closePlaylistFile(outputDir: string): void {
+    const playlistPath = path.join(outputDir, 'playlist.m3u8');
+    fs.appendFileSync(playlistPath, '#EXT-X-ENDLIST\n');
+  }
+
+  private initializeHlsDirectory(outputDir: string): string {
+    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
     const initialContent = [
       '#EXTM3U',
       '#EXT-X-VERSION:3',
-      '#EXT-X-PLAYLIST-TYPE:EVENT', // Signals this is a live event
-      '#EXT-X-TARGETDURATION:4', // Must match your segment duration
+      '#EXT-X-PLAYLIST-TYPE:EVENT',
+      '#EXT-X-TARGETDURATION:4',
       '#EXT-X-MEDIA-SEQUENCE:0',
     ].join('\n');
 
-    fs.writeFileSync(playlistFile, initialContent);
-    return playlistFile;
+    fs.writeFileSync(playlistFilePath, initialContent);
+    return playlistFilePath;
   }
 
-  async generatePlaylist(streamId: string): Promise<string> {
-    // Create a directory for this stream
-    const streamDir = path.join(this.outputDir, streamId, 'stream');
-    const streamSegmentsDir = path.join(streamDir, 'segments');
+  private appendToPlaylist(outputDir: string, duration: number, tsFilename: string): void {
+    const playlistPath = path.join(outputDir, 'playlist.m3u8');
+    const line = `\n#EXTINF:${duration.toFixed(3)},\n${tsFilename}\n`;
+    fs.appendFileSync(playlistPath, line);
+  }
 
-    // Ensure both directories exist
-    ensureDirectoryExists(streamDir);
-    ensureDirectoryExists(streamSegmentsDir);
-
-    // Output playlist file
-    const playlistFile = path.join(streamDir, 'playlist.m3u8');
-
-    const wavPaths = fs
-      .readdirSync(streamSegmentsDir)
-      .map((p) => path.join(streamSegmentsDir, p));
-
-    if (wavPaths.length === 0) {
-      return this.initializeEmptyPlaylist(streamId);
-    }
-
-    // Create a temporary concat file
-    const concatFile = path.join(this.outputDir, `${streamId}_concat.txt`);
-    const concatContent = wavPaths.map((p) => `file '${p}'`).join('\n');
-    fs.writeFileSync(concatFile, concatContent);
-
+  private convertWavToTs(wavPath: string, tsPath: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      ffmpeg()
-        .input(concatFile)
-        .inputOptions(['-f', 'concat', '-safe', '0'])
-        .outputOptions([
-          '-f hls',
-          '-hls_time 4',
-          '-hls_playlist_type event',
-          '-hls_segment_filename',
-          path.join(streamSegmentsDir, 'segment_%03d.ts'),
-          '-hls_list_size 0',
-          '-hls_base_url',
-          'stream/segments/',
-          '-hls_flags append_list',
-        ])
-        .output(playlistFile)
-        .on('end', () => {
-          resolve(playlistFile);
-        })
-        .on('error', (err) => {
-          reject(new Error(`FFmpeg error: ${err.message}`));
-        })
-        .run();
+      ffmpeg(wavPath)
+        .audioCodec('aac')
+        .audioBitrate('128k')
+        .format('mpegts')
+        .outputOptions('-f mpegts')
+        .save(tsPath)
+        .on('end', () => resolve())
+        .on('error', reject);
+    });
+  }
+
+  private getDuration(filePath: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      ffmpeg.ffprobe(filePath, (err, metadata) => {
+        if (err) return reject(err);
+        resolve(metadata.format.duration);
+      });
     });
   }
 }
