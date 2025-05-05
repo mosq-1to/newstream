@@ -14,7 +14,7 @@ class HomefeedController extends GetxController {
   }
 
   Future<void> fetchStories() async {
-    stories.value = (await _newstreamApi.getStories()).take(5).toList();
+    stories.value = (await _newstreamApi.getStories()).take(10).toList();
   }
 
   Future<void> fetchMoreStories() async {
