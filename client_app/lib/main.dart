@@ -4,6 +4,7 @@ import 'package:client_app/auth/auth_page.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/homefeed/homefeed_bindings.dart';
 import 'package:client_app/homefeed/homefeed_page.dart';
+import 'package:client_app/player/player_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_page.dart';
 import 'package:flutter/widgets.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/splashscreen',
       initialBinding: BindingsBuilder(() {
         Get.put(NewstreamApi());
+        PlayerBindings().dependencies();
       }),
       defaultTransition: Transition.fadeIn,
       getPages: [

@@ -1,5 +1,6 @@
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/api/newstream/stories/story_model.dart';
+import 'package:client_app/player/player_controller.dart';
 import 'package:get/get.dart';
 
 class HomefeedController extends GetxController {
@@ -33,5 +34,9 @@ class HomefeedController extends GetxController {
   void openStory(Story story) {
     // TODO Open story
     print('Story opened: ${story.id}');
+
+    // Play the story in the player
+    final playerController = Get.find<PlayerController>();
+    playerController.playStory(story);
   }
 }
