@@ -32,7 +32,7 @@ class PlayerNavbar extends StatelessWidget {
             ),
           ],
         ),
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           children: [
