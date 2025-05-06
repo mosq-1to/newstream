@@ -31,12 +31,9 @@ class HomefeedController extends GetxController {
     }
   }
 
-  void openStory(Story story) {
-    // TODO Open story
-    print('Story opened: ${story.id}');
-
+  Future<void> openStory(Story story) async {
     // Play the story in the player
     final playerController = Get.find<PlayerController>();
-    playerController.playStory(story);
+    await playerController.playStory(story);
   }
 }

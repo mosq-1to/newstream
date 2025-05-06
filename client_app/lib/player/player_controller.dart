@@ -1,8 +1,10 @@
+import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/api/newstream/stories/story_model.dart';
 import 'package:client_app/player/player_model.dart';
 import 'package:get/get.dart';
 
 class PlayerController extends GetxController {
+  final NewstreamApi _newstreamApi = Get.find();
   final Rx<PlayerState> playerState = const PlayerState().obs;
 
   void togglePlayPause() {
@@ -17,11 +19,15 @@ class PlayerController extends GetxController {
     );
   }
 
-  void playStory(Story story) {
+  Future<void> playStory(Story story) async {
+    // Get the playlist URL from the API
+    final playlistUrl = await _newstreamApi.getStoryStreamPlaylistUrl(story.id);
+
     playerState.value = PlayerState(
       isPlaying: true,
       progress: 0.5, // testing purposes
       currentStory: story,
+      playlistUrl: playlistUrl,
     );
   }
 }

@@ -100,27 +100,19 @@ class NewstreamApi {
   }
 
   /* Stream */
-  Future<String> getStoryStreamPlaylist(String storyId) async {
+  Future<String> getStoryStreamPlaylistUrl(String storyId) async {
     await _loadAccessToken();
 
     if (_accessToken == null) {
       throw Exception('accessToken is not set');
     }
 
-    final response = await http.get(
-      Uri.http(
-        AppConfig().env.newstreamApiUrl,
-        'stream/story/$storyId/playlist.m3u8',
-      ),
-      headers: {
-        'Authorization': 'Bearer $_accessToken',
-      },
+    final uri = Uri.http(
+      AppConfig().env.newstreamApiUrl,
+      'stream/story/$storyId/playlist.m3u8',
     );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to get story stream playlist: ${response.body}');
-    }
-
-    return response.body;
+    // Return the URL with the access token as a query parameter
+    return uri.toString();
   }
 }
