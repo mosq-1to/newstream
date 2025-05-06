@@ -98,4 +98,29 @@ class NewstreamApi {
         .map((json) => Story.fromJson(json as Map<String, dynamic>))
         .toList();
   }
+
+  /* Stream */
+  Future<String> getStoryStreamPlaylist(String storyId) async {
+    await _loadAccessToken();
+
+    if (_accessToken == null) {
+      throw Exception('accessToken is not set');
+    }
+
+    final response = await http.get(
+      Uri.http(
+        AppConfig().env.newstreamApiUrl,
+        'stream/story/$storyId/playlist.m3u8',
+      ),
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to get story stream playlist: ${response.body}');
+    }
+
+    return response.body;
+  }
 }
