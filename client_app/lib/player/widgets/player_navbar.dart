@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/common/ui/tappable.dart';
 import 'package:client_app/player/player_controller.dart';
@@ -20,28 +22,29 @@ class PlayerNavbar extends StatelessWidget {
       }
 
       return Container(
-        height: 72,
-        decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
+        margin: const EdgeInsets.only(bottom: 8),
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(
+              height: 72,
+              decoration: BoxDecoration(
+                color: const Color(0xFF171717).withOpacity(0.9),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  _buildThumbnail(currentStory.thumbnailUrl),
+                  const SizedBox(width: 12),
+                  _buildStoryInfo(currentStory.title),
+                  const SizedBox(width: 12),
+                  _buildControls(playerState.isPlaying),
+                ],
+              ),
             ),
-          ],
-        ),
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          children: [
-            _buildThumbnail(currentStory.thumbnailUrl),
-            const SizedBox(width: 12),
-            _buildStoryInfo(currentStory.title),
-            const SizedBox(width: 12),
-            _buildControls(playerState.isPlaying),
-          ],
+          ),
         ),
       );
     });
