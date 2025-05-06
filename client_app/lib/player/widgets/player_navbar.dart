@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class PlayerNavbar extends StatelessWidget {
   final PlayerController controller = Get.find<PlayerController>();
 
-  PlayerNavbar({Key? key}) : super(key: key);
+  PlayerNavbar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class PlayerNavbar extends StatelessWidget {
             _buildThumbnail(currentStory.thumbnailUrl),
             const SizedBox(width: 12),
             _buildStoryInfo(currentStory.title),
-            const Spacer(),
+            const SizedBox(width: 12),
             _buildControls(playerState.isPlaying),
           ],
         ),

@@ -20,6 +20,7 @@ class PlayerController extends GetxController {
   void playStory(Story story) {
     playerState.value = PlayerState(
       isPlaying: true,
+      progress: 0.5, // testing purposes
       currentStory: story,
     );
   }
