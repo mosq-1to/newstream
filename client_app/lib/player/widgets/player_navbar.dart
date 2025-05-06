@@ -30,7 +30,7 @@ class PlayerNavbar extends StatelessWidget {
             child: Container(
               height: 72,
               decoration: BoxDecoration(
-                color: const Color(0xFF171717).withOpacity(0.9),
+                color: const Color.fromRGBO(23, 23, 23, 0.9),
                 borderRadius: BorderRadius.circular(16),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16),
