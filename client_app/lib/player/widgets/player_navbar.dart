@@ -36,7 +36,7 @@ class PlayerNavbar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  _buildThumbnail(currentStory.thumbnailUrl),
+                  _buildThumbnail(currentStory.thumbnailUrl, playerState.isProcessing),
                   const SizedBox(width: 12),
                   _buildStoryInfo(currentStory.title),
                   const SizedBox(width: 12),
@@ -50,26 +50,46 @@ class PlayerNavbar extends StatelessWidget {
     });
   }
 
-  Widget _buildThumbnail(String thumbnailUrl) {
+  Widget _buildThumbnail(String thumbnailUrl, bool isProcessing) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: Image.network(
-        thumbnailUrl,
-        width: 48,
-        height: 48,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
+      child: Stack(
+        children: [
+          Image.network(
+            thumbnailUrl,
             width: 48,
             height: 48,
-            color: const Color(0xFF333333),
-            child: const Icon(
-              Icons.image_not_supported,
-              color: Colors.white,
-              size: 24,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 48,
+                height: 48,
+                color: const Color(0xFF333333),
+                child: const Icon(
+                  Icons.image_not_supported,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              );
+            },
+          ),
+          if (isProcessing)
+            Container(
+              width: 48,
+              height: 48,
+              color: Colors.black.withAlpha(120),
+              child: const Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ),
+              ),
             ),
-          );
-        },
+        ],
       ),
     );
   }
