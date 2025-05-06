@@ -107,12 +107,12 @@ class NewstreamApi {
       throw Exception('accessToken is not set');
     }
 
-    final uri = Uri.http(
+    final httpUri = Uri.http(
       AppConfig().env.newstreamApiUrl,
       'stream/story/$storyId/playlist.m3u8',
+      {'access_token': _accessToken},
     );
 
-    // Return the URL with the access token as a query parameter
-    return uri.toString();
+    return httpUri.toString();
   }
 }

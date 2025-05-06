@@ -7,11 +7,22 @@ import 'package:client_app/homefeed/homefeed_page.dart';
 import 'package:client_app/player/player_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:audio_session/audio_session.dart';
 
 void main() async {
+  // Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize app config
   await AppConfig().initialize();
+
+  // Configure audio session
+  final session = await AudioSession.instance;
+  await session.configure(const AudioSessionConfiguration.speech());
+
   runApp(const MyApp());
 }
 
