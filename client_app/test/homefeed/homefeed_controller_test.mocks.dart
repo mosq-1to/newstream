@@ -35,9 +35,19 @@ class _FakeRxList_0<E> extends _i1.SmartFake implements _i2.RxList<E> {
         );
 }
 
-class _FakeInternalFinalCallback_1<T> extends _i1.SmartFake
+class _FakeRxInt_1 extends _i1.SmartFake implements _i2.RxInt {
+  _FakeRxInt_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeInternalFinalCallback_2<T> extends _i1.SmartFake
     implements _i2.InternalFinalCallback<T> {
-  _FakeInternalFinalCallback_1(
+  _FakeInternalFinalCallback_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -65,9 +75,18 @@ class MockHomefeedController extends _i1.Mock
       ) as _i2.RxList<_i4.Story>);
 
   @override
+  _i2.RxInt get currentPage => (super.noSuchMethod(
+        Invocation.getter(#currentPage),
+        returnValue: _FakeRxInt_1(
+          this,
+          Invocation.getter(#currentPage),
+        ),
+      ) as _i2.RxInt);
+
+  @override
   _i2.InternalFinalCallback<void> get onStart => (super.noSuchMethod(
         Invocation.getter(#onStart),
-        returnValue: _FakeInternalFinalCallback_1<void>(
+        returnValue: _FakeInternalFinalCallback_2<void>(
           this,
           Invocation.getter(#onStart),
         ),
@@ -76,7 +95,7 @@ class MockHomefeedController extends _i1.Mock
   @override
   _i2.InternalFinalCallback<void> get onDelete => (super.noSuchMethod(
         Invocation.getter(#onDelete),
-        returnValue: _FakeInternalFinalCallback_1<void>(
+        returnValue: _FakeInternalFinalCallback_2<void>(
           this,
           Invocation.getter(#onDelete),
         ),
@@ -117,13 +136,34 @@ class MockHomefeedController extends _i1.Mock
       ) as _i5.Future<void>);
 
   @override
-  void openStory(_i4.Story? story) => super.noSuchMethod(
+  _i5.Future<void> fetchStories() => (super.noSuchMethod(
+        Invocation.method(
+          #fetchStories,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> fetchMoreStories() => (super.noSuchMethod(
+        Invocation.method(
+          #fetchMoreStories,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> openStory(_i4.Story? story) => (super.noSuchMethod(
         Invocation.method(
           #openStory,
           [story],
         ),
-        returnValueForMissingStub: null,
-      );
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
   void update([

@@ -9,6 +9,7 @@ import 'package:client_app/api/newstream/auth/current_user_model.dart' as _i4;
 import 'package:client_app/api/newstream/newstream_api.dart' as _i2;
 import 'package:client_app/api/newstream/stories/story_model.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -58,4 +59,20 @@ class MockNewstreamApi extends _i1.Mock implements _i2.NewstreamApi {
         ),
         returnValue: _i3.Future<List<_i5.Story>>.value(<_i5.Story>[]),
       ) as _i3.Future<List<_i5.Story>>);
+
+  @override
+  _i3.Future<String> getStoryStreamPlaylistUrl(String? storyId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getStoryStreamPlaylistUrl,
+          [storyId],
+        ),
+        returnValue: _i3.Future<String>.value(_i6.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getStoryStreamPlaylistUrl,
+            [storyId],
+          ),
+        )),
+      ) as _i3.Future<String>);
 }

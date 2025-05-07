@@ -2,7 +2,15 @@
 
 ## Getting Started
 
+### Pre-requisites
+
+You would probably need to add a new SHA1 to Google Sign In service configuration in Google Cloud Platform.
+In order to do that, follow the instructions:
+https://developers.google.com/android/guides/client-auth?hl=pl
+
 `flutter pub get`
+
+`flutter run`
 
 ## Testing
 

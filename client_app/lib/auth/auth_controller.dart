@@ -1,4 +1,5 @@
 import 'package:client_app/auth/google_auth_service.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
@@ -9,7 +10,11 @@ class AuthController extends GetxController {
       await _googleAuthService.signIn();
       Get.offNamed('/homefeed');
     } catch (e) {
-      print('[Error] AuthController.handleGoogleLogin: $e');
+      if (e is PlatformException) {
+        print('[Error] AuthController.handleGoogleLogin: ${e.message}');
+      } else {
+        print('[Unknown error] AuthController.handleGoogleLogin: $e');
+      }
     }
   }
 }

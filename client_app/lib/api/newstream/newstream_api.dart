@@ -98,4 +98,21 @@ class NewstreamApi {
         .map((json) => Story.fromJson(json as Map<String, dynamic>))
         .toList();
   }
+
+  /* Stream */
+  Future<String> getStoryStreamPlaylistUrl(String storyId) async {
+    await _loadAccessToken();
+
+    if (_accessToken == null) {
+      throw Exception('accessToken is not set');
+    }
+
+    final httpUri = Uri.http(
+      AppConfig().env.newstreamApiUrl,
+      'stream/story/$storyId/playlist.m3u8',
+      {'access_token': _accessToken},
+    );
+
+    return httpUri.toString();
+  }
 }

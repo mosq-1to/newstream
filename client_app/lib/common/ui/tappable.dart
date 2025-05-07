@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Tappable extends StatefulWidget {
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final Widget child;
 
   const Tappable({
@@ -39,7 +39,9 @@ class _TappableState extends State<Tappable>
   }
 
   void _onTapDown(TapDownDetails details) {
-    _controller.forward(); // Start the animation on tap down
+    if (widget.onTap != null) {
+      _controller.forward(); // Start the animation on tap down
+    }
   }
 
   void _onTapCancel() {
