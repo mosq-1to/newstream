@@ -29,6 +29,30 @@ class _PlayerPageState extends State<PlayerPage> {
       DraggableScrollableController();
 
   @override
+  void initState() {
+    super.initState();
+    // Add listener to handle auto-closing when dragged below threshold
+    _dragController.addListener(_onDragUpdate);
+  }
+
+  // Flag to prevent multiple close attempts
+  bool _isClosing = false;
+
+  void _onDragUpdate() {
+    // If sheet is dragged below 0.2 (20%), close it completely
+    // Only attempt to close if not already closing
+    if (_dragController.size < 0.2 && _dragController.size > 0 && !_isClosing) {
+      _isClosing = true;
+      // Use Future.microtask to avoid calling during build/layout
+      Future.microtask(() {
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _dragController.dispose();
     super.dispose();
@@ -38,8 +62,11 @@ class _PlayerPageState extends State<PlayerPage> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       initialChildSize: 1.0,
+      minChildSize: 0.1,
       controller: _dragController,
       snap: true,
+      snapSizes: const [0.1, 1.0],
+      // Only snap to minimum or fully open
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
@@ -72,7 +99,7 @@ class _PlayerPageState extends State<PlayerPage> {
                             Expanded(
                               child: SingleChildScrollView(
                                 controller: scrollController,
-                                physics: const ClampingScrollPhysics(),
+                                physics: const ScrollPhysics(),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 24),
