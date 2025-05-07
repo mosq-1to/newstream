@@ -15,6 +15,13 @@ class TextStyles {
     fontFamily: 'Inter',
   );
 
+  static const TextStyle headingMd = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFFFFFFFF),
+    fontFamily: 'Inter',
+  );
+
   static const TextStyle headingSm = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w500,

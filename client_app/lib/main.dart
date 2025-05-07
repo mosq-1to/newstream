@@ -5,6 +5,7 @@ import 'package:client_app/auth/auth_page.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/homefeed/homefeed_bindings.dart';
 import 'package:client_app/homefeed/homefeed_page.dart';
+import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_page.dart';
@@ -64,6 +65,10 @@ class MyApp extends StatelessWidget {
           name: '/homefeed',
           page: () => HomefeedPage(),
           binding: HomefeedBindings(),
+        ),
+        GetPage(
+          name: '/player',
+          page: () => PlayerPage(),
         ),
       ],
     );

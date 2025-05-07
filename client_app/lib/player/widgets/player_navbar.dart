@@ -21,28 +21,31 @@ class PlayerNavbar extends StatelessWidget {
         return const SizedBox.shrink();
       }
 
-      return Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-            child: Container(
-              height: 72,
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(23, 23, 23, 0.9),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  _buildThumbnail(
-                      currentStory.thumbnailUrl, playerState.isProcessing),
-                  const SizedBox(width: 12),
-                  _buildStoryInfo(currentStory.title),
-                  const SizedBox(width: 12),
-                  _buildControls(playerState.isPlaying),
-                ],
+      return GestureDetector(
+        onTap: () => Get.toNamed('/player'),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+              child: Container(
+                height: 72,
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(23, 23, 23, 0.9),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    _buildThumbnail(
+                        currentStory.thumbnailUrl, playerState.isProcessing),
+                    const SizedBox(width: 12),
+                    _buildStoryInfo(currentStory.title),
+                    const SizedBox(width: 12),
+                    _buildControls(playerState.isPlaying),
+                  ],
+                ),
               ),
             ),
           ),
