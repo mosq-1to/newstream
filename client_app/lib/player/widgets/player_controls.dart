@@ -1,5 +1,6 @@
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/utils/format_duration.dart';
 import 'package:client_app/player/widgets/player_control_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,7 +35,10 @@ class PlayerControls extends StatelessWidget {
 
   Widget _buildProgressBar() {
     return Obx(() {
-      final progress = controller.playerState.value.progress;
+      final playerState = controller.playerState.value;
+      final progress = playerState.progress;
+      final position = playerState.position;
+      final duration = playerState.duration;
 
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -56,6 +60,24 @@ class PlayerControls extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                formatDuration(position),
+                style: TextStyles.bodySm.copyWith(
+                  color: Colors.white.withOpacity(0.7),
+                ),
+              ),
+              Text(
+                formatDuration(duration),
+                style: TextStyles.bodySm.copyWith(
+                  color: Colors.white.withOpacity(0.7),
+                ),
+              ),
+            ],
           ),
         ],
       );

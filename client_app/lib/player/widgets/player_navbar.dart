@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/utils/format_duration.dart';
 import 'package:client_app/player/widgets/player_control_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -120,25 +121,56 @@ class PlayerNavbar extends StatelessWidget {
 
   Widget _buildProgressBar() {
     return Obx(() {
-      final progress = controller.playerState.value.progress;
+      final playerState = controller.playerState.value;
+      final progress = playerState.progress;
+      final position = playerState.position;
+      final duration = playerState.duration;
 
-      return Container(
-        height: 4,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: const Color(0xFF333333),
-          borderRadius: BorderRadius.circular(2),
-        ),
-        child: FractionallySizedBox(
-          alignment: Alignment.centerLeft,
-          widthFactor: progress,
-          child: Container(
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            height: 4,
+            width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFF333333),
               borderRadius: BorderRadius.circular(2),
             ),
+            child: FractionallySizedBox(
+              alignment: Alignment.centerLeft,
+              widthFactor: progress,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
           ),
-        ),
+          if (duration != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    formatDuration(position),
+                    style: TextStyles.bodySm.copyWith(
+                      fontSize: 10,
+                      color: Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                  Text(
+                    formatDuration(duration),
+                    style: TextStyles.bodySm.copyWith(
+                      fontSize: 10,
+                      color: Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       );
     });
   }
