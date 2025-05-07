@@ -79,7 +79,7 @@ class HomefeedPage extends StatelessWidget {
       final isPlaying = currentlyPlayed?.id == story.id;
 
       return Tappable(
-        onTap: isPlaying ? () {} : () => controller.openStory(story),
+        onTap: isPlaying ? null : () => controller.openStory(story),
         child: StoriesListEntry(
           title: story.title,
           thumbnailUrl: story.thumbnailUrl,
