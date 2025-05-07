@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class StoriesListEntry extends StatelessWidget {
   final String title;
   final String thumbnailUrl;
+  final bool isPlaying;
 
   const StoriesListEntry({
     required this.title,
     required this.thumbnailUrl,
+    this.isPlaying = false,
   });
 
   @override
@@ -20,7 +22,10 @@ class StoriesListEntry extends StatelessWidget {
         children: [
           StoriesListEntryMeta(title: title, sourceName: 'The New York Times'),
           const SizedBox(width: 24),
-          StoriesListEntryThumbnail(thumbnailUrl: thumbnailUrl),
+          StoriesListEntryThumbnail(
+            thumbnailUrl: thumbnailUrl,
+            isPlaying: isPlaying,
+          ),
         ],
       ),
     );
@@ -66,9 +71,11 @@ class StoriesListEntryMeta extends StatelessWidget {
 
 class StoriesListEntryThumbnail extends StatelessWidget {
   final String thumbnailUrl;
+  final bool isPlaying;
 
   const StoriesListEntryThumbnail({
     required this.thumbnailUrl,
+    this.isPlaying = false,
   });
 
   @override
@@ -76,19 +83,46 @@ class StoriesListEntryThumbnail extends StatelessWidget {
     return SizedBox(
       height: 100,
       width: 100,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: CachedNetworkImage(
-          fadeInDuration: const Duration(milliseconds: 200),
-          imageUrl: thumbnailUrl,
-          fit: BoxFit.cover,
-          errorWidget: (context, url, error) => const Center(
-            child: Icon(
-              Icons.image_not_supported,
-              color: Colors.white,
+      child: Stack(
+        children: [
+          // Thumbnail image
+          SizedBox(
+            height: 100,
+            width: 100,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: CachedNetworkImage(
+                fadeInDuration: const Duration(milliseconds: 200),
+                imageUrl: thumbnailUrl,
+                fit: BoxFit.cover,
+                errorWidget: (context, url, error) => const Center(
+                  child: Icon(
+                    Icons.image_not_supported,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+
+          // Playing indicator overlay
+          if (isPlaying)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.black.withAlpha(120),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.play_circle_fill,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

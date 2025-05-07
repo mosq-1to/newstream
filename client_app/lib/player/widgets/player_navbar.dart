@@ -36,7 +36,8 @@ class PlayerNavbar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  _buildThumbnail(currentStory.thumbnailUrl, playerState.isProcessing),
+                  _buildThumbnail(
+                      currentStory.thumbnailUrl, playerState.isProcessing),
                   const SizedBox(width: 12),
                   _buildStoryInfo(currentStory.title),
                   const SizedBox(width: 12),

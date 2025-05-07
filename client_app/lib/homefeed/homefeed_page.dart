@@ -35,8 +35,10 @@ class HomefeedPage extends StatelessWidget {
             Obx(
               () => ListView.builder(
                 controller: _scrollController,
-                itemCount: controller.stories.length + 1, // +1 for the header
-                padding: const EdgeInsets.only(bottom: 88), // Add padding for the player navbar
+                // +1 for the header
+                itemCount: controller.stories.length + 1,
+                // Add padding for the player navbar
+                padding: const EdgeInsets.only(bottom: 88),
                 itemBuilder: (context, index) {
                   if (index == 0) {
                     return _buildRecentStoriesHeader();
@@ -72,12 +74,18 @@ class HomefeedPage extends StatelessWidget {
   }
 
   Widget _buildStoryEntry(Story story, HomefeedController controller) {
-    return Tappable(
-      onTap: () => controller.openStory(story),
-      child: StoriesListEntry(
-        title: story.title,
-        thumbnailUrl: story.thumbnailUrl,
-      ),
-    );
+    return Obx(() {
+      final currentlyPlayed = controller.getCurrentlyPlayedStory();
+      final isPlaying = currentlyPlayed?.id == story.id;
+
+      return Tappable(
+        onTap: isPlaying ? () {} : () => controller.openStory(story),
+        child: StoriesListEntry(
+          title: story.title,
+          thumbnailUrl: story.thumbnailUrl,
+          isPlaying: isPlaying,
+        ),
+      );
+    });
   }
 }

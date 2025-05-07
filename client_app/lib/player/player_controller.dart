@@ -87,7 +87,6 @@ class PlayerController extends GetxController {
 
       final playlistUrl =
           await _newstreamApi.getStoryStreamPlaylistUrl(story.id);
-      developer.log('Trying HLS with setUrl: $playlistUrl');
 
       await _audioPlayer.setUrl(playlistUrl);
       await _audioPlayer.play();

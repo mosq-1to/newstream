@@ -1,17 +1,30 @@
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/api/newstream/stories/story_model.dart';
 import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/player_model.dart';
 import 'package:get/get.dart';
 
 class HomefeedController extends GetxController {
   final NewstreamApi _newstreamApi = Get.find();
+  final PlayerController _playerController;
   final RxList<Story> stories = RxList<Story>([]);
   final RxInt currentPage = RxInt(0);
+  final Rx<Story?> currentlyPlayedStory = Rx<Story?>(null);
+
+  HomefeedController({required PlayerController playerController})
+      : _playerController = playerController;
 
   @override
   Future<void> onInit() async {
     super.onInit();
     fetchStories();
+
+    // Listen to changes in the player state
+    ever(_playerController.playerState, _updateCurrentlyPlayedStory);
+  }
+
+  void _updateCurrentlyPlayedStory(PlayerState state) {
+    currentlyPlayedStory.value = state.currentStory;
   }
 
   Future<void> fetchStories() async {
@@ -33,7 +46,10 @@ class HomefeedController extends GetxController {
 
   Future<void> openStory(Story story) async {
     // Play the story in the player
-    final playerController = Get.find<PlayerController>();
-    await playerController.playStory(story);
+    await _playerController.playStory(story);
+  }
+
+  Story? getCurrentlyPlayedStory() {
+    return currentlyPlayedStory.value;
   }
 }
