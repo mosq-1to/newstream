@@ -24,13 +24,6 @@ class PlayerControls extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            currentStory.title,
-            style: TextStyles.headingMd.copyWith(height: 1.2),
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 24),
           _buildProgressBar(),
           const SizedBox(height: 16),
           _buildControlButtons(playerState.isPlaying),

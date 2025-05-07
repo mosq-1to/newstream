@@ -33,22 +33,26 @@ class PlayerPage extends StatelessWidget {
               children: [
                 _buildHeader(),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 16),
-                          _buildThumbnail(
-                            currentStory.thumbnailUrl,
-                            playerState.isProcessing,
-                          ),
-                          const SizedBox(height: 48),
-                          PlayerControls(),
-                          const SizedBox(height: 48),
-                          _buildStoryContent(currentStory.content),
-                        ],
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        _buildThumbnail(
+                          currentStory.thumbnailUrl,
+                          playerState.isProcessing,
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          currentStory.title,
+                          style: TextStyles.headingMd.copyWith(height: 1.2),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 48),
+                        const Spacer(),
+                        PlayerControls(),
+                      ],
                     ),
                   ),
                 ),
@@ -82,13 +86,13 @@ class PlayerPage extends StatelessWidget {
           children: [
             Image.network(
               thumbnailUrl,
-              width: 280,
-              height: 280,
+              width: 220,
+              height: 220,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  width: 280,
-                  height: 280,
+                  width: 220,
+                  height: 220,
                   color: const Color(0xFF333333),
                   child: const Icon(
                     Icons.image_not_supported,
@@ -100,8 +104,8 @@ class PlayerPage extends StatelessWidget {
             ),
             if (isProcessing)
               Container(
-                width: 280,
-                height: 280,
+                width: 220,
+                height: 220,
                 color: Colors.black.withAlpha(120),
                 child: const Center(
                   child: SizedBox(
@@ -117,28 +121,6 @@ class PlayerPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildStoryContent(String content) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Story Content',
-          style: TextStyles.headingSm,
-        ),
-        const SizedBox(height: 16),
-        Text(
-          content,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 16,
-            height: 1.5,
-          ),
-        ),
-        const SizedBox(height: 32),
-      ],
     );
   }
 }
