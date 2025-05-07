@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:client_app/common/theme/dark_background_layout.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/player_controller.dart';
@@ -5,74 +7,149 @@ import 'package:client_app/player/widgets/player_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PlayerPage extends StatelessWidget {
-  final PlayerController controller = Get.find<PlayerController>();
+class PlayerPage extends StatefulWidget {
+  const PlayerPage({super.key});
 
-  PlayerPage({super.key});
+  @override
+  State<PlayerPage> createState() => _PlayerPageState();
+
+  static Future<void> show(BuildContext context) async {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const PlayerPage(),
+    );
+  }
+}
+
+class _PlayerPageState extends State<PlayerPage> {
+  final PlayerController controller = Get.find<PlayerController>();
+  final DraggableScrollableController _dragController =
+      DraggableScrollableController();
+
+  @override
+  void dispose() {
+    _dragController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DarkBackgroundLayout(
-        child: SafeArea(
-          child: Obx(() {
-            final playerState = controller.playerState.value;
-            final currentStory = playerState.currentStory;
-
-            if (currentStory == null) {
-              return const Center(
-                child: Text(
-                  'No story is currently playing',
-                  style: TextStyles.headingMd,
-                ),
-              );
+    return DraggableScrollableSheet(
+      initialChildSize: 1.0,
+      controller: _dragController,
+      snap: true,
+      snapSizes: const [1],
+      builder: (context, scrollController) {
+        return GestureDetector(
+          onVerticalDragEnd: (details) {
+            if (details.velocity.pixelsPerSecond.dy > 1500) {
+              Navigator.of(context).pop();
             }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.9),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: SafeArea(
+                  child: Obx(() {
+                    final playerState = controller.playerState.value;
+                    final currentStory = playerState.currentStory;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
+                    if (currentStory == null) {
+                      return const Center(
+                        child: Text(
+                          'No story is currently playing',
+                          style: TextStyles.headingMd,
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 16),
-                        _buildThumbnail(
-                          currentStory.thumbnailUrl,
-                          playerState.isProcessing,
+                        _buildHeader(),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            controller: scrollController,
+                            physics: const ClampingScrollPhysics(),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 24),
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 16),
+                                  _buildThumbnail(
+                                    currentStory.thumbnailUrl,
+                                    playerState.isProcessing,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  Text(
+                                    currentStory.title,
+                                    style: TextStyles.headingMd
+                                        .copyWith(height: 1.2),
+                                    maxLines: 4,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 48),
+                                  const SizedBox(height: 100),
+                                  // Extra space at bottom
+                                  PlayerControls(),
+                                  const SizedBox(height: 40),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                        const SizedBox(height: 24),
-                        Text(
-                          currentStory.title,
-                          style: TextStyles.headingMd.copyWith(height: 1.2),
-                          maxLines: 4,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 48),
-                        const Spacer(),
-                        PlayerControls(),
                       ],
-                    ),
-                  ),
+                    );
+                  }),
                 ),
-              ],
-            );
-          }),
-        ),
-      ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildHeader() {
-    return Row(
+    return Column(
       children: [
-        IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
+        // Drag handle indicator
+        Center(
+          child: Container(
+            margin: const EdgeInsets.only(top: 8, bottom: 8),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
-          onPressed: () => Get.back(),
+        ),
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
         ),
       ],
     );
