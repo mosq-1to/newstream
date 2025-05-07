@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
 
 import 'package:client_app/common/theme/text_styles.dart';
-import 'package:client_app/common/ui/tappable.dart';
 import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/widgets/player_control_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -143,21 +143,9 @@ class PlayerNavbar extends StatelessWidget {
   }
 
   Widget _buildControls(bool isPlaying) {
-    return Tappable(
+    return PlayerControlButton(
       onTap: controller.togglePlayPause,
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: const Color(0xFF333333),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(
-          isPlaying ? Icons.pause : Icons.play_arrow,
-          color: Colors.white,
-          size: 24,
-        ),
-      ),
+      isPlaying: isPlaying,
     );
   }
 }

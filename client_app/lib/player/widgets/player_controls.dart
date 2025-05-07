@@ -1,17 +1,14 @@
+import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/widgets/player_control_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PlayerControls extends StatelessWidget {
-  final bool showTitle;
-  final bool largeControls;
-  
   final PlayerController controller = Get.find<PlayerController>();
 
   PlayerControls({
     super.key,
-    this.showTitle = true,
-    this.largeControls = false,
   });
 
   @override
@@ -27,20 +24,13 @@ class PlayerControls extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (showTitle) ...[
-            Text(
-              currentStory.title,
-              style: TextStyle(
-                fontSize: largeControls ? 24 : 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 24),
-          ],
+          Text(
+            currentStory.title,
+            style: TextStyles.headingMd.copyWith(height: 1.2),
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 24),
           _buildProgressBar(),
           const SizedBox(height: 16),
           _buildControlButtons(playerState.isPlaying),
@@ -57,11 +47,11 @@ class PlayerControls extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            height: largeControls ? 6 : 4,
+            height: 4,
             width: double.infinity,
             decoration: BoxDecoration(
               color: const Color(0xFF333333),
-              borderRadius: BorderRadius.circular(largeControls ? 3 : 2),
+              borderRadius: BorderRadius.circular(2),
             ),
             child: FractionallySizedBox(
               alignment: Alignment.centerLeft,
@@ -69,7 +59,7 @@ class PlayerControls extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(largeControls ? 3 : 2),
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ),
@@ -80,27 +70,14 @@ class PlayerControls extends StatelessWidget {
   }
 
   Widget _buildControlButtons(bool isPlaying) {
-    final buttonSize = largeControls ? 64.0 : 40.0;
-    final iconSize = largeControls ? 36.0 : 24.0;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        GestureDetector(
+        PlayerControlButton(
           onTap: controller.togglePlayPause,
-          child: Container(
-            width: buttonSize,
-            height: buttonSize,
-            decoration: BoxDecoration(
-              color: const Color(0xFF333333),
-              borderRadius: BorderRadius.circular(buttonSize / 2),
-            ),
-            child: Icon(
-              isPlaying ? Icons.pause : Icons.play_arrow,
-              color: Colors.white,
-              size: iconSize,
-            ),
-          ),
+          isPlaying: isPlaying,
+          size: 64.0,
+          iconSize: 36.0,
         ),
       ],
     );

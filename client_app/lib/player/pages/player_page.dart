@@ -34,18 +34,21 @@ class PlayerPage extends StatelessWidget {
                 _buildHeader(),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 16),
-                        _buildThumbnail(
-                          currentStory.thumbnailUrl,
-                          playerState.isProcessing,
-                        ),
-                        const SizedBox(height: 48),
-                        PlayerControls(largeControls: true),
-                        const SizedBox(height: 48),
-                        _buildStoryContent(currentStory.content),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 16),
+                          _buildThumbnail(
+                            currentStory.thumbnailUrl,
+                            playerState.isProcessing,
+                          ),
+                          const SizedBox(height: 48),
+                          PlayerControls(),
+                          const SizedBox(height: 48),
+                          _buildStoryContent(currentStory.content),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -62,7 +65,7 @@ class PlayerPage extends StatelessWidget {
       children: [
         IconButton(
           icon: const Icon(
-            Icons.chevron_left,
+            Icons.arrow_back,
             color: Colors.white,
           ),
           onPressed: () => Get.back(),
