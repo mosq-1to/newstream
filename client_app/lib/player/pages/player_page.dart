@@ -102,8 +102,10 @@ class _PlayerPageState extends State<PlayerPage> {
                                 physics: const ScrollPhysics(),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 24),
+                                    horizontal: 24,
+                                  ),
                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       _buildHeader(),
                                       const SizedBox(height: 16),
@@ -120,7 +122,7 @@ class _PlayerPageState extends State<PlayerPage> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       const SizedBox(height: 48),
-                                      PlayerControls()
+                                      PlayerControls(),
                                     ],
                                   ),
                                 ),
@@ -161,47 +163,45 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
   Widget _buildThumbnail(String thumbnailUrl, bool isProcessing) {
-    return Center(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Stack(
-          children: [
-            Image.network(
-              thumbnailUrl,
-              width: 220,
-              height: 220,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: 220,
-                  height: 220,
-                  color: const Color(0xFF333333),
-                  child: const Icon(
-                    Icons.image_not_supported,
-                    color: Colors.white,
-                    size: 64,
-                  ),
-                );
-              },
-            ),
-            if (isProcessing)
-              Container(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Stack(
+        children: [
+          Image.network(
+            thumbnailUrl,
+            width: 220,
+            height: 220,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
                 width: 220,
                 height: 220,
-                color: Colors.black.withAlpha(120),
-                child: const Center(
-                  child: SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
+                color: const Color(0xFF333333),
+                child: const Icon(
+                  Icons.image_not_supported,
+                  color: Colors.white,
+                  size: 64,
+                ),
+              );
+            },
+          ),
+          if (isProcessing)
+            Container(
+              width: 220,
+              height: 220,
+              color: Colors.black.withAlpha(120),
+              child: const Center(
+                child: SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
