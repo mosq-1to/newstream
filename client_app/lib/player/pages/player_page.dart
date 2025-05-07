@@ -44,16 +44,8 @@ class _PlayerPageState extends State<PlayerPage> {
         return Container(
           decoration: const BoxDecoration(
             color: Color.fromRGBO(23, 23, 23, 0.9),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
           ),
           child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
               child: SafeArea(
@@ -129,8 +121,9 @@ class _PlayerPageState extends State<PlayerPage> {
           children: [
             IconButton(
               icon: const Icon(
-                Icons.arrow_back,
+                Icons.keyboard_arrow_down,
                 color: Colors.white,
+                size: 36,
               ),
               onPressed: () => Navigator.of(context).pop(),
             ),
