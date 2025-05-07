@@ -40,92 +40,79 @@ class _PlayerPageState extends State<PlayerPage> {
       initialChildSize: 1.0,
       controller: _dragController,
       snap: true,
-      snapSizes: const [1],
       builder: (context, scrollController) {
-        return GestureDetector(
-          onVerticalDragEnd: (details) {
-            if (details.velocity.pixelsPerSecond.dy > 1500) {
-              Navigator.of(context).pop();
-            }
-          },
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Color.fromRGBO(23, 23, 23, 0.9),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
+        return Container(
+          decoration: const BoxDecoration(
+            color: Color.fromRGBO(23, 23, 23, 0.9),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
             ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                child: SafeArea(
-                  child: Obx(() {
-                    final playerState = controller.playerState.value;
-                    final currentStory = playerState.currentStory;
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+              child: SafeArea(
+                child: Obx(() {
+                  final playerState = controller.playerState.value;
+                  final currentStory = playerState.currentStory;
 
-                    if (currentStory == null) {
-                      return const Center(
-                        child: Text(
-                          'No story is currently playing',
-                          style: TextStyles.headingMd,
-                        ),
-                      );
-                    }
+                  if (currentStory == null) {
+                    return const Center(
+                      child: Text(
+                        'No story is currently playing',
+                        style: TextStyles.headingMd,
+                      ),
+                    );
+                  }
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildHeader(),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              // Scrollable content area
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  controller: scrollController,
-                                  physics: const ClampingScrollPhysics(),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 24),
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 16),
-                                        _buildThumbnail(
-                                          currentStory.thumbnailUrl,
-                                          playerState.isProcessing,
-                                        ),
-                                        const SizedBox(height: 24),
-                                        Text(
-                                          currentStory.title,
-                                          style: TextStyles.headingMd
-                                              .copyWith(height: 1.2),
-                                          maxLines: 4,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 48),
-                                      ],
-                                    ),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            // Scrollable content area
+                            Expanded(
+                              child: SingleChildScrollView(
+                                controller: scrollController,
+                                physics: const ClampingScrollPhysics(),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
+                                  child: Column(
+                                    children: [
+                                      _buildHeader(),
+                                      const SizedBox(height: 16),
+                                      _buildThumbnail(
+                                        currentStory.thumbnailUrl,
+                                        playerState.isProcessing,
+                                      ),
+                                      const SizedBox(height: 24),
+                                      Text(
+                                        currentStory.title,
+                                        style: TextStyles.headingMd
+                                            .copyWith(height: 1.2),
+                                        maxLines: 4,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 48),
+                                      PlayerControls()
+                                    ],
                                   ),
                                 ),
                               ),
-                              // Fixed controls at the bottom
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 20),
-                                child: PlayerControls(),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    );
-                  }),
-                ),
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
           ),
@@ -137,18 +124,7 @@ class _PlayerPageState extends State<PlayerPage> {
   Widget _buildHeader() {
     return Column(
       children: [
-        // Drag handle indicator
-        Center(
-          child: Container(
-            margin: const EdgeInsets.only(top: 8, bottom: 8),
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-        ),
+        const SizedBox(height: 36),
         Row(
           children: [
             IconButton(
