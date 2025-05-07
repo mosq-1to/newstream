@@ -49,9 +49,9 @@ class _PlayerPageState extends State<PlayerPage> {
             }
           },
           child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.9),
-              borderRadius: const BorderRadius.only(
+            decoration: const BoxDecoration(
+              color: Color.fromRGBO(23, 23, 23, 0.9),
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
               ),
@@ -82,35 +82,44 @@ class _PlayerPageState extends State<PlayerPage> {
                       children: [
                         _buildHeader(),
                         Expanded(
-                          child: SingleChildScrollView(
-                            controller: scrollController,
-                            physics: const ClampingScrollPhysics(),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 24),
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 16),
-                                  _buildThumbnail(
-                                    currentStory.thumbnailUrl,
-                                    playerState.isProcessing,
+                          child: Column(
+                            children: [
+                              // Scrollable content area
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  controller: scrollController,
+                                  physics: const ClampingScrollPhysics(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 24),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 16),
+                                        _buildThumbnail(
+                                          currentStory.thumbnailUrl,
+                                          playerState.isProcessing,
+                                        ),
+                                        const SizedBox(height: 24),
+                                        Text(
+                                          currentStory.title,
+                                          style: TextStyles.headingMd
+                                              .copyWith(height: 1.2),
+                                          maxLines: 4,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 48),
+                                      ],
+                                    ),
                                   ),
-                                  const SizedBox(height: 24),
-                                  Text(
-                                    currentStory.title,
-                                    style: TextStyles.headingMd
-                                        .copyWith(height: 1.2),
-                                    maxLines: 4,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 48),
-                                  const SizedBox(height: 100),
-                                  // Extra space at bottom
-                                  PlayerControls(),
-                                  const SizedBox(height: 40),
-                                ],
+                                ),
                               ),
-                            ),
+                              // Fixed controls at the bottom
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 20),
+                                child: PlayerControls(),
+                              ),
+                            ],
                           ),
                         ),
                       ],
