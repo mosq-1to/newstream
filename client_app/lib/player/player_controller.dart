@@ -1,10 +1,12 @@
 import 'dart:developer' as developer;
 
+import 'package:audio_session/audio_session.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/api/newstream/stories/story_model.dart';
 import 'package:client_app/player/player_model.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart' as audio;
+import 'package:just_audio_background/just_audio_background.dart';
 
 class PlayerController extends GetxController {
   final NewstreamApi _newstreamApi = Get.find();
@@ -20,8 +22,12 @@ class PlayerController extends GetxController {
   }
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
+
+    // Configure audio session for proper handling of audio focus
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.speech());
 
     // Set up error handling for the audio player
     _audioPlayer.playbackEventStream.listen(
@@ -66,6 +72,25 @@ class PlayerController extends GetxController {
         );
       }
     });
+
+    // Handle interruptions and audio focus changes
+    session.interruptionEventStream.listen((event) {
+      if (event.begin) {
+        _audioPlayer.pause();
+      } else {
+        // Interruption ended
+        switch (event.type) {
+          case AudioInterruptionType.duck:
+          case AudioInterruptionType.pause:
+          case AudioInterruptionType.unknown:
+            // Resume playback if it was playing before
+            if (playerState.value.isPlaying) {
+              _audioPlayer.play();
+            }
+            break;
+        }
+      }
+    });
   }
 
   @override
@@ -88,7 +113,25 @@ class PlayerController extends GetxController {
       final playlistUrl =
           await _newstreamApi.getStoryStreamPlaylistUrl(story.id);
 
-      await _audioPlayer.setUrl(playlistUrl);
+      // Create a MediaItem for the notification
+      final mediaItem = MediaItem(
+        id: story.id,
+        title: story.title,
+        artUri: Uri.parse(story.thumbnailUrl),
+        displayTitle: story.title,
+        displaySubtitle: 'Newstream Audio',
+        displayDescription: story.content.length > 100
+            ? '${story.content.substring(0, 100)}...'
+            : story.content,
+      );
+
+      // Set the audio source with the MediaItem
+      final audioSource = audio.AudioSource.uri(
+        Uri.parse(playlistUrl),
+        tag: mediaItem,
+      );
+
+      await _audioPlayer.setAudioSource(audioSource);
       await _audioPlayer.play();
     } catch (e) {
       developer.log('Error playing story: $e');
