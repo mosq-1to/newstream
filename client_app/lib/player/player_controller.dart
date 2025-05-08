@@ -64,19 +64,9 @@ class PlayerController extends GetxController {
 
     // Listen to position changes
     _audioPlayer.positionStream.listen((position) {
-      final duration = _audioPlayer.duration;
-      if (duration != null && duration.inMilliseconds > 0) {
-        final progress = position.inMilliseconds / duration.inMilliseconds;
-        playerState.value = playerState.value.copyWith(
-          progress: progress,
-          position: position,
-          duration: duration,
-        );
-      } else {
-        playerState.value = playerState.value.copyWith(
-          position: position,
-        );
-      }
+      playerState.value = playerState.value.copyWith(
+        position: position,
+      );
     });
 
     // Listen to duration changes
