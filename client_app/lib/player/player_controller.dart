@@ -22,27 +22,18 @@ class PlayerController extends GetxController {
   }
 
   @override
-  void onInit() async {
+  Future<void> onInit() async {
     super.onInit();
 
-    // Configure audio session for proper handling of audio focus
-    final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.speech());
-
-    // Set up error handling for the audio player
-    _audioPlayer.playbackEventStream.listen(
-      (event) {},
-      onError: (Object e, StackTrace st) {
-        developer.log('Audio player error: $e');
-        developer.log('Stack trace: $st');
-
-        // Update player state on error
-        playerState.value = playerState.value.copyWith(
-          isPlaying: false,
-          isProcessing: false,
-        );
-      },
+    // Initialize audio background service
+    await JustAudioBackground.init(
+      androidNotificationChannelId: 'pl.newstream.client_app.channel.audio',
+      androidNotificationChannelName: 'Newstream Audio',
+      androidNotificationOngoing: true,
+      androidShowNotificationBadge: true,
     );
+
+    _audioPlayer.errorStream.listen(_handleError);
 
     // Listen to player state changes
     _audioPlayer.playerStateStream.listen((playerState) {
@@ -55,10 +46,8 @@ class PlayerController extends GetxController {
           );
 
       if (playerState.processingState == audio.ProcessingState.completed) {
-        this.playerState.value = this.playerState.value.copyWith(
-              isPlaying: false,
-              isProcessing: false,
-            );
+        _audioPlayer.seek(Duration.zero);
+        _audioPlayer.pause();
       }
     });
 
@@ -75,25 +64,6 @@ class PlayerController extends GetxController {
         playerState.value = playerState.value.copyWith(
           duration: duration,
         );
-      }
-    });
-
-    // Handle interruptions and audio focus changes
-    session.interruptionEventStream.listen((event) {
-      if (event.begin) {
-        _audioPlayer.pause();
-      } else {
-        // Interruption ended
-        switch (event.type) {
-          case AudioInterruptionType.duck:
-          case AudioInterruptionType.pause:
-          case AudioInterruptionType.unknown:
-            // Resume playback if it was playing before
-            if (playerState.value.isPlaying) {
-              _audioPlayer.play();
-            }
-            break;
-        }
       }
     });
   }
@@ -124,10 +94,6 @@ class PlayerController extends GetxController {
         title: story.title,
         artUri: Uri.parse(story.thumbnailUrl),
         displayTitle: story.title,
-        displaySubtitle: 'Newstream Audio',
-        displayDescription: story.content.length > 100
-            ? '${story.content.substring(0, 100)}...'
-            : story.content,
       );
 
       // Set the audio source with the MediaItem
@@ -136,16 +102,22 @@ class PlayerController extends GetxController {
         tag: mediaItem,
       );
 
+      final session = await AudioSession.instance;
+      await session.configure(const AudioSessionConfiguration.speech());
+
       await _audioPlayer.setAudioSource(audioSource);
       await _audioPlayer.play();
     } catch (e) {
-      developer.log('Error playing story: $e');
-
-      // Handle error gracefully
-      playerState.value = playerState.value.copyWith(
-        isPlaying: false,
-        isProcessing: false,
-      );
+      _handleError(e);
     }
+  }
+
+  void _handleError(Object e) {
+    developer.log('[PlayerController Error] $e');
+
+    playerState.value = playerState.value.copyWith(
+      isPlaying: false,
+      isProcessing: false,
+    );
   }
 }

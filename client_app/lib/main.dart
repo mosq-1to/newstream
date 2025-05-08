@@ -1,4 +1,3 @@
-import 'package:audio_session/audio_session.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/auth/auth_bindings.dart';
 import 'package:client_app/auth/auth_page.dart';
@@ -19,18 +18,6 @@ void main() async {
 
   // Initialize app config
   await AppConfig().initialize();
-
-  // Initialize audio background service
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'pl.newstream.client_app.channel.audio',
-    androidNotificationChannelName: 'Newstream Audio',
-    androidNotificationOngoing: true,
-    androidShowNotificationBadge: true,
-  );
-
-  // Configure audio session
-  final session = await AudioSession.instance;
-  await session.configure(const AudioSessionConfiguration.speech());
 
   runApp(const MyApp());
 }
