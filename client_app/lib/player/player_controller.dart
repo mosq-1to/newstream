@@ -25,6 +25,14 @@ class PlayerController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
 
+    // Initialize audio background service
+    await JustAudioBackground.init(
+      androidNotificationChannelId: 'pl.newstream.client_app.channel.audio',
+      androidNotificationChannelName: 'Newstream Audio',
+      androidNotificationOngoing: true,
+      androidShowNotificationBadge: true,
+    );
+
     _audioPlayer.errorStream.listen(_handleError);
 
     // Listen to player state changes
