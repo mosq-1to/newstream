@@ -1,8 +1,10 @@
 import 'dart:ui' as ui;
 
 import 'package:client_app/common/theme/text_styles.dart';
-import 'package:client_app/common/ui/tappable.dart';
+import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/utils/format_duration.dart';
+import 'package:client_app/player/widgets/player_control_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,28 +23,31 @@ class PlayerNavbar extends StatelessWidget {
         return const SizedBox.shrink();
       }
 
-      return Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-            child: Container(
-              height: 72,
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(23, 23, 23, 0.9),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  _buildThumbnail(
-                      currentStory.thumbnailUrl, playerState.isProcessing),
-                  const SizedBox(width: 12),
-                  _buildStoryInfo(currentStory.title),
-                  const SizedBox(width: 12),
-                  _buildControls(playerState.isPlaying),
-                ],
+      return GestureDetector(
+        onTap: () => PlayerPage.show(context),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+              child: Container(
+                height: 72,
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(23, 23, 23, 0.9),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    _buildThumbnail(
+                        currentStory.thumbnailUrl, playerState.isProcessing),
+                    const SizedBox(width: 12),
+                    _buildStoryInfo(currentStory.title),
+                    const SizedBox(width: 12),
+                    _buildControls(playerState.isPlaying),
+                  ],
+                ),
               ),
             ),
           ),
@@ -103,7 +108,7 @@ class PlayerNavbar extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyles.headingSm,
+            style: TextStyles.bodyXs,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -116,45 +121,64 @@ class PlayerNavbar extends StatelessWidget {
 
   Widget _buildProgressBar() {
     return Obx(() {
-      final progress = controller.playerState.value.progress;
+      final playerState = controller.playerState.value;
+      final progress = playerState.progress;
+      final position = playerState.position;
+      final duration = playerState.duration;
 
-      return Container(
-        height: 4,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: const Color(0xFF333333),
-          borderRadius: BorderRadius.circular(2),
-        ),
-        child: FractionallySizedBox(
-          alignment: Alignment.centerLeft,
-          widthFactor: progress,
-          child: Container(
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            height: 4,
+            width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFF333333),
               borderRadius: BorderRadius.circular(2),
             ),
+            child: FractionallySizedBox(
+              alignment: Alignment.centerLeft,
+              widthFactor: progress,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
           ),
-        ),
+          if (duration != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    formatDuration(position),
+                    style: TextStyles.bodySm.copyWith(
+                      fontSize: 10,
+                      color: Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                  Text(
+                    formatDuration(duration),
+                    style: TextStyles.bodySm.copyWith(
+                      fontSize: 10,
+                      color: Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       );
     });
   }
 
   Widget _buildControls(bool isPlaying) {
-    return Tappable(
+    return PlayerControlButton(
       onTap: controller.togglePlayPause,
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: const Color(0xFF333333),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(
-          isPlaying ? Icons.pause : Icons.play_arrow,
-          color: Colors.white,
-          size: 24,
-        ),
-      ),
+      isPlaying: isPlaying,
     );
   }
 }

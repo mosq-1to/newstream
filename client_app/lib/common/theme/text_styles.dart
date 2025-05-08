@@ -15,8 +15,22 @@ class TextStyles {
     fontFamily: 'Inter',
   );
 
+  static const TextStyle headingMd = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFFFFFFFF),
+    fontFamily: 'Inter',
+  );
+
   static const TextStyle headingSm = TextStyle(
     fontSize: 16,
+    fontWeight: FontWeight.w500,
+    color: Color(0xFFFFFFFF),
+    fontFamily: 'Inter',
+  );
+
+  static const TextStyle headingXs = TextStyle(
+    fontSize: 14,
     fontWeight: FontWeight.w500,
     color: Color(0xFFFFFFFF),
     fontFamily: 'Inter',
@@ -31,6 +45,13 @@ class TextStyles {
 
   static const TextStyle bodySm = TextStyle(
     fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: Color(0xFFFFFFFF),
+    fontFamily: 'Inter',
+  );
+
+  static const TextStyle bodyXs = TextStyle(
+    fontSize: 12,
     fontWeight: FontWeight.w400,
     color: Color(0xFFFFFFFF),
     fontFamily: 'Inter',
