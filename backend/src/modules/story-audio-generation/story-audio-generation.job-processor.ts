@@ -43,7 +43,7 @@ export class StoryAudioGenerationJobProcessor extends WorkerHost {
       const wavFilePath = path.join(wavOutputDir, `audio-${job.data.chunkIndex}.wav`);
 
       await this.audioGenerationService.generateSpeechFromText(job.data.text, wavFilePath);
-      await this.hlsService.appendPlaylistFile(hlsOutputDir, wavFilePath);
+      await this.hlsService.appendPlaylistFile(hlsOutputDir, wavFilePath, job.data.chunkIndex);
     } catch (e) {
       console.error('GenerateStoryAudioProcessChunkJob', e);
       throw e;

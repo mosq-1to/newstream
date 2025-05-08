@@ -13,14 +13,18 @@ export class HlsService {
       : this.initializeHlsDirectory(outputDir);
   }
 
-  public async appendPlaylistFile(outputDir: string, wavPath: string): Promise<void> {
+  public async appendPlaylistFile(
+    outputDir: string,
+    wavPath: string,
+    chunkIndex: number,
+  ): Promise<void> {
     try {
       const tsFilename = `${path.basename(wavPath, '.wav')}.ts`;
       const tsPath = path.join(outputDir, tsFilename);
 
       await this.convertWavToTs(wavPath, tsPath);
       const duration = await this.getDuration(tsPath);
-      this.appendToPlaylist(outputDir, duration, path.basename(tsPath));
+      this.appendToPlaylist(outputDir, duration, path.basename(tsPath), chunkIndex === 0);
     } catch (error) {
       console.error('Error processing wav:', error);
       throw error;
@@ -46,9 +50,20 @@ export class HlsService {
     return playlistFilePath;
   }
 
-  private appendToPlaylist(outputDir: string, duration: number, tsFilename: string): void {
+  private appendToPlaylist(
+    outputDir: string,
+    duration: number,
+    tsFilename: string,
+    isFirstChunk: boolean,
+  ): void {
     const playlistPath = path.join(outputDir, 'playlist.m3u8');
-    const line = `\n#EXTINF:${duration.toFixed(3)},\n${tsFilename}\n`;
+    const line = [
+      '',
+      !isFirstChunk ? '#EXT-X-DISCONTINUITY' : '',
+      `#EXTINF:${duration.toFixed(3)},`,
+      tsFilename,
+      '',
+    ].join('\n');
     fs.appendFileSync(playlistPath, line);
   }
 
