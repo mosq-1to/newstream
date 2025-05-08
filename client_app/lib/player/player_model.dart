@@ -3,7 +3,6 @@ import 'package:client_app/api/newstream/stories/story_model.dart';
 class PlayerState {
   final bool isPlaying;
   final bool isProcessing;
-  final double progress;
   final Story? currentStory;
   final Duration position;
   final Duration? duration;
@@ -11,7 +10,6 @@ class PlayerState {
   const PlayerState({
     this.isPlaying = false,
     this.isProcessing = false,
-    this.progress = 0.0,
     this.currentStory,
     this.position = Duration.zero,
     this.duration,
@@ -28,10 +26,16 @@ class PlayerState {
     return PlayerState(
       isPlaying: isPlaying ?? this.isPlaying,
       isProcessing: isProcessing ?? this.isProcessing,
-      progress: progress ?? this.progress,
       currentStory: currentStory ?? this.currentStory,
       position: position ?? this.position,
       duration: duration ?? this.duration,
     );
+  }
+
+  double get progress {
+    if (duration == null || duration == Duration.zero) {
+      return 0.0;
+    }
+    return position.inMilliseconds / duration!.inMilliseconds;
   }
 }
