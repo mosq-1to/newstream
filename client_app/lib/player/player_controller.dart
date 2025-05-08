@@ -22,10 +22,9 @@ class PlayerController extends GetxController {
   }
 
   @override
-  void onInit() async {
+  Future<void> onInit() async {
     super.onInit();
 
-    // Configure audio session for proper handling of audio focus
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
 
@@ -75,25 +74,6 @@ class PlayerController extends GetxController {
         playerState.value = playerState.value.copyWith(
           duration: duration,
         );
-      }
-    });
-
-    // Handle interruptions and audio focus changes
-    session.interruptionEventStream.listen((event) {
-      if (event.begin) {
-        _audioPlayer.pause();
-      } else {
-        // Interruption ended
-        switch (event.type) {
-          case AudioInterruptionType.duck:
-          case AudioInterruptionType.pause:
-          case AudioInterruptionType.unknown:
-            // Resume playback if it was playing before
-            if (playerState.value.isPlaying) {
-              _audioPlayer.play();
-            }
-            break;
-        }
       }
     });
   }
