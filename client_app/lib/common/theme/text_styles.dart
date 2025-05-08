@@ -29,6 +29,13 @@ class TextStyles {
     fontFamily: 'Inter',
   );
 
+  static const TextStyle headingXs = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: Color(0xFFFFFFFF),
+    fontFamily: 'Inter',
+  );
+
   static const TextStyle body = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w400,
@@ -42,7 +49,7 @@ class TextStyles {
     color: Color(0xFFFFFFFF),
     fontFamily: 'Inter',
   );
-  
+
   static const TextStyle bodyXs = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w400,
