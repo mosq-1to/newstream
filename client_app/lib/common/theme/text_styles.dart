@@ -42,4 +42,11 @@ class TextStyles {
     color: Color(0xFFFFFFFF),
     fontFamily: 'Inter',
   );
+  
+  static const TextStyle bodyXs = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: Color(0xFFFFFFFF),
+    fontFamily: 'Inter',
+  );
 }

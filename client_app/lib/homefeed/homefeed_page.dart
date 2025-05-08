@@ -29,35 +29,22 @@ class HomefeedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: DarkBackgroundLayout(
-        child: Stack(
-          children: [
-            // Main content
-            Obx(
-              () => ListView.builder(
-                controller: _scrollController,
-                // +1 for the header
-                itemCount: controller.stories.length + 1,
-                // Add padding for the player navbar
-                padding: const EdgeInsets.only(bottom: 88),
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return _buildRecentStoriesHeader();
-                  } else {
-                    final story = controller.stories[index - 1];
-                    return _buildStoryEntry(story, controller);
-                  }
-                },
-              ),
-            ),
-
-            // Floating player navbar
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: PlayerNavbar(),
-            ),
-          ],
+        child: Obx(
+          () => ListView.builder(
+            controller: _scrollController,
+            // +1 for the header
+            itemCount: controller.stories.length + 1,
+            // Add padding for the player navbar
+            padding: const EdgeInsets.only(bottom: 88),
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return _buildRecentStoriesHeader();
+              } else {
+                final story = controller.stories[index - 1];
+                return _buildStoryEntry(story, controller);
+              }
+            },
+          ),
         ),
       ),
     );

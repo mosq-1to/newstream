@@ -108,7 +108,7 @@ class PlayerNavbar extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyles.headingSm,
+            style: TextStyles.bodyXs,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

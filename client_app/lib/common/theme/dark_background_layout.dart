@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:client_app/player/widgets/player_navbar.dart';
 import 'package:flutter/material.dart';
 
 class DarkBackgroundLayout extends StatelessWidget {
@@ -41,6 +42,17 @@ class DarkBackgroundLayout extends StatelessWidget {
             right: 32,
           ),
           child: child,
+        ),
+
+        // Floating player navbar
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: PlayerNavbar(),
+          ),
         ),
       ],
     );
