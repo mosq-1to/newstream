@@ -28,14 +28,10 @@ class PlayerController extends GetxController {
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
 
-    // Set up error handling for the audio player
-    _audioPlayer.playbackEventStream.listen(
-      (event) {},
-      onError: (Object e, StackTrace st) {
-        developer.log('Audio player error: $e');
-        developer.log('Stack trace: $st');
+    _audioPlayer.errorStream.listen(
+      (audio.PlayerException e) {
+        developer.log('[PlayerController Error]: $e');
 
-        // Update player state on error
         playerState.value = playerState.value.copyWith(
           isPlaying: false,
           isProcessing: false,
