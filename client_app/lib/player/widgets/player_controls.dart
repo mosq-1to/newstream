@@ -73,6 +73,15 @@ class __SeekBarState extends State<_SeekBar> {
                   _dragValue = null;
                 });
               },
+              onTapUp: (TapUpDetails details) {
+                final dx = details.localPosition.dx.clamp(0.0, width);
+                final newProgress = (dx / width).clamp(0.0, 1.0).toDouble();
+                final newPosition = Duration(
+                  milliseconds:
+                      (widget.duration.inMilliseconds * newProgress).round(),
+                );
+                widget.onSeek(newPosition);
+              },
               child: SizedBox(
                 width: double.infinity,
                 height: dragAreaHeight,
