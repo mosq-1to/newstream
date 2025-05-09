@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:client_app/common/theme/dark_background_layout.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/player/widgets/player_controls.dart';
@@ -31,25 +30,12 @@ class _PlayerPageState extends State<PlayerPage> {
   @override
   void initState() {
     super.initState();
-    // Add listener to handle auto-closing when dragged below threshold
-    _dragController.addListener(_onDragUpdate);
-  }
-
-  // Flag to prevent multiple close attempts
-  bool _isClosing = false;
-
-  void _onDragUpdate() {
-    // If sheet is dragged below 0.2 (20%), close it completely
-    // Only attempt to close if not already closing
-    if (_dragController.size < 0.2 && _dragController.size > 0 && !_isClosing) {
-      _isClosing = true;
-      // Use Future.microtask to avoid calling during build/layout
-      Future.microtask(() {
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
-      });
-    }
+    _dragController.addListener(() {
+      // dirty hack to close the sheet natively
+      if (_dragController.size < 0.11) {
+        _dragController.jumpTo(0.09);
+      }
+    });
   }
 
   @override
@@ -65,8 +51,7 @@ class _PlayerPageState extends State<PlayerPage> {
       minChildSize: 0.1,
       controller: _dragController,
       snap: true,
-      snapSizes: const [0.1, 1.0],
-      // Only snap to minimum or fully open
+      snapSizes: const [1.0],
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
@@ -105,7 +90,8 @@ class _PlayerPageState extends State<PlayerPage> {
                                     horizontal: 24,
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       _buildHeader(),
                                       const SizedBox(height: 16),
