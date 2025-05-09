@@ -34,7 +34,7 @@ class PlayerState {
 
   double get progress {
     // hide the bug with reinitializing seek bar
-    final shouldShowTheBar = position.inMilliseconds >= 200;
+    final shouldShowTheBar = position.inMilliseconds >= 300;
 
     if (!shouldShowTheBar || duration == null || duration == Duration.zero) {
       return 0.0;
