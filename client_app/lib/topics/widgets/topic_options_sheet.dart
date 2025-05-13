@@ -8,10 +8,10 @@ class TopicOptionsSheet extends StatefulWidget {
   final String? topicImageUrl;
 
   const TopicOptionsSheet({
-    Key? key,
+    super.key,
     required this.topicTitle,
     this.topicImageUrl,
-  }) : super(key: key);
+  });
 
   @override
   State<TopicOptionsSheet> createState() => _TopicOptionsSheetState();
@@ -94,19 +94,50 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
   Widget _buildPickerSelectionRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: Text(
-            "Timeframe",
-            textAlign: TextAlign.center,
-            style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Timeframe",
+                textAlign: TextAlign.center,
+                style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                "How far should I reach?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(
-          child: Text(
-            "Length",
-            textAlign: TextAlign.center,
-            style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Length",
+                textAlign: TextAlign.center,
+                style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                "How much time do you have?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
           ),
         ),
       ],
