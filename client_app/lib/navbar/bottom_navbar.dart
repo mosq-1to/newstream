@@ -1,3 +1,4 @@
+import 'package:client_app/common/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -26,17 +27,19 @@ class BottomNavBar extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: true,
         showUnselectedLabels: true,
+        selectedLabelStyle: TextStyles.bodyXs,
+        unselectedLabelStyle: TextStyles.bodyXs,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home, size: 32),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search, size: 32),
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person, size: 32),
             label: 'My space',
           ),
         ],

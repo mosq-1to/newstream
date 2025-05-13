@@ -14,7 +14,7 @@ class DarkBackgroundLayout extends StatelessWidget {
       children: [
         Container(color: const Color(0xFF000000)),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 32),
+          padding: const EdgeInsets.only(top: 32),
           child: child,
         ),
       ],
