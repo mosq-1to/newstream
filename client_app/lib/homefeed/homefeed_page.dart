@@ -15,7 +15,7 @@ class HomefeedPage extends StatelessWidget {
     return Scaffold(
       body: DarkBackgroundLayout(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 0),
+          padding: const EdgeInsets.symmetric(vertical: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -42,6 +42,7 @@ class HomefeedPage extends StatelessWidget {
     return SizedBox(
       height: 160,
       child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         scrollDirection: Axis.horizontal,
         itemCount: topics.length,
         separatorBuilder: (_, __) => const SizedBox(width: 20),
