@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/topics/topic_options_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,23 +25,39 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF121212),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildDragHandle(),
-          _buildTopicHeader(),
-          const SizedBox(height: 28),
-          _buildPickerSelectionRow(),
-          _buildWheelPickers(),
-          _buildPlayButton(),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
-        ],
-      ),
+    return Stack(
+      children: [
+        // Blurred background
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: Container(
+              color: Colors.black.withValues(
+                alpha: 0.8,
+              ), // Optional: darken blurred background
+            ),
+          ),
+        ),
+        // The actual sheet content
+        Container(
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 0, 0, 0),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDragHandle(),
+              _buildTopicHeader(),
+              const SizedBox(height: 28),
+              _buildPickerSelectionRow(),
+              _buildWheelPickers(),
+              _buildPlayButton(),
+              SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -73,7 +91,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                 errorBuilder: (context, error, stackTrace) => Container(
                   width: 48,
                   height: 48,
-                  color: const Color(0xFF232323),
+                  color: const Color.fromARGB(255, 35, 35, 35),
                 ),
               ),
             ),
@@ -98,7 +116,6 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
       children: [
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 "Timeframe",
@@ -120,7 +137,6 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
         ),
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 "Length",
