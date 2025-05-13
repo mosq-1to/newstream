@@ -2,6 +2,7 @@ import 'package:client_app/common/theme/dark_background_layout.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/homefeed/homefeed_controller.dart';
 import 'package:client_app/homefeed/topic_tile_data.dart';
+import 'package:client_app/navbar/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,6 +14,15 @@ class HomefeedPage extends StatelessWidget {
     final controller = Get.find<HomefeedController>();
     final topicsByCategory = controller.fetchTopics();
     return Scaffold(
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: 0,
+        onTap: (index) {
+          if (index == 0) {
+            // Already on Homefeed, do nothing
+          }
+          // Implement navigation for other tabs when needed
+        },
+      ),
       body: DarkBackgroundLayout(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 32),
