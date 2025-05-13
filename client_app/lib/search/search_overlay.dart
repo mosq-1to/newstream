@@ -1,5 +1,6 @@
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/search/search_controller.dart';
+import 'package:client_app/topics/widgets/topic_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:ui';
@@ -116,7 +117,7 @@ class _SearchOverlayState extends State<SearchOverlay>
                                 const SizedBox(width: 24),
                             itemBuilder: (context, index) {
                               final topic = controller.searchResults[index];
-                              return _SearchTopicTile(title: topic);
+                              return TopicTile(title: topic);
                             },
                           ),
                         );
@@ -133,43 +134,4 @@ class _SearchOverlayState extends State<SearchOverlay>
   }
 }
 
-class _SearchTopicTile extends StatelessWidget {
-  final String title;
-  const _SearchTopicTile({required this.title});
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            color: const Color(0xFF232323),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.18),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: 100,
-          child: Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: TextStyles.bodyXs
-                .copyWith(color: Colors.white, fontWeight: FontWeight.w400),
-          ),
-        ),
-      ],
-    );
-  }
-}

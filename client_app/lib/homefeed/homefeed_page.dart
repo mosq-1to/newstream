@@ -3,6 +3,7 @@ import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/homefeed/homefeed_controller.dart';
 import 'package:client_app/homefeed/topic_tile_data.dart';
 import 'package:client_app/navbar/bottom_navbar.dart';
+import 'package:client_app/topics/widgets/topic_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -58,7 +59,7 @@ class HomefeedPage extends StatelessWidget {
         separatorBuilder: (_, __) => const SizedBox(width: 20),
         itemBuilder: (context, index) {
           final topic = topics[index];
-          return _TopicTile(
+          return TopicTile(
             title: topic.title,
             imageUrl: topic.imageUrl,
           );
@@ -68,43 +69,4 @@ class HomefeedPage extends StatelessWidget {
   }
 }
 
-class _TopicTile extends StatelessWidget {
-  final String title;
-  final String imageUrl;
-  const _TopicTile({required this.title, required this.imageUrl});
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Image.network(
-            imageUrl,
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                width: 100,
-                height: 100,
-                color: const Color.fromARGB(255, 20, 20, 20),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: 100,
-          child: Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: TextStyles.bodyXs,
-          ),
-        ),
-      ],
-    );
-  }
-}
