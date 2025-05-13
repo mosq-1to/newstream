@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:ui';
 
+import 'package:material_symbols_icons/symbols.dart';
+
 class SearchOverlay extends StatefulWidget {
   const SearchOverlay({Key? key}) : super(key: key);
 
@@ -84,23 +86,15 @@ class _SearchOverlayState extends State<SearchOverlay>
                                 TextStyles.body.copyWith(color: Colors.white),
                             cursorColor: Colors.white,
                             autofocus: true,
-                            decoration: InputDecoration(
-                              hintText: 'Search...',
-                              hintStyle: TextStyles.body
-                                  .copyWith(color: Colors.white54),
-                              prefixIcon:
-                                  const Icon(Icons.search, color: Colors.white),
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.close,
-                                    color: Colors.white),
-                                onPressed: () {
-                                  controller.clearSearch();
-                                  Get.back();
-                                },
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(
+                                Symbols.search,
+                                color: Colors.white,
+                                size: 28,
                               ),
                               border: InputBorder.none,
                               isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
+                              contentPadding: EdgeInsets.symmetric(
                                   vertical: 14, horizontal: 8),
                             ),
                           ),
@@ -113,7 +107,7 @@ class _SearchOverlayState extends State<SearchOverlay>
                           return const SizedBox.shrink();
                         }
                         return SizedBox(
-                          height: 140,
+                          height: 160,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 12),
