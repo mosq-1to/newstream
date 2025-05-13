@@ -33,7 +33,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
         children: [
           _buildDragHandle(),
           _buildTopicHeader(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 28),
           _buildPickerSelectionRow(),
           _buildWheelPickers(),
           _buildPlayButton(),
@@ -67,21 +67,21 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
               borderRadius: BorderRadius.circular(4),
               child: Image.network(
                 widget.topicImageUrl!,
-                width: 32,
-                height: 32,
+                width: 48,
+                height: 48,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
-                  width: 32,
-                  height: 32,
+                  width: 48,
+                  height: 48,
                   color: const Color(0xFF232323),
                 ),
               ),
             ),
-          if (widget.topicImageUrl != null) const SizedBox(width: 8),
+          const SizedBox(width: 16),
           Expanded(
             child: Text(
               widget.topicTitle,
-              style: TextStyles.headingSm.copyWith(color: Colors.white),
+              style: TextStyles.headingMd.copyWith(color: Colors.white),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -92,27 +92,24 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
   }
 
   Widget _buildPickerSelectionRow() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              "Timeframe",
-              textAlign: TextAlign.center,
-              style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            "Timeframe",
+            textAlign: TextAlign.center,
+            style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
           ),
-          Expanded(
-            child: Text(
-              "Length",
-              textAlign: TextAlign.center,
-              style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
-            ),
+        ),
+        Expanded(
+          child: Text(
+            "Length",
+            textAlign: TextAlign.center,
+            style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -121,7 +118,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
       height: 200,
       child: Row(
         children: [
-          // Length picker
+          // Timeframe picker
           Expanded(
             child: CupertinoPicker(
               itemExtent: 40,
@@ -133,11 +130,14 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   _selectedLengthIndex = index;
                 });
               },
-              children: TopicOptions.lengths
-                  .map((length) => Center(
+              children: TopicOptions.timeframes
+                  .map((timeframe) => Center(
                         child: Text(
-                          length.label,
-                          style: TextStyles.body.copyWith(color: Colors.white),
+                          timeframe.label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
                         ),
                       ))
                   .toList(),
@@ -147,7 +147,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
             "in",
             style: TextStyle(color: Colors.grey),
           ),
-          // Timeframe picker
+          // Length picker
           Expanded(
             child: CupertinoPicker(
               itemExtent: 40,
@@ -159,11 +159,14 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   _selectedTimeframeIndex = index;
                 });
               },
-              children: TopicOptions.timeframes
-                  .map((timeframe) => Center(
+              children: TopicOptions.lengths
+                  .map((length) => Center(
                         child: Text(
-                          timeframe.label,
-                          style: TextStyles.body.copyWith(color: Colors.white),
+                          length.label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
                         ),
                       ))
                   .toList(),

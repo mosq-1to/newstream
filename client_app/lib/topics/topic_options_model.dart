@@ -1,4 +1,3 @@
-
 class TopicTimeframe {
   final String label;
   final Duration duration;
@@ -14,7 +13,7 @@ class TopicLength {
 }
 
 class TopicOptions {
-  static const List<TopicTimeframe> timeframes = [
+  static const List<TopicTimeframe> lengths = [
     TopicTimeframe(label: '5 minutes', duration: Duration(minutes: 5)),
     TopicTimeframe(label: '10 minutes', duration: Duration(minutes: 10)),
     TopicTimeframe(label: '15 minutes', duration: Duration(minutes: 15)),
@@ -23,7 +22,7 @@ class TopicOptions {
     TopicTimeframe(label: '1 hour', duration: Duration(hours: 1)),
   ];
 
-  static const List<TopicLength> lengths = [
+  static const List<TopicLength> timeframes = [
     TopicLength(label: '1 day', duration: Duration(days: 1)),
     TopicLength(label: '1 week', duration: Duration(days: 7)),
     TopicLength(label: '2 weeks', duration: Duration(days: 14)),
