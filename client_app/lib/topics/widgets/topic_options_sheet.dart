@@ -1,9 +1,12 @@
 import 'dart:ui';
 
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/player/pages/player_page.dart';
+import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/topics/topic_options_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TopicOptionsSheet extends StatefulWidget {
   final String topicTitle;
@@ -228,18 +231,26 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           // Handle play button pressed
           final selectedTimeframe =
               TopicOptions.timeframes[_selectedTimeframeIndex];
           final selectedLength = TopicOptions.lengths[_selectedLengthIndex];
 
-          // Close the bottom sheet and return the selected values
-          Navigator.of(context).pop({
+          // Create a result object with the selected values
+          final result = {
             'topicTitle': widget.topicTitle,
             'timeframe': selectedTimeframe,
             'length': selectedLength,
-          });
+          };
+
+          // Close the bottom sheet and return the selected values
+          Navigator.of(context).pop(result);
+          final playerController = Get.find<PlayerController>();
+          await playerController.playExample();
+
+          // Show the player page in full screen
+          await PlayerPage.show(context);
         },
         child: Container(
           width: 64,

@@ -1,16 +1,16 @@
-import 'package:client_app/api/newstream/stories/story_model.dart';
+import 'package:client_app/api/newstream/briefs/brief_model.dart';
 
 class PlayerState {
   final bool isPlaying;
   final bool isProcessing;
-  final Story? currentStory;
+  final Brief? currentBrief;
   final Duration position;
   final Duration? duration;
 
   const PlayerState({
     this.isPlaying = false,
     this.isProcessing = false,
-    this.currentStory,
+    this.currentBrief,
     this.position = Duration.zero,
     this.duration,
   });
@@ -19,14 +19,14 @@ class PlayerState {
     bool? isPlaying,
     bool? isProcessing,
     double? progress,
-    Story? currentStory,
+    Brief? currentBrief,
     Duration? position,
     Duration? duration,
   }) {
     return PlayerState(
       isPlaying: isPlaying ?? this.isPlaying,
       isProcessing: isProcessing ?? this.isProcessing,
-      currentStory: currentStory ?? this.currentStory,
+      currentBrief: currentBrief ?? this.currentBrief,
       position: position ?? this.position,
       duration: duration ?? this.duration,
     );

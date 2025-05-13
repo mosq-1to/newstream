@@ -1,8 +1,8 @@
 import 'dart:developer' as developer;
 
 import 'package:audio_session/audio_session.dart';
+import 'package:client_app/api/newstream/briefs/brief_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
-import 'package:client_app/api/newstream/stories/story_model.dart';
 import 'package:client_app/player/player_model.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart' as audio;
@@ -78,26 +78,38 @@ class PlayerController extends GetxController {
     super.onClose();
   }
 
-  Future<void> playStory(Story story) async {
+  Future<void> playExample() async {
+    try {
+      const brief = Brief(
+        id: '1',
+        content: 'Example',
+        thumbnailUrl: 'https://via.placeholder.com/150',
+      );
+      await playBrief(brief);
+    } catch (e) {
+      _handleError(e);
+    }
+  }
+
+  Future<void> playBrief(Brief brief) async {
     try {
       // Stop any currently playing audio
       await _audioPlayer.stop();
 
       // Update player state to show loading with processing indicator
       playerState.value = PlayerState(
-        currentStory: story,
+        currentBrief: brief,
         isProcessing: true,
       );
 
       final playlistUrl =
-          await _newstreamApi.getStoryStreamPlaylistUrl(story.id);
+          await _newstreamApi.getBriefStreamPlaylistUrl(brief.id);
 
       // Create a MediaItem for the notification
       final mediaItem = MediaItem(
-        id: story.id,
-        title: story.title,
-        artUri: Uri.parse(story.thumbnailUrl),
-        displayTitle: story.title,
+        id: brief.id,
+        title: 'Brief',
+        artUri: Uri.parse(brief.thumbnailUrl),
       );
 
       // Set the audio source with the MediaItem

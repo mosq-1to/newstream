@@ -13,7 +13,6 @@ class _SeekBar extends StatefulWidget {
   final ValueChanged<Duration> onSeek;
 
   const _SeekBar({
-    super.key,
     required this.progress,
     required this.position,
     required this.duration,
@@ -163,9 +162,9 @@ class PlayerControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final playerState = controller.playerState.value;
-      final currentStory = playerState.currentStory;
+      final currentBrief = playerState.currentBrief;
 
-      if (currentStory == null) {
+      if (currentBrief == null) {
         return const SizedBox.shrink();
       }
 

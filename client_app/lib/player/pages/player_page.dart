@@ -63,12 +63,12 @@ class _PlayerPageState extends State<PlayerPage> {
               child: SafeArea(
                 child: Obx(() {
                   final playerState = controller.playerState.value;
-                  final currentStory = playerState.currentStory;
+                  final currentBrief = playerState.currentBrief;
 
-                  if (currentStory == null) {
+                  if (currentBrief == null) {
                     return const Center(
                       child: Text(
-                        'No story is currently playing',
+                        'No brief is currently playing',
                         style: TextStyles.headingMd,
                       ),
                     );
@@ -96,12 +96,12 @@ class _PlayerPageState extends State<PlayerPage> {
                                       _buildHeader(),
                                       const SizedBox(height: 16),
                                       _buildThumbnail(
-                                        currentStory.thumbnailUrl,
+                                        currentBrief.thumbnailUrl,
                                         playerState.isProcessing,
                                       ),
                                       const SizedBox(height: 24),
                                       Text(
-                                        currentStory.title,
+                                        currentBrief.content,
                                         style: TextStyles.headingMd
                                             .copyWith(height: 1.2),
                                         maxLines: 4,
