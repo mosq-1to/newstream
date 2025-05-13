@@ -1,5 +1,8 @@
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/search/search_bindings.dart';
+import 'package:client_app/search/search_overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -24,7 +27,14 @@ class BottomNavBar extends StatelessWidget {
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white54,
         currentIndex: currentIndex,
-        onTap: onTap,
+        onTap: (index) {
+          if (index == 1) {
+            // Search tab clicked
+            _showSearchOverlay();
+          } else {
+            onTap(index);
+          }
+        },
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: true,
         showUnselectedLabels: true,
@@ -45,6 +55,19 @@ class BottomNavBar extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+  
+  void _showSearchOverlay() {
+    // Initialize the search bindings
+    SearchBindings().dependencies();
+    
+    // Show the search overlay
+    Get.dialog(
+      const SearchOverlay(),
+      barrierDismissible: true,
+      barrierColor: Colors.transparent,
+      useSafeArea: false,
     );
   }
 }
