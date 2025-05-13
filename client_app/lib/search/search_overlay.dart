@@ -1,5 +1,6 @@
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/search/search_controller.dart';
+
 import 'package:client_app/topics/widgets/topic_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -116,8 +117,11 @@ class _SearchOverlayState extends State<SearchOverlay>
                             separatorBuilder: (_, __) =>
                                 const SizedBox(width: 24),
                             itemBuilder: (context, index) {
-                              final topic = controller.searchResults[index];
-                              return TopicTile(title: topic);
+                              final topicData = controller.searchResults[index];
+                              return TopicTile(
+                                title: topicData.title,
+                                imageUrl: topicData.imageUrl,
+                              );
                             },
                           ),
                         );
@@ -133,5 +137,3 @@ class _SearchOverlayState extends State<SearchOverlay>
     );
   }
 }
-
-
