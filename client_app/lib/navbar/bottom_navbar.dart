@@ -1,5 +1,6 @@
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -31,15 +32,15 @@ class BottomNavBar extends StatelessWidget {
         unselectedLabelStyle: TextStyles.bodyXs,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, size: 32),
+            icon: Icon(Symbols.home, size: 36, weight: 200),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search, size: 32),
+            icon: Icon(Symbols.search, size: 36, weight: 200),
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person, size: 32),
+            icon: Icon(Symbols.person, size: 36, weight: 200),
             label: 'My space',
           ),
         ],
