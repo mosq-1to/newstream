@@ -21,6 +21,10 @@ class PlayerController extends GetxController {
     }
   }
 
+  Future<void> seek(Duration position) async {
+    await _audioPlayer.seek(position);
+  }
+
   @override
   Future<void> onInit() async {
     super.onInit();
