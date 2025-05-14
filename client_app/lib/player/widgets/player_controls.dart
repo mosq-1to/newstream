@@ -6,24 +6,30 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// A seek bar widget with a draggable thumb for real-time feedback.
-class _SeekBar extends StatefulWidget {
+class PlayerSeekBar extends StatefulWidget {
   final double progress;
   final Duration position;
   final Duration duration;
   final ValueChanged<Duration> onSeek;
+  final bool hideTimeControls;
+  final bool disableDragSeek;
+  final double seekBarHeight;
 
-  const _SeekBar({
+  const PlayerSeekBar({
     required this.progress,
     required this.position,
     required this.duration,
     required this.onSeek,
-  });
+    this.hideTimeControls = false,
+    this.disableDragSeek = false,
+    this.seekBarHeight = 4.0,
+  }) : assert(seekBarHeight == 4.0 || seekBarHeight == 2.0, 'seekBarHeight must be 4.0 or 2.0');
 
   @override
-  __SeekBarState createState() => __SeekBarState();
+  PlayerSeekBarState createState() => PlayerSeekBarState();
 }
 
-class __SeekBarState extends State<_SeekBar> {
+class PlayerSeekBarState extends State<PlayerSeekBar> {
   double? _dragValue;
 
   @override
@@ -41,46 +47,58 @@ class __SeekBarState extends State<_SeekBar> {
         LayoutBuilder(
           builder: (context, constraints) {
             final width = constraints.maxWidth;
-            const barHeight = 4.0;
+            final barHeight = widget.seekBarHeight;
             const dragAreaHeight = 20.0;
             const dotSize = 8.0;
             final filledWidth = (width * effectiveProgress).clamp(0.0, width);
 
             return GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart: (_) {
-                setState(() {
-                  _dragValue = widget.progress;
-                });
-              },
-              onHorizontalDragUpdate: (details) {
-                final dx = details.localPosition.dx.clamp(0.0, width);
-                final newProgress = (dx / width).clamp(0.0, 1.0).toDouble();
-                setState(() {
-                  _dragValue = newProgress;
-                });
-              },
-              onHorizontalDragEnd: (_) {
-                if (_dragValue != null) {
-                  final newPosition = Duration(
-                    milliseconds:
-                        (widget.duration.inMilliseconds * _dragValue!).round(),
-                  );
-                  widget.onSeek(newPosition);
-                }
-                setState(() {
-                  _dragValue = null;
-                });
-              },
-              onTapUp: (TapUpDetails details) {
-                final dx = details.localPosition.dx.clamp(0.0, width);
-                final newProgress = (dx / width).clamp(0.0, 1.0).toDouble();
-                final newPosition = Duration(
-                  milliseconds:
-                      (widget.duration.inMilliseconds * newProgress).round(),
-                );
-                widget.onSeek(newPosition);
-              },
+              onHorizontalDragStart: widget.disableDragSeek
+                  ? null
+                  : (_) {
+                      setState(() {
+                        _dragValue = widget.progress;
+                      });
+                    },
+              onHorizontalDragUpdate: widget.disableDragSeek
+                  ? null
+                  : (details) {
+                      final dx = details.localPosition.dx.clamp(0.0, width);
+                      final newProgress =
+                          (dx / width).clamp(0.0, 1.0).toDouble();
+                      setState(() {
+                        _dragValue = newProgress;
+                      });
+                    },
+              onHorizontalDragEnd: widget.disableDragSeek
+                  ? null
+                  : (_) {
+                      if (_dragValue != null) {
+                        final newPosition = Duration(
+                          milliseconds:
+                              (widget.duration.inMilliseconds * _dragValue!)
+                                  .round(),
+                        );
+                        widget.onSeek(newPosition);
+                      }
+                      setState(() {
+                        _dragValue = null;
+                      });
+                    },
+              onTapUp: widget.disableDragSeek
+                  ? null
+                  : (TapUpDetails details) {
+                      final dx = details.localPosition.dx.clamp(0.0, width);
+                      final newProgress =
+                          (dx / width).clamp(0.0, 1.0).toDouble();
+                      final newPosition = Duration(
+                        milliseconds:
+                            (widget.duration.inMilliseconds * newProgress)
+                                .round(),
+                      );
+                      widget.onSeek(newPosition);
+                    },
               child: SizedBox(
                 width: double.infinity,
                 height: dragAreaHeight,
@@ -131,21 +149,22 @@ class __SeekBarState extends State<_SeekBar> {
           },
         ),
         const SizedBox(height: 4),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              formatDuration(displayPosition),
-              style: TextStyles.bodySm
-                  .copyWith(color: Colors.white.withOpacity(0.7)),
-            ),
-            Text(
-              formatDuration(widget.duration),
-              style: TextStyles.bodySm
-                  .copyWith(color: Colors.white.withOpacity(0.7)),
-            ),
-          ],
-        ),
+        if (!widget.hideTimeControls)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                formatDuration(displayPosition),
+                style: TextStyles.bodySm
+                    .copyWith(color: Colors.white.withOpacity(0.7)),
+              ),
+              Text(
+                formatDuration(widget.duration),
+                style: TextStyles.bodySm
+                    .copyWith(color: Colors.white.withOpacity(0.7)),
+              ),
+            ],
+          ),
       ],
     );
   }
@@ -171,7 +190,7 @@ class PlayerControls extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _SeekBar(
+          PlayerSeekBar(
             progress: playerState.progress,
             position: playerState.position,
             duration: playerState.duration ?? Duration.zero,

@@ -1,5 +1,6 @@
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/widgets/player_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -126,49 +127,21 @@ class MiniPlayerNavbar extends StatelessWidget {
   Widget _buildProgressBar() {
     return Obx(() {
       final playerState = controller.playerState.value;
-      final progress = playerState.progress;
 
-      return Stack(
-        children: [
-          Container(
-            height: 3,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(1.5),
-            ),
-          ),
-          FractionallySizedBox(
-            alignment: Alignment.centerLeft,
-            widthFactor: progress,
-            child: Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                Container(
-                  height: 3,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(1.5),
-                  ),
-                ),
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      return PlayerSeekBar(
+        progress: playerState.progress,
+        position: playerState.position,
+        duration: playerState.duration ?? Duration.zero,
+        onSeek: controller.seek,
+        hideTimeControls: true,
+        disableDragSeek: true,
+        seekBarHeight: 2.0,
       );
     });
   }
 
   Widget _buildControls(bool isPlaying) {
-    return Container(
+    return SizedBox(
       width: 48,
       height: 48,
       child: IconButton(
