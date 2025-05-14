@@ -20,19 +20,16 @@ export class GenerateBriefUseCase {
         Generate a concise brief summarizing the following articles. Include the most important points and create a title that captures the theme of these articles.
       </objective>
 
-      <rules>
-        - Don't include any markdown features such as headings or text boldings. Respond with plain text without intents and new line indicators.
-      </rules>
-
       <articles>
-      ${articlesContent}
+        ${articlesContent}
       </articles>
+
+      <rules>
+        - Avoid using any symbols for emphasis or structure. Do not use any markdown features such as headings or text boldings.
+      </rules>
       `;
 
-    const completion = await this.textGenerationService.generateContent(prompt);
-
-    const lines = completion.split('\n');
-    const content = lines.slice(1).join('\n').trim();
+    const content = await this.textGenerationService.generateContent(prompt);
 
     return {
       content,
