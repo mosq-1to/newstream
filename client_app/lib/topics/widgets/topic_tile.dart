@@ -1,4 +1,5 @@
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/common/ui/tappable.dart';
 import 'package:client_app/topics/widgets/topic_options_sheet.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class TopicTile extends StatefulWidget {
 class _TopicTileState extends State<TopicTile> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Tappable(
       onTap: () => _showTopicOptionsSheet(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
