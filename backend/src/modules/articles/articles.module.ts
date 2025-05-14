@@ -36,6 +36,6 @@ import { ArticlesJobProcessor } from './queue/articles.job-processor';
     ArticlesJobProcessor,
   ],
   controllers: [ArticlesController],
-  exports: [ArticlesService],
+  exports: [ArticlesService, ArticlesRepository],
 })
-export class ArticlesModule {}
+export class ArticlesModule { }

@@ -15,6 +15,8 @@ import { ExpressAdapter } from '@bull-board/express';
 import { AudioGenerationModule } from './modules/audio-generation/audio-generation.module';
 import { StreamModule } from './modules/stream/stream.module';
 import { StorageModule } from './modules/storage/storage.module';
+import { BriefsModule } from './modules/briefs/briefs.module';
+import { BriefAudioGenerationModule } from './modules/brief-audio-generation/brief-audio-generation.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { StorageModule } from './modules/storage/storage.module';
     AudioGenerationModule,
     StreamModule,
     StorageModule,
+    BriefsModule,
+    BriefAudioGenerationModule,
   ],
   providers: [
     {

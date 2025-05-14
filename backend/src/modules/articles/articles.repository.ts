@@ -21,6 +21,16 @@ export class ArticlesRepository {
     });
   }
 
+  async findByIds(articleIds: string[]): Promise<Article[]> {
+    return this.databaseService.article.findMany({
+      where: {
+        id: {
+          in: articleIds,
+        },
+      },
+    });
+  }
+
   async fetchLatestArticles() {
     return this.articlesApi.getArticles();
   }

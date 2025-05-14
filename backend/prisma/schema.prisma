@@ -31,6 +31,9 @@ model Article {
   story        Story?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  
+  // Relationship to Brief
+  briefs       Brief[]  @relation("ArticleToBrief")
 
   @@unique([sourceId, source])
 }
@@ -45,4 +48,16 @@ model Story {
   updatedAt       DateTime @updatedAt
 
   article Article @relation(fields: [sourceArticleId], references: [id])
+}
+
+model Brief {
+  id          String    @id @default(uuid())
+  title       String
+  content     String
+  audioUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relationship to Articles
+  articles    Article[] @relation("ArticleToBrief")
 }
