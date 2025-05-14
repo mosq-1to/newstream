@@ -1,6 +1,7 @@
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/widgets/player_control_button.dart';
 import 'package:client_app/player/widgets/player_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -145,13 +146,9 @@ class MiniPlayerNavbar extends StatelessWidget {
     return SizedBox(
       width: 48,
       height: 48,
-      child: IconButton(
-        icon: Icon(
-          isPlaying ? Icons.pause : Icons.play_arrow,
-          color: Colors.white,
-          size: 28,
-        ),
-        onPressed: controller.togglePlayPause,
+      child: PlayerControlButton(
+        onTap: controller.togglePlayPause,
+        isPlaying: isPlaying,
       ),
     );
   }

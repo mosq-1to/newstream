@@ -23,7 +23,8 @@ class PlayerSeekBar extends StatefulWidget {
     this.hideTimeControls = false,
     this.disableDragSeek = false,
     this.seekBarHeight = 4.0,
-  }) : assert(seekBarHeight == 4.0 || seekBarHeight == 2.0, 'seekBarHeight must be 4.0 or 2.0');
+  }) : assert(seekBarHeight == 4.0 || seekBarHeight == 2.0,
+            'seekBarHeight must be 4.0 or 2.0');
 
   @override
   PlayerSeekBarState createState() => PlayerSeekBarState();
@@ -211,7 +212,6 @@ class PlayerControls extends StatelessWidget {
           onTap: controller.togglePlayPause,
           isPlaying: isPlaying,
           size: 64.0,
-          iconSize: 36.0,
         ),
       ],
     );

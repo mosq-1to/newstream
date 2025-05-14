@@ -4,6 +4,7 @@ import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/widgets/player_control_button.dart';
 import 'package:client_app/topics/topic_options_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -267,29 +268,11 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   setState(() => _isLoading = false);
                 }
               },
-        child: Container(
-          width: 64,
-          height: 64,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xFF232323),
-          ),
-          child: Center(
-            child: _isLoading
-                ? const SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      strokeWidth: 3,
-                    ),
-                  )
-                : const Icon(
-                    Icons.play_arrow,
-                    color: Colors.white,
-                    size: 36,
-                  ),
-          ),
+        child: PlayerControlButton(
+          onTap: () {},
+          isPlaying: false,
+          isLoading: _isLoading,
+          size: 64,
         ),
       ),
     );
