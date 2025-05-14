@@ -20,7 +20,6 @@ export class GenerateBriefAudioUseCase {
     await this.briefAudioGenerationQueue.generateBriefAudio(
       briefId,
       brief.content,
-      brief.title,
     );
   }
 }

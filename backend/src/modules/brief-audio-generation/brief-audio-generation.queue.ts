@@ -1,6 +1,6 @@
 import { InjectFlowProducer, InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
-import { FlowProducer, Queue } from 'bullmq';
+import { FlowProducer, Job, Queue } from 'bullmq';
 import { v4 as uuidv4 } from 'uuid';
 import { FlowProducerName } from '../../types/flow-producer.enum';
 import { QueueName } from '../../types/queue-name.enum';
@@ -8,6 +8,7 @@ import {
   GenerateBriefAudioJob,
   GenerateBriefAudioProcessChunkJob,
 } from './jobs/generate-brief-audio.job';
+import { TextSplitterStream } from '../../ai/kokoro/lib/splitter';
 
 @Injectable()
 export class BriefAudioGenerationQueue {
@@ -16,21 +17,21 @@ export class BriefAudioGenerationQueue {
     private readonly queue: Queue,
     @InjectFlowProducer(FlowProducerName.BriefAudioGeneration)
     private readonly flowProducer: FlowProducer,
-  ) {}
+  ) { }
 
-  async generateBriefAudio(briefId: string, content: string, title: string) {
+  async generateBriefAudio(briefId: string, content: string) {
     const jobName = GenerateBriefAudioJob.getName(briefId);
     const mainJobId = uuidv4();
+    const splitter = new TextSplitterStream();
 
-    // Split content into chunks for processing
-    const TEXT_CHUNK_SIZE = 500;
-    const chunks = this.splitTextIntoChunks(
-      `${title}. ${content}`,
-      TEXT_CHUNK_SIZE,
-    );
+    if (await this.checkIfGenerateBriefAudioJobExists(briefId)) {
+      console.log(`Audio generation already started for Brief#${briefId}`);
+      return;
+    }
 
     // Create a job for each chunk
-    const children = chunks.map((chunk, index) => {
+    splitter.push(content);
+    const children = [...splitter].map((text, index) => {
       const jobId = uuidv4();
       const jobName = GenerateBriefAudioProcessChunkJob.getName(briefId, index);
 
@@ -39,7 +40,7 @@ export class BriefAudioGenerationQueue {
         queueName: QueueName.BriefAudioGeneration,
         data: {
           briefId,
-          text: chunk,
+          text,
           chunkIndex: index,
         },
         opts: {
@@ -64,26 +65,10 @@ export class BriefAudioGenerationQueue {
     await this.flowProducer.add(tree);
   }
 
-  private splitTextIntoChunks(text: string, maxChunkSize: number): string[] {
-    const chunks: string[] = [];
-    let currentChunk = '';
-    const sentences = text.split(/(?<=[.!?])\s+/);
+  async checkIfGenerateBriefAudioJobExists(briefId: string) {
+    //todo - think about less resource intensive way
+    const jobs = (await this.queue.getJobs()) as Job[];
 
-    for (const sentence of sentences) {
-      if (currentChunk.length + sentence.length <= maxChunkSize) {
-        currentChunk += (currentChunk ? ' ' : '') + sentence;
-      } else {
-        if (currentChunk) {
-          chunks.push(currentChunk);
-        }
-        currentChunk = sentence;
-      }
-    }
-
-    if (currentChunk) {
-      chunks.push(currentChunk);
-    }
-
-    return chunks;
+    return jobs.some((job) => job.name === GenerateBriefAudioJob.getName(briefId));
   }
 }

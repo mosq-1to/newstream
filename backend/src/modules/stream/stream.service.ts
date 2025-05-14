@@ -4,6 +4,7 @@ import { StoryAudioGenerationQueue } from '../story-audio-generation/story-audio
 import { StoryAudioStorageRepository } from '../storage/story-audio-storage.repository';
 import { BriefAudioStorageRepository } from '../storage/brief-audio-storage.repository';
 import { BriefAudioGenerationQueue } from '../brief-audio-generation/brief-audio-generation.queue';
+import { GenerateBriefAudioUseCase } from '../brief-audio-generation/use-cases/generate-brief-audio.use-case';
 
 @Injectable()
 export class StreamService {
@@ -11,9 +12,9 @@ export class StreamService {
     private readonly hlsService: HlsService,
     private readonly storyAudioGenerationQueue: StoryAudioGenerationQueue,
     private readonly storyAudioStorageRepository: StoryAudioStorageRepository,
-    private readonly briefAudioGenerationQueue: BriefAudioGenerationQueue,
     private readonly briefAudioStorageRepository: BriefAudioStorageRepository,
-  ) {}
+    private readonly generateBriefAudioUseCase: GenerateBriefAudioUseCase,
+  ) { }
 
   public async getStoryPlaylistFile(storyId: string) {
     const { hlsOutputDir } = this.storyAudioStorageRepository.getStoryPaths(storyId);
@@ -26,11 +27,11 @@ export class StreamService {
     const { hlsOutputDir } = this.storyAudioStorageRepository.getStoryPaths(storyId);
     return `${hlsOutputDir}/${filename}`;
   }
-  
+
   public async getBriefPlaylistFile(briefId: string) {
     const { hlsOutputDir } = this.briefAudioStorageRepository.getBriefPaths(briefId);
 
-    await this.briefAudioGenerationQueue.generateBriefAudio(briefId, '', ''); // Content and title will be fetched inside the queue
+    await this.generateBriefAudioUseCase.execute(briefId);
     return await this.hlsService.getPlaylistFile(hlsOutputDir);
   }
 
