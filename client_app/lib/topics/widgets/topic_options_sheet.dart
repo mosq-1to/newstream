@@ -233,7 +233,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
   Widget _buildPlayButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: InkWell(
+      child: PlayerControlButton(
         onTap: _isLoading
             ? null
             : () async {
@@ -260,7 +260,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   );
                   final playerController = Get.find<PlayerController>();
                   Navigator.of(context).pop(result);
-                  await PlayerPage.show(context);
+                  PlayerPage.show(context);
                   playerController.playBrief(brief);
                 } catch (e, st) {
                   debugPrint('Error playing a Brief: $e\n$st');
@@ -268,12 +268,9 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   setState(() => _isLoading = false);
                 }
               },
-        child: PlayerControlButton(
-          onTap: () {},
-          isPlaying: false,
-          isLoading: _isLoading,
-          size: 64,
-        ),
+        isPlaying: false,
+        isLoading: _isLoading,
+        size: 64,
       ),
     );
   }
