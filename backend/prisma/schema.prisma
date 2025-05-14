@@ -31,9 +31,9 @@ model Article {
   story        Story?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  
+
   // Relationship to Brief
-  briefs       Brief[]  @relation("ArticleToBrief")
+  briefs Brief[] @relation("ArticleToBrief")
 
   @@unique([sourceId, source])
 }
@@ -51,13 +51,12 @@ model Story {
 }
 
 model Brief {
-  id          String    @id @default(uuid())
-  title       String
-  content     String
+  id      String @id @default(uuid())
+  content String
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relationship to Articles
-  articles    Article[] @relation("ArticleToBrief")
+  articles Article[] @relation("ArticleToBrief")
 }

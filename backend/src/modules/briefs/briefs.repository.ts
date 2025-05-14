@@ -27,7 +27,6 @@ export class BriefsRepository {
   async saveBrief(brief: BriefWriteDto): Promise<Brief> {
     return this.databaseService.brief.create({
       data: {
-        title: brief.title,
         content: brief.content,
         articles: {
           connect: brief.articleIds.map((id) => ({ id })),
