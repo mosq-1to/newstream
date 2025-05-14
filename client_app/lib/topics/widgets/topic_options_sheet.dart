@@ -257,17 +257,14 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                       "6692d088-97ae-402b-82ca-056acfe7a872",
                     ],
                   );
-                  if (!mounted) return;
                   final playerController = Get.find<PlayerController>();
-                  await playerController.playBrief(brief);
-                  if (!mounted) return;
-                  await PlayerPage.show(context);
-                  if (!mounted) return;
                   Navigator.of(context).pop(result);
+                  await PlayerPage.show(context);
+                  playerController.playBrief(brief);
                 } catch (e, st) {
                   debugPrint('Error playing a Brief: $e\n$st');
                 } finally {
-                  if (mounted) setState(() => _isLoading = false);
+                  setState(() => _isLoading = false);
                 }
               },
         child: Container(

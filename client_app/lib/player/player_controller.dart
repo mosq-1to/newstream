@@ -81,35 +81,26 @@ class PlayerController extends GetxController {
 
   Future<void> playBrief(Brief brief) async {
     try {
-      // Stop any currently playing audio
       await _audioPlayer.stop();
-
-      // Update player state to show loading with processing indicator
       playerState.value = PlayerState(
         currentBrief: brief,
         isProcessing: true,
       );
-
       final playlistUrl =
           await _newstreamApi.getBriefStreamPlaylistUrl(brief.id);
-
-      // Create a MediaItem for the notification
       final mediaItem = MediaItem(
         id: brief.id,
         title: 'Brief',
       );
-
-      // Set the audio source with the MediaItem
       final audioSource = audio.AudioSource.uri(
         Uri.parse(playlistUrl),
         tag: mediaItem,
       );
-
       final session = await AudioSession.instance;
       await session.configure(const AudioSessionConfiguration.speech());
-
       await _audioPlayer.setAudioSource(audioSource);
-      await _audioPlayer.play();
+
+      return _audioPlayer.play();
     } catch (e) {
       _handleError(e);
     }
