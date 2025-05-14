@@ -19,7 +19,7 @@ export class BriefsService {
     return this.briefsRepository.findOne(id);
   }
 
-  async createBrief(articleIds: string[]) {
+  async createBrief(articleIds: string[], topicId: string) {
     // Fetch the articles
     const articles = await this.articlesRepository.findByIds(articleIds);
 

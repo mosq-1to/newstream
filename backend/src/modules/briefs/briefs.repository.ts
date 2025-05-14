@@ -11,6 +11,7 @@ export class BriefsRepository {
     return this.databaseService.brief.findMany({
       include: {
         articles: true,
+        topic: true,
       },
     });
   }
@@ -20,6 +21,7 @@ export class BriefsRepository {
       where: { id },
       include: {
         articles: true,
+        topic: true,
       },
     });
   }
@@ -31,9 +33,13 @@ export class BriefsRepository {
         articles: {
           connect: brief.articleIds.map((id) => ({ id })),
         },
+        topic: {
+          connect: { id: brief.topicId },
+        },
       },
       include: {
         articles: true,
+        topic: true,
       },
     });
   }
