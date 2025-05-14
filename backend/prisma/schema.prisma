@@ -50,6 +50,18 @@ model Story {
   article Article @relation(fields: [sourceArticleId], references: [id])
 }
 
+model Topic {
+  id           String  @id @default(uuid())
+  title        String
+  thumbnailUrl String
+  categoryTitle String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relationship to Briefs
+  briefs Brief[]
+}
+
 model Brief {
   id      String @id @default(uuid())
   content String
@@ -59,4 +71,8 @@ model Brief {
 
   // Relationship to Articles
   articles Article[] @relation("ArticleToBrief")
+  
+  // Relationship to Topic
+  topicId String?
+  topic   Topic?  @relation(fields: [topicId], references: [id])
 }
