@@ -35,47 +35,9 @@ class MiniPlayerNavbar extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
                 child: Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: currentBrief.topic.thumbnailUrl.isNotEmpty
-                          ? Image.network(
-                              currentBrief.topic.thumbnailUrl,
-                              width: 40,
-                              height: 40,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Container(
-                                width: 40,
-                                height: 40,
-                                color: Colors.grey[800],
-                                child: const Icon(Icons.broken_image,
-                                    color: Colors.white54),
-                              ),
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Container(
-                                  width: 40,
-                                  height: 40,
-                                  color: Colors.grey[800],
-                                  child: const Center(
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                );
-                              },
-                            )
-                          : Container(
-                              width: 40,
-                              height: 40,
-                              color: Colors.grey[800],
-                              child: const Icon(Icons.image,
-                                  color: Colors.white54),
-                            ),
-                    ),
+                    _buildThumbnail(),
                     const SizedBox(width: 12),
-                    _buildStoryInfo(currentBrief.content),
+                    _buildStoryInfo(),
                     _buildControls(playerState.isPlaying),
                   ],
                 ),
@@ -88,42 +50,96 @@ class MiniPlayerNavbar extends StatelessWidget {
     });
   }
 
-  Widget _buildStoryInfo(String title) {
-    // Optionally, you could refactor this to accept Topic topic as well for future use.
+  Widget _buildThumbnail() {
+    return Obx(() {
+      final playerState = controller.playerState.value;
+      final currentBrief = playerState.currentBrief;
 
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Text(
-                '1 day of ',
-                style: TextStyles.bodySm.copyWith(
-                  color: Colors.white70,
+      if (currentBrief == null) {
+        return const SizedBox.shrink();
+      }
+
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: currentBrief.topic.thumbnailUrl.isNotEmpty
+            ? Image.network(
+                currentBrief.topic.thumbnailUrl,
+                width: 40,
+                height: 40,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 40,
+                  height: 40,
+                  color: Colors.grey[800],
+                  child: const Icon(Icons.broken_image, color: Colors.white54),
                 ),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    width: 40,
+                    height: 40,
+                    color: Colors.grey[800],
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  );
+                },
+              )
+            : Container(
+                width: 40,
+                height: 40,
+                color: Colors.grey[800],
+                child: const Icon(Icons.image, color: Colors.white54),
               ),
-              Text(
-                title,
-                style: TextStyles.bodySm.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
+      );
+    });
+  }
+
+  Widget _buildStoryInfo() {
+    return Obx(() {
+      final playerState = controller.playerState.value;
+      final currentBrief = playerState.currentBrief;
+
+      if (currentBrief == null) {
+        return const SizedBox.shrink();
+      }
+
+      return Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                Text(
+                  '1 day of ',
+                  style: TextStyles.bodySm.copyWith(
+                    color: Colors.white70,
+                  ),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-          Text(
-            'in 15 minutes',
-            style: TextStyles.bodySm.copyWith(
-              color: Colors.white.withValues(alpha: 0.7),
+                Text(
+                  currentBrief.topic.title,
+                  style: TextStyles.bodySm.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+            Text(
+              'in 15 minutes',
+              style: TextStyles.bodySm.copyWith(
+                color: Colors.white.withValues(alpha: 0.7),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildProgressBar() {
