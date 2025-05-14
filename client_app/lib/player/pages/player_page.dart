@@ -104,12 +104,23 @@ class _PlayerPageState extends State<PlayerPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         const SizedBox(height: 24),
-                                        Text(
-                                          currentBrief.content,
-                                          style: TextStyles.headingMd
-                                              .copyWith(height: 1.2),
-                                          maxLines: 4,
-                                          overflow: TextOverflow.ellipsis,
+                                        SizedBox(
+                                          height: 364,
+                                          child: SingleChildScrollView(
+                                            child: Text(
+                                              currentBrief.content,
+                                              style: const TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.w300,
+                                                color: Color.fromARGB(
+                                                  255,
+                                                  172,
+                                                  172,
+                                                  172,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                         const SizedBox(height: 48),
                                         PlayerControls(),
@@ -145,12 +156,12 @@ class _PlayerPageState extends State<PlayerPage> {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        Text(
-          brief.content,
-          style: TextStyles.headingMd,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
+        // Text(
+        //   brief.content,
+        //   style: TextStyles.headingMd,
+        //   maxLines: 2,
+        //   overflow: TextOverflow.ellipsis,
+        // ),
       ],
     );
   }
