@@ -96,6 +96,7 @@ class NewstreamApi {
     }
 
     final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+
     return Brief.fromJson(responseBody);
   }
 

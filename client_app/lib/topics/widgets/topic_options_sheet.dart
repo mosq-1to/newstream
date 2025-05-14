@@ -213,15 +213,17 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                 });
               },
               children: TopicOptions.lengths
-                  .map((length) => Center(
-                        child: Text(
-                          length.label,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
+                  .map(
+                    (length) => Center(
+                      child: Text(
+                        length.label,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
                         ),
-                      ))
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),

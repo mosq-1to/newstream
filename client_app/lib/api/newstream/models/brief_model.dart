@@ -16,9 +16,13 @@ class Brief {
       {
         'id': final String id,
         'content': final String content,
-        'topic': final Topic topic,
+        'topic': final Map<String, dynamic> topic,
       } =>
-        Brief(id: id, content: content, topic: topic),
+        Brief(
+          id: id,
+          content: content,
+          topic: Topic.fromJson(topic),
+        ),
       _ => throw const FormatException('Failed to load Brief.'),
     };
   }
