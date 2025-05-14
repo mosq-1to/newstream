@@ -1,3 +1,4 @@
+import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/player/widgets/player_controls.dart';
@@ -24,57 +25,60 @@ class MiniPlayerNavbar extends StatelessWidget {
 
       return GestureDetector(
         onTap: () => PlayerPage.show(context),
-        child: Container(
+        child: ColoredBox(
           color: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                children: [
-                  // Topic thumbnail
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: currentBrief.topic.thumbnailUrl.isNotEmpty
-                        ? Image.network(
-                            currentBrief.topic.thumbnailUrl,
-                            width: 48,
-                            height: 48,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                              width: 48,
-                              height: 48,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: currentBrief.topic.thumbnailUrl.isNotEmpty
+                          ? Image.network(
+                              currentBrief.topic.thumbnailUrl,
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                width: 40,
+                                height: 40,
+                                color: Colors.grey[800],
+                                child: const Icon(Icons.broken_image,
+                                    color: Colors.white54),
+                              ),
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Container(
+                                  width: 40,
+                                  height: 40,
+                                  color: Colors.grey[800],
+                                  child: const Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Container(
+                              width: 40,
+                              height: 40,
                               color: Colors.grey[800],
-                              child: const Icon(Icons.broken_image,
+                              child: const Icon(Icons.image,
                                   color: Colors.white54),
                             ),
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                width: 48,
-                                height: 48,
-                                color: Colors.grey[800],
-                                child: const Center(
-                                    child: CircularProgressIndicator(
-                                        strokeWidth: 2)),
-                              );
-                            },
-                          )
-                        : Container(
-                            width: 48,
-                            height: 48,
-                            color: Colors.grey[800],
-                            child:
-                                const Icon(Icons.image, color: Colors.white54),
-                          ),
-                  ),
-                  const SizedBox(width: 12),
-                  _buildStoryInfo(currentBrief.content),
-                  _buildControls(playerState.isPlaying),
-                ],
+                    ),
+                    const SizedBox(width: 12),
+                    _buildStoryInfo(currentBrief.content),
+                    _buildControls(playerState.isPlaying),
+                  ],
+                ),
               ),
-              const SizedBox(height: 4),
               _buildProgressBar(),
             ],
           ),
@@ -93,19 +97,17 @@ class MiniPlayerNavbar extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Text(
+              Text(
                 '1 day of ',
-                style: TextStyle(
+                style: TextStyles.bodySm.copyWith(
                   color: Colors.white70,
-                  fontSize: 16,
                 ),
               ),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyles.bodySm.copyWith(
                   color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -114,9 +116,8 @@ class MiniPlayerNavbar extends StatelessWidget {
           ),
           Text(
             'in 15 minutes',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: 16,
+            style: TextStyles.bodySm.copyWith(
+              color: Colors.white.withValues(alpha: 0.7),
             ),
           ),
         ],
