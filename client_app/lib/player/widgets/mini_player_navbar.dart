@@ -1,8 +1,5 @@
-import 'package:client_app/api/newstream/models/brief_model.dart';
-import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
-import 'package:client_app/player/utils/format_duration.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -34,6 +31,44 @@ class MiniPlayerNavbar extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  // Topic thumbnail
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: currentBrief.topic.thumbnailUrl.isNotEmpty
+                        ? Image.network(
+                            currentBrief.topic.thumbnailUrl,
+                            width: 48,
+                            height: 48,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                              width: 48,
+                              height: 48,
+                              color: Colors.grey[800],
+                              child: const Icon(Icons.broken_image,
+                                  color: Colors.white54),
+                            ),
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                width: 48,
+                                height: 48,
+                                color: Colors.grey[800],
+                                child: const Center(
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2)),
+                              );
+                            },
+                          )
+                        : Container(
+                            width: 48,
+                            height: 48,
+                            color: Colors.grey[800],
+                            child:
+                                const Icon(Icons.image, color: Colors.white54),
+                          ),
+                  ),
+                  const SizedBox(width: 12),
                   _buildStoryInfo(currentBrief.content),
                   _buildControls(playerState.isPlaying),
                 ],
@@ -48,6 +83,8 @@ class MiniPlayerNavbar extends StatelessWidget {
   }
 
   Widget _buildStoryInfo(String title) {
+    // Optionally, you could refactor this to accept Topic topic as well for future use.
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
