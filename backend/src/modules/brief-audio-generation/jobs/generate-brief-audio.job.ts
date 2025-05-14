@@ -1,14 +1,5 @@
 import { Job } from 'bullmq';
-
-// Type definition until Prisma client is regenerated
-type Brief = {
-  id: string;
-  title: string;
-  content: string;
-  audioUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import { Brief } from '@prisma/client';
 
 export class GenerateBriefAudioJob extends Job<{ briefId: Brief['id'] }> {
   public static getName = (briefId: string) =>

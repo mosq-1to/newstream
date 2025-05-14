@@ -1,17 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../utils/database/database.service';
 import { BriefWriteDto } from './interface/brief-write.dto';
-
-// Using type definition until Prisma client is regenerated
-type Brief = {
-  id: string;
-  title: string;
-  content: string;
-  audioUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  articles?: any[];
-};
+import { Brief } from '@prisma/client';
 
 @Injectable()
 export class BriefsRepository {

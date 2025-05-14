@@ -7,7 +7,7 @@ export class GenerateBriefAudioUseCase {
   constructor(
     private readonly briefsRepository: BriefsRepository,
     private readonly briefAudioGenerationQueue: BriefAudioGenerationQueue,
-  ) {}
+  ) { }
 
   async execute(briefId: string): Promise<void> {
     // Get the brief
@@ -22,9 +22,5 @@ export class GenerateBriefAudioUseCase {
       brief.content,
       brief.title,
     );
-
-    // The queue will handle the audio generation asynchronously
-    // We don't update the brief with the audioUrl here - that will be done
-    // after processing is complete, or via a separate endpoint
   }
 }
