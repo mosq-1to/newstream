@@ -5,6 +5,7 @@ import 'package:client_app/api/newstream/auth/google_auth_code_validation_model.
 import 'package:client_app/api/newstream/briefs/brief_model.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/user/user_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -88,12 +89,10 @@ class NewstreamApi {
       headers: {
         'Authorization': 'Bearer $_accessToken',
       },
-      body: jsonEncode({
-        'articleIds': articleIds,
-      }),
+      body: jsonEncode([articleIds]),
     );
 
-    if (response.statusCode != 200) {
+    if (response.statusCode != 201) {
       throw Exception('Failed to create brief: ${response.body}');
     }
 
@@ -112,7 +111,6 @@ class NewstreamApi {
     final httpUri = Uri.http(
       AppConfig().env.newstreamApiUrl,
       'stream/brief/$briefId/playlist.m3u8',
-      {'access_token': _accessToken},
     );
 
     return httpUri.toString();

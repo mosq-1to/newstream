@@ -2,16 +2,21 @@ import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/topics/widgets/topic_options_sheet.dart';
 import 'package:flutter/material.dart';
 
-class TopicTile extends StatelessWidget {
+class TopicTile extends StatefulWidget {
   final String title;
   final String? imageUrl;
 
   const TopicTile({
-    Key? key,
+    super.key,
     required this.title,
     this.imageUrl,
-  }) : super(key: key);
+  });
 
+  @override
+  State<TopicTile> createState() => _TopicTileState();
+}
+
+class _TopicTileState extends State<TopicTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -22,9 +27,9 @@ class TopicTile extends StatelessWidget {
           // Image or placeholder container
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: imageUrl != null && imageUrl!.isNotEmpty
+            child: widget.imageUrl != null && widget.imageUrl!.isNotEmpty
                 ? Image.network(
-                    imageUrl!,
+                    widget.imageUrl!,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
@@ -38,7 +43,7 @@ class TopicTile extends StatelessWidget {
           SizedBox(
             width: 100,
             child: Text(
-              title,
+              widget.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -64,8 +69,8 @@ class TopicTile extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => TopicOptionsSheet(
-        topicTitle: title,
-        topicImageUrl: imageUrl,
+        topicTitle: widget.title,
+        topicImageUrl: widget.imageUrl,
       ),
     ).then((result) {
       if (result != null) {

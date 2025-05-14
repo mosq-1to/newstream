@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
@@ -25,6 +26,7 @@ class TopicOptionsSheet extends StatefulWidget {
 class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
   int _selectedTimeframeIndex = 2; // Default to 15 minutes
   int _selectedLengthIndex = 0; // Default to 1 day
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -231,27 +233,43 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: InkWell(
-        onTap: () async {
-          // Handle play button pressed
-          final selectedTimeframe =
-              TopicOptions.timeframes[_selectedTimeframeIndex];
-          final selectedLength = TopicOptions.lengths[_selectedLengthIndex];
+        onTap: _isLoading
+            ? null
+            : () async {
+                setState(() => _isLoading = true);
+                final selectedTimeframe =
+                    TopicOptions.timeframes[_selectedTimeframeIndex];
+                final selectedLength =
+                    TopicOptions.lengths[_selectedLengthIndex];
 
-          // Create a result object with the selected values
-          final result = {
-            'topicTitle': widget.topicTitle,
-            'timeframe': selectedTimeframe,
-            'length': selectedLength,
-          };
+                // Create a result object with the selected values
+                final result = {
+                  'topicTitle': widget.topicTitle,
+                  'timeframe': selectedTimeframe,
+                  'length': selectedLength,
+                };
 
-          // Close the bottom sheet and return the selected values
-          Navigator.of(context).pop(result);
-          final playerController = Get.find<PlayerController>();
-          await playerController.playExample();
-
-          // Show the player page in full screen
-          await PlayerPage.show(context);
-        },
+                try {
+                  final brief = await Get.find<NewstreamApi>().createBrief(
+                    [
+                      "1260c0b1-471b-4b3d-b2b3-3b5484329fc9",
+                      "79adf20b-6b23-4592-a7c1-257b97c658f9",
+                      "6692d088-97ae-402b-82ca-056acfe7a872",
+                    ],
+                  );
+                  if (!mounted) return;
+                  final playerController = Get.find<PlayerController>();
+                  await playerController.playBrief(brief);
+                  if (!mounted) return;
+                  await PlayerPage.show(context);
+                  if (!mounted) return;
+                  Navigator.of(context).pop(result);
+                } catch (e, st) {
+                  debugPrint('Error playing a Brief: $e\n$st');
+                } finally {
+                  if (mounted) setState(() => _isLoading = false);
+                }
+              },
         child: Container(
           width: 64,
           height: 64,
@@ -259,12 +277,21 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
             shape: BoxShape.circle,
             color: Color(0xFF232323),
           ),
-          child: const Center(
-            child: Icon(
-              Icons.play_arrow,
-              color: Colors.white,
-              size: 36,
-            ),
+          child: Center(
+            child: _isLoading
+                ? const SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      strokeWidth: 3,
+                    ),
+                  )
+                : const Icon(
+                    Icons.play_arrow,
+                    color: Colors.white,
+                    size: 36,
+                  ),
           ),
         ),
       ),

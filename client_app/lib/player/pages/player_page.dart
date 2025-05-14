@@ -94,11 +94,6 @@ class _PlayerPageState extends State<PlayerPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       _buildHeader(),
-                                      const SizedBox(height: 16),
-                                      _buildThumbnail(
-                                        currentBrief.thumbnailUrl,
-                                        playerState.isProcessing,
-                                      ),
                                       const SizedBox(height: 24),
                                       Text(
                                         currentBrief.content,
@@ -145,50 +140,6 @@ class _PlayerPageState extends State<PlayerPage> {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildThumbnail(String thumbnailUrl, bool isProcessing) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Stack(
-        children: [
-          Image.network(
-            thumbnailUrl,
-            width: 220,
-            height: 220,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                width: 220,
-                height: 220,
-                color: const Color(0xFF333333),
-                child: const Icon(
-                  Icons.image_not_supported,
-                  color: Colors.white,
-                  size: 64,
-                ),
-              );
-            },
-          ),
-          if (isProcessing)
-            Container(
-              width: 220,
-              height: 220,
-              color: Colors.black.withAlpha(120),
-              child: const Center(
-                child: SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

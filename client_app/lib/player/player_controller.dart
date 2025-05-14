@@ -4,6 +4,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:client_app/api/newstream/briefs/brief_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/player/player_model.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart' as audio;
 import 'package:just_audio_background/just_audio_background.dart';
@@ -78,19 +79,6 @@ class PlayerController extends GetxController {
     super.onClose();
   }
 
-  Future<void> playExample() async {
-    try {
-      const brief = Brief(
-        id: '1',
-        content: 'Example',
-        thumbnailUrl: 'https://via.placeholder.com/150',
-      );
-      await playBrief(brief);
-    } catch (e) {
-      _handleError(e);
-    }
-  }
-
   Future<void> playBrief(Brief brief) async {
     try {
       // Stop any currently playing audio
@@ -109,7 +97,6 @@ class PlayerController extends GetxController {
       final mediaItem = MediaItem(
         id: brief.id,
         title: 'Brief',
-        artUri: Uri.parse(brief.thumbnailUrl),
       );
 
       // Set the audio source with the MediaItem
