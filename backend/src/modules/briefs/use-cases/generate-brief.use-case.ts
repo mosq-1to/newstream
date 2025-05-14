@@ -34,6 +34,8 @@ export class GenerateBriefUseCase {
     return {
       content,
       articleIds: articles.map(article => article.id),
+      // todo - hardcoded for now. make it dynamic later on
+      topicId: '1b5831a4-a72d-4abe-9d4e-7c5bcf592c28',
     };
   }
 }
