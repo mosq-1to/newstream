@@ -1,4 +1,4 @@
-import 'package:client_app/homefeed/topic_tile_data.dart';
+import 'package:client_app/api/newstream/models/topic_model.dart';
 
 class MockTopics {
   static List<String> getAllTopicTitles() {
@@ -13,72 +13,74 @@ class MockTopics {
     return uniqueTitles.toList();
   }
 
-  static const Map<String, List<TopicTileData>> topicsByCategory = {
+  static final Map<String, List<Topic>> topicsByCategory = {
     'Trending topics': [
-      TopicTileData(
+      Topic(
+        id: 'mock-stock-markets',
         title: 'Stock markets',
-        imageUrl:
-            'https://images.unsplash.com/photo-1519125323398-675f0ddb6308',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308',
       ),
-      TopicTileData(
+      Topic(
+        id: 'mock-artificial-intelligence',
         title: 'Artificial Intelligence',
-        imageUrl:
-            'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
       ),
-      TopicTileData(
+      Topic(
+        id: 'mock-politics',
         title: 'Politics',
-        imageUrl:
-            'https://images.unsplash.com/photo-1464983953574-0892a716854b',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1464983953574-0892a716854b',
       ),
-      TopicTileData(
+      Topic(
+        id: 'mock-stock-markets-2',
         title: 'Stock markets',
-        imageUrl:
-            'https://images.unsplash.com/photo-1519125323398-675f0ddb6308',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308',
       ),
     ],
     'Technology': [
-      TopicTileData(
+      Topic(
+        id: 'mock-front-end-programming',
         title: 'Front-end programming',
-        imageUrl:
-            'https://images.unsplash.com/photo-1519389950473-47ba0277781c',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c',
       ),
-      TopicTileData(
+      Topic(
+        id: 'mock-artificial-intelligence-2',
         title: 'Artificial Intelligence',
-        imageUrl:
-            'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
       ),
-      TopicTileData(
+      Topic(
+        id: 'mock-mobile-development',
         title: 'Mobile development',
-        imageUrl:
-            'https://images.unsplash.com/photo-1519125323398-675f0ddb6308',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308',
       ),
-      TopicTileData(
+      Topic(
+        id: 'mock-front-end-programming-2',
         title: 'Front-end programming',
-        imageUrl:
-            'https://images.unsplash.com/photo-1519389950473-47ba0277781c',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c',
       ),
     ],
     'Health': [
-      TopicTileData(
+      Topic(
+        id: 'mock-nutrition',
         title: 'Nutrition',
-        imageUrl:
-            'https://images.unsplash.com/photo-1465101046530-73398c7f28ca',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca',
       ),
-      TopicTileData(
+      Topic(
+        id: 'mock-mental-health',
         title: 'Mental Health',
-        imageUrl:
-            'https://images.unsplash.com/photo-1503676382389-4809596d5290',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1503676382389-4809596d5290',
       ),
-      TopicTileData(
+      Topic(
+        id: 'mock-fitness',
         title: 'Fitness',
-        imageUrl:
-            'https://images.unsplash.com/photo-1519864600265-abb23847ef2c',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1519864600265-abb23847ef2c',
       ),
-      TopicTileData(
+      Topic(
+        id: 'mock-nutrition-2',
         title: 'Nutrition',
-        imageUrl:
-            'https://images.unsplash.com/photo-1465101046530-73398c7f28ca',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca',
       ),
     ],
   };
+
+
 }

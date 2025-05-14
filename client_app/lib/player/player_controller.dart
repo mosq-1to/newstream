@@ -1,7 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:audio_session/audio_session.dart';
-import 'package:client_app/api/newstream/briefs/brief_model.dart';
+import 'package:client_app/api/newstream/models/brief_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/player/player_model.dart';
 import 'package:flutter/material.dart';

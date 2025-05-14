@@ -1,4 +1,4 @@
-import 'package:client_app/api/newstream/briefs/brief_model.dart';
+import 'package:client_app/api/newstream/models/brief_model.dart';
 
 /// Provides mock data for player functionality when actual API data is not available
 class MockPlayerData {

@@ -1,10 +1,10 @@
 import 'package:client_app/topics/mock_topics.dart';
-import 'package:client_app/homefeed/topic_tile_data.dart';
+import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:get/get.dart';
 
 class NewstreamSearchController extends GetxController {
   final searchQuery = ''.obs;
-  final RxList<TopicTileData> searchResults = <TopicTileData>[].obs;
+  final RxList<Topic> searchResults = <Topic>[].obs;
   
   // Reference to the unified mock topics
   

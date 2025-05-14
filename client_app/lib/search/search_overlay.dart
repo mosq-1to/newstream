@@ -120,7 +120,7 @@ class _SearchOverlayState extends State<SearchOverlay>
                               final topicData = controller.searchResults[index];
                               return TopicTile(
                                 title: topicData.title,
-                                imageUrl: topicData.imageUrl,
+                                imageUrl: topicData.thumbnailUrl,
                               );
                             },
                           ),

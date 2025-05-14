@@ -2,10 +2,9 @@ import 'dart:convert';
 
 import 'package:client_app/api/newstream/auth/current_user_model.dart';
 import 'package:client_app/api/newstream/auth/google_auth_code_validation_model.dart';
-import 'package:client_app/api/newstream/briefs/brief_model.dart';
+import 'package:client_app/api/newstream/models/brief_model.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/user/user_repository.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 

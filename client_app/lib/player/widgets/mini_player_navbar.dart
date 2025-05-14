@@ -1,4 +1,4 @@
-import 'package:client_app/api/newstream/briefs/brief_model.dart';
+import 'package:client_app/api/newstream/models/brief_model.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';

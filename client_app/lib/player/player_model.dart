@@ -1,4 +1,4 @@
-import 'package:client_app/api/newstream/briefs/brief_model.dart';
+import 'package:client_app/api/newstream/models/brief_model.dart';
 
 class PlayerState {
   final bool isPlaying;

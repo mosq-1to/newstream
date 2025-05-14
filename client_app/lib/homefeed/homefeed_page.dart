@@ -1,7 +1,7 @@
 import 'package:client_app/common/theme/dark_background_layout.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/homefeed/homefeed_controller.dart';
-import 'package:client_app/homefeed/topic_tile_data.dart';
+import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/navbar/bottom_navbar.dart';
 import 'package:client_app/player/widgets/mini_player_navbar.dart';
 import 'package:client_app/player/player_controller.dart';
@@ -70,7 +70,7 @@ class HomefeedPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTopicRow(List<TopicTileData> topics) {
+  Widget _buildTopicRow(List<Topic> topics) {
     return SizedBox(
       height: 160,
       child: ListView.separated(
@@ -82,7 +82,7 @@ class HomefeedPage extends StatelessWidget {
           final topic = topics[index];
           return TopicTile(
             title: topic.title,
-            imageUrl: topic.imageUrl,
+            imageUrl: topic.thumbnailUrl,
           );
         },
       ),
