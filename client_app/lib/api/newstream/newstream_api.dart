@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:client_app/api/newstream/auth/current_user_model.dart';
 import 'package:client_app/api/newstream/auth/google_auth_code_validation_model.dart';
+import 'package:client_app/api/newstream/briefs/brief_model.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/user/user_repository.dart';
 import 'package:get/get.dart';
@@ -68,6 +69,37 @@ class NewstreamApi {
     _accessToken = await UserRepository.getAccessToken();
   }
   /* END Auth */
+
+  /* Brief */
+  Future<Brief> createBrief(List<String> articleIds) async {
+    await _loadAccessToken();
+
+    if (_accessToken == null) {
+      throw Exception('accessToken is not set');
+    }
+
+    final httpUri = Uri.http(
+      AppConfig().env.newstreamApiUrl,
+      'briefs',
+    );
+
+    final response = await http.post(
+      httpUri,
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+      },
+      body: jsonEncode({
+        'articleIds': articleIds,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to create brief: ${response.body}');
+    }
+
+    final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+    return Brief.fromJson(responseBody);
+  }
 
   /* Stream */
   Future<String> getBriefStreamPlaylistUrl(String briefId) async {
