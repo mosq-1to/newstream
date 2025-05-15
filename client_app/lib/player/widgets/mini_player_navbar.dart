@@ -73,19 +73,6 @@ class MiniPlayerNavbar extends StatelessWidget {
                   color: Colors.grey[800],
                   child: const Icon(Icons.broken_image, color: Colors.white54),
                 ),
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    width: 40,
-                    height: 40,
-                    color: Colors.grey[800],
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  );
-                },
               )
             : Container(
                 width: 40,
