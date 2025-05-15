@@ -211,6 +211,7 @@ class PlayerControls extends StatelessWidget {
         PlayerControlButton(
           onTap: controller.togglePlayPause,
           isPlaying: isPlaying,
+          isLoading: controller.playerState.value.isProcessing,
           size: 64.0,
         ),
       ],
