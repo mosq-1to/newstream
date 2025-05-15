@@ -37,11 +37,13 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
   @override
   Widget build(BuildContext context) {
     final effectiveProgress = _dragValue ?? widget.progress;
-    final displayPosition = widget.duration == Duration.zero
+    final effectiveDuration =
+        widget.isGenerating ? const Duration(minutes: 5) : widget.duration;
+    final displayPosition = effectiveDuration == Duration.zero
         ? Duration.zero
         : Duration(
             milliseconds:
-                (widget.duration.inMilliseconds * effectiveProgress).round(),
+                (effectiveDuration.inMilliseconds * effectiveProgress).round(),
           );
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -75,22 +77,22 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
                             _dragValue = newProgress;
                           });
                         },
-              onHorizontalDragEnd:
-                  (widget.disableDragSeek || widget.isGenerating)
-                      ? null
-                      : (_) {
-                          if (_dragValue != null) {
-                            final newPosition = Duration(
-                              milliseconds:
-                                  (widget.duration.inMilliseconds * _dragValue!)
-                                      .round(),
-                            );
-                            widget.onSeek(newPosition);
-                          }
-                          setState(() {
-                            _dragValue = null;
-                          });
-                        },
+              onHorizontalDragEnd: (widget.disableDragSeek ||
+                      widget.isGenerating)
+                  ? null
+                  : (_) {
+                      if (_dragValue != null) {
+                        final newPosition = Duration(
+                          milliseconds:
+                              (effectiveDuration.inMilliseconds * _dragValue!)
+                                  .round(),
+                        );
+                        widget.onSeek(newPosition);
+                      }
+                      setState(() {
+                        _dragValue = null;
+                      });
+                    },
               onTapUp: (widget.disableDragSeek || widget.isGenerating)
                   ? null
                   : (TapUpDetails details) {
@@ -99,7 +101,7 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
                           (dx / width).clamp(0.0, 1.0).toDouble();
                       final newPosition = Duration(
                         milliseconds:
-                            (widget.duration.inMilliseconds * newProgress)
+                            (effectiveDuration.inMilliseconds * newProgress)
                                 .round(),
                       );
                       widget.onSeek(newPosition);

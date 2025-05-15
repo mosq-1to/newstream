@@ -40,6 +40,11 @@ class PlayerState {
     // hide the bug with reinitializing seek bar
     final shouldShowTheBar = position.inMilliseconds >= 300;
 
+    if (isGenerating && currentBrief != null) {
+      return position.inMicroseconds /
+          currentBrief!.targetDuration.inMicroseconds;
+    }
+
     if (!shouldShowTheBar || duration == null || duration == Duration.zero) {
       return 0.0;
     }
