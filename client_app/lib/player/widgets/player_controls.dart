@@ -32,19 +32,6 @@ class PlayerSeekBar extends StatefulWidget {
 }
 
 class PlayerSeekBarState extends State<PlayerSeekBar> {
-  void _showGeneratingTooltip(BuildContext context) {
-    final messenger = ScaffoldMessenger.maybeOf(context);
-    if (messenger != null) {
-      messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(
-        const SnackBar(
-          content: Text('Seeking is disabled while audio is generating.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    }
-  }
-
   double? _dragValue;
 
   @override
@@ -71,9 +58,7 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
               behavior: HitTestBehavior.translucent,
               onHorizontalDragStart:
                   (widget.disableDragSeek || widget.isGenerating)
-                      ? (widget.isGenerating
-                          ? (_) => _showGeneratingTooltip(context)
-                          : null)
+                      ? null
                       : (_) {
                           setState(() {
                             _dragValue = widget.progress;
@@ -81,9 +66,7 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
                         },
               onHorizontalDragUpdate:
                   (widget.disableDragSeek || widget.isGenerating)
-                      ? (widget.isGenerating
-                          ? (_) => _showGeneratingTooltip(context)
-                          : null)
+                      ? null
                       : (details) {
                           final dx = details.localPosition.dx.clamp(0.0, width);
                           final newProgress =
@@ -94,9 +77,7 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
                         },
               onHorizontalDragEnd:
                   (widget.disableDragSeek || widget.isGenerating)
-                      ? (widget.isGenerating
-                          ? (_) => _showGeneratingTooltip(context)
-                          : null)
+                      ? null
                       : (_) {
                           if (_dragValue != null) {
                             final newPosition = Duration(
@@ -111,10 +92,7 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
                           });
                         },
               onTapUp: (widget.disableDragSeek || widget.isGenerating)
-                  ? (widget.isGenerating
-                      ? (TapUpDetails details) =>
-                          _showGeneratingTooltip(context)
-                      : null)
+                  ? null
                   : (TapUpDetails details) {
                       final dx = details.localPosition.dx.clamp(0.0, width);
                       final newProgress =
