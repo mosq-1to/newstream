@@ -10,14 +10,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:client_app/api/newstream/models/topic_model.dart';
+
 class TopicOptionsSheet extends StatefulWidget {
-  final String topicTitle;
-  final String? topicImageUrl;
+  final Topic topic;
 
   const TopicOptionsSheet({
     super.key,
-    required this.topicTitle,
-    this.topicImageUrl,
+    required this.topic,
   });
 
   @override
@@ -86,11 +86,11 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          if (widget.topicImageUrl != null)
+          if (widget.topic.thumbnailUrl.isNotEmpty)
             ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: Image.network(
-                widget.topicImageUrl!,
+                widget.topic.thumbnailUrl,
                 width: 48,
                 height: 48,
                 fit: BoxFit.cover,
@@ -104,7 +104,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
           const SizedBox(width: 16),
           Expanded(
             child: Text(
-              widget.topicTitle,
+              widget.topic.title,
               style: TextStyles.headingMd.copyWith(color: Colors.white),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -247,18 +247,14 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
 
                 // Create a result object with the selected values
                 final result = {
-                  'topicTitle': widget.topicTitle,
+                  'topicTitle': widget.topic.title,
                   'timeframe': selectedTimeframe,
                   'length': selectedLength,
                 };
 
                 try {
                   final brief = await Get.find<NewstreamApi>().createBrief(
-                    [
-                      "1260c0b1-471b-4b3d-b2b3-3b5484329fc9",
-                      "79adf20b-6b23-4592-a7c1-257b97c658f9",
-                      "6692d088-97ae-402b-82ca-056acfe7a872",
-                    ],
+                    widget.topic.id,
                   );
                   final playerController = Get.find<PlayerController>();
                   Navigator.of(context).pop(result);

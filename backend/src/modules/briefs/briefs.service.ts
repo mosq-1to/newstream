@@ -19,14 +19,9 @@ export class BriefsService {
     return this.briefsRepository.findOne(id);
   }
 
-  async createBrief(articleIds: string[]) {
-    // Fetch the articles
+  async createBrief(topicId: string) {
     const articles = await this.articlesRepository.findByIds(articleIds);
-
-    // Generate brief using Gemini
     const briefDto = await this.generateBriefUseCase.execute(articles);
-
-    // Save the brief
     return this.briefsRepository.saveBrief(briefDto);
   }
 }

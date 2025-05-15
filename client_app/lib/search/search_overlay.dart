@@ -1,15 +1,14 @@
+import 'dart:ui';
+
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/search/search_controller.dart';
-
 import 'package:client_app/topics/widgets/topic_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:ui';
-
 import 'package:material_symbols_icons/symbols.dart';
 
 class SearchOverlay extends StatefulWidget {
-  const SearchOverlay({Key? key}) : super(key: key);
+  const SearchOverlay({super.key});
 
   @override
   State<SearchOverlay> createState() => _SearchOverlayState();
@@ -119,8 +118,7 @@ class _SearchOverlayState extends State<SearchOverlay>
                             itemBuilder: (context, index) {
                               final topicData = controller.searchResults[index];
                               return TopicTile(
-                                title: topicData.title,
-                                imageUrl: topicData.thumbnailUrl,
+                                topic: topicData,
                               );
                             },
                           ),

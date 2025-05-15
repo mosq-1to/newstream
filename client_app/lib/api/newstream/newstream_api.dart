@@ -101,7 +101,7 @@ class NewstreamApi {
   }
 
   /* Brief */
-  Future<Brief> createBrief(List<String> articleIds) async {
+  Future<Brief> createBrief(String topicId) async {
     await _loadAccessToken();
 
     if (_accessToken == null) {
@@ -118,7 +118,9 @@ class NewstreamApi {
       headers: {
         'Authorization': 'Bearer $_accessToken',
       },
-      body: jsonEncode([articleIds]),
+      body: jsonEncode({
+        'topicId': topicId,
+      }),
     );
 
     if (response.statusCode != 201) {

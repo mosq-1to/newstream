@@ -74,8 +74,7 @@ class HomefeedPage extends StatelessWidget {
         itemBuilder: (context, index) {
           final topic = topics[index];
           return TopicTile(
-            title: topic.title,
-            imageUrl: topic.thumbnailUrl,
+            topic: topic,
           );
         },
       ),

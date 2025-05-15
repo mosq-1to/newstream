@@ -3,14 +3,14 @@ import 'package:client_app/common/ui/tappable.dart';
 import 'package:client_app/topics/widgets/topic_options_sheet.dart';
 import 'package:flutter/material.dart';
 
+import 'package:client_app/api/newstream/models/topic_model.dart';
+
 class TopicTile extends StatefulWidget {
-  final String title;
-  final String? imageUrl;
+  final Topic topic;
 
   const TopicTile({
     super.key,
-    required this.title,
-    this.imageUrl,
+    required this.topic,
   });
 
   @override
@@ -28,9 +28,9 @@ class _TopicTileState extends State<TopicTile> {
           // Image or placeholder container
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: widget.imageUrl != null && widget.imageUrl!.isNotEmpty
+            child: widget.topic.thumbnailUrl.isNotEmpty
                 ? Image.network(
-                    widget.imageUrl!,
+                    widget.topic.thumbnailUrl,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
@@ -44,7 +44,7 @@ class _TopicTileState extends State<TopicTile> {
           SizedBox(
             width: 100,
             child: Text(
-              widget.title,
+              widget.topic.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -70,8 +70,7 @@ class _TopicTileState extends State<TopicTile> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => TopicOptionsSheet(
-        topicTitle: widget.title,
-        topicImageUrl: widget.imageUrl,
+        topic: widget.topic,
       ),
     ).then((result) {
       if (result != null) {

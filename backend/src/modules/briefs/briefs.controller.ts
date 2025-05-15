@@ -19,6 +19,7 @@ export class BriefsController {
 
   @Post()
   create(@Body() createBriefDto: { articleIds: string[] }) {
+    console.log({ createBriefDto });
     return this.briefsService.createBrief(createBriefDto.articleIds);
   }
 }
