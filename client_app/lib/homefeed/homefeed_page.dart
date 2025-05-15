@@ -1,11 +1,10 @@
+import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/common/theme/dark_background_layout.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/homefeed/homefeed_controller.dart';
-import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/navbar/bottom_navbar.dart';
-import 'package:client_app/player/widgets/mini_player_navbar.dart';
 import 'package:client_app/player/player_controller.dart';
-import 'package:client_app/player/mock_player_data.dart';
+import 'package:client_app/player/widgets/mini_player_navbar.dart';
 import 'package:client_app/topics/widgets/topic_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,17 +16,7 @@ class HomefeedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<HomefeedController>();
     final topicsByCategory = controller.fetchTopics();
-    final playerController = Get.put(PlayerController(), permanent: true);
-    // Inject mock player data if none set
-    if (playerController.playerState.value.currentBrief == null) {
-      playerController.playerState.value =
-          playerController.playerState.value.copyWith(
-        currentBrief: MockPlayerData.mockBrief,
-        isPlaying: true,
-        position: const Duration(seconds: 35),
-        duration: const Duration(minutes: 15),
-      );
-    }
+    final playerController = Get.find<PlayerController>();
 
     return Scaffold(
       bottomNavigationBar: Column(

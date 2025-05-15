@@ -71,14 +71,12 @@ class MiniPlayerNavbar extends StatelessWidget {
                   width: 40,
                   height: 40,
                   color: Colors.grey[800],
-                  child: const Icon(Icons.broken_image, color: Colors.white54),
                 ),
               )
             : Container(
                 width: 40,
                 height: 40,
                 color: Colors.grey[800],
-                child: const Icon(Icons.image, color: Colors.white54),
               ),
       );
     });
