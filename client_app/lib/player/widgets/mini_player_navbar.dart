@@ -154,6 +154,7 @@ class MiniPlayerNavbar extends StatelessWidget {
         hideTimeControls: true,
         disableDragSeek: true,
         seekBarHeight: 2.0,
+        isGenerating: playerState.isGenerating,
       );
     });
   }

@@ -3,6 +3,7 @@ import 'package:client_app/api/newstream/models/brief_model.dart';
 class PlayerState {
   final bool isPlaying;
   final bool isProcessing;
+  final bool isGenerating;
   final Brief? currentBrief;
   final Duration position;
   final Duration? duration;
@@ -10,6 +11,7 @@ class PlayerState {
   const PlayerState({
     this.isPlaying = false,
     this.isProcessing = false,
+    this.isGenerating = false,
     this.currentBrief,
     this.position = Duration.zero,
     this.duration,
@@ -18,6 +20,7 @@ class PlayerState {
   PlayerState copyWith({
     bool? isPlaying,
     bool? isProcessing,
+    bool? isGenerating,
     double? progress,
     Brief? currentBrief,
     Duration? position,
@@ -26,6 +29,7 @@ class PlayerState {
     return PlayerState(
       isPlaying: isPlaying ?? this.isPlaying,
       isProcessing: isProcessing ?? this.isProcessing,
+      isGenerating: isGenerating ?? this.isGenerating,
       currentBrief: currentBrief ?? this.currentBrief,
       position: position ?? this.position,
       duration: duration ?? this.duration,

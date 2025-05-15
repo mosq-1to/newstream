@@ -5,7 +5,6 @@ import 'package:client_app/player/widgets/player_control_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// A seek bar widget with a draggable thumb for real-time feedback.
 class PlayerSeekBar extends StatefulWidget {
   final double progress;
   final Duration position;
@@ -14,6 +13,7 @@ class PlayerSeekBar extends StatefulWidget {
   final bool hideTimeControls;
   final bool disableDragSeek;
   final double seekBarHeight;
+  final bool isGenerating;
 
   const PlayerSeekBar({
     required this.progress,
@@ -23,6 +23,7 @@ class PlayerSeekBar extends StatefulWidget {
     this.hideTimeControls = false,
     this.disableDragSeek = false,
     this.seekBarHeight = 4.0,
+    this.isGenerating = false,
   }) : assert(seekBarHeight == 4.0 || seekBarHeight == 2.0,
             'seekBarHeight must be 4.0 or 2.0');
 
@@ -31,6 +32,19 @@ class PlayerSeekBar extends StatefulWidget {
 }
 
 class PlayerSeekBarState extends State<PlayerSeekBar> {
+  void _showGeneratingTooltip(BuildContext context) {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    if (messenger != null) {
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Seeking is disabled while audio is generating.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
   double? _dragValue;
 
   @override
@@ -55,40 +69,52 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
 
             return GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart: widget.disableDragSeek
-                  ? null
-                  : (_) {
-                      setState(() {
-                        _dragValue = widget.progress;
-                      });
-                    },
-              onHorizontalDragUpdate: widget.disableDragSeek
-                  ? null
-                  : (details) {
-                      final dx = details.localPosition.dx.clamp(0.0, width);
-                      final newProgress =
-                          (dx / width).clamp(0.0, 1.0).toDouble();
-                      setState(() {
-                        _dragValue = newProgress;
-                      });
-                    },
-              onHorizontalDragEnd: widget.disableDragSeek
-                  ? null
-                  : (_) {
-                      if (_dragValue != null) {
-                        final newPosition = Duration(
-                          milliseconds:
-                              (widget.duration.inMilliseconds * _dragValue!)
-                                  .round(),
-                        );
-                        widget.onSeek(newPosition);
-                      }
-                      setState(() {
-                        _dragValue = null;
-                      });
-                    },
-              onTapUp: widget.disableDragSeek
-                  ? null
+              onHorizontalDragStart:
+                  (widget.disableDragSeek || widget.isGenerating)
+                      ? (widget.isGenerating
+                          ? (_) => _showGeneratingTooltip(context)
+                          : null)
+                      : (_) {
+                          setState(() {
+                            _dragValue = widget.progress;
+                          });
+                        },
+              onHorizontalDragUpdate:
+                  (widget.disableDragSeek || widget.isGenerating)
+                      ? (widget.isGenerating
+                          ? (_) => _showGeneratingTooltip(context)
+                          : null)
+                      : (details) {
+                          final dx = details.localPosition.dx.clamp(0.0, width);
+                          final newProgress =
+                              (dx / width).clamp(0.0, 1.0).toDouble();
+                          setState(() {
+                            _dragValue = newProgress;
+                          });
+                        },
+              onHorizontalDragEnd:
+                  (widget.disableDragSeek || widget.isGenerating)
+                      ? (widget.isGenerating
+                          ? (_) => _showGeneratingTooltip(context)
+                          : null)
+                      : (_) {
+                          if (_dragValue != null) {
+                            final newPosition = Duration(
+                              milliseconds:
+                                  (widget.duration.inMilliseconds * _dragValue!)
+                                      .round(),
+                            );
+                            widget.onSeek(newPosition);
+                          }
+                          setState(() {
+                            _dragValue = null;
+                          });
+                        },
+              onTapUp: (widget.disableDragSeek || widget.isGenerating)
+                  ? (widget.isGenerating
+                      ? (TapUpDetails details) =>
+                          _showGeneratingTooltip(context)
+                      : null)
                   : (TapUpDetails details) {
                       final dx = details.localPosition.dx.clamp(0.0, width);
                       final newProgress =
@@ -160,7 +186,7 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
                     .copyWith(color: Colors.white.withOpacity(0.7)),
               ),
               Text(
-                formatDuration(widget.duration),
+                widget.isGenerating ? '~5:00' : formatDuration(widget.duration),
                 style: TextStyles.bodySm
                     .copyWith(color: Colors.white.withOpacity(0.7)),
               ),
@@ -196,6 +222,7 @@ class PlayerControls extends StatelessWidget {
             position: playerState.position,
             duration: playerState.duration ?? Duration.zero,
             onSeek: controller.seek,
+            isGenerating: playerState.isGenerating,
           ),
           const SizedBox(height: 16),
           _buildControlButtons(playerState.isPlaying),

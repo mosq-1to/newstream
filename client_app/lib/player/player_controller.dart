@@ -4,8 +4,8 @@ import 'package:audio_session/audio_session.dart';
 import 'package:client_app/api/newstream/models/brief_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/player/player_model.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart' as audio;
 import 'package:just_audio_background/just_audio_background.dart';
 
@@ -85,9 +85,19 @@ class PlayerController extends GetxController {
       playerState.value = PlayerState(
         currentBrief: brief,
         isProcessing: true,
+        isGenerating: true,
       );
       final playlistUrl =
           await _newstreamApi.getBriefStreamPlaylistUrl(brief.id);
+
+      final playlistResponse = await http.get(Uri.parse(playlistUrl));
+      bool isGenerating = true;
+      if (playlistResponse.statusCode == 200) {
+        final content = playlistResponse.body;
+        isGenerating = !content.contains('#EXT-X-ENDLIST');
+      }
+      playerState.value =
+          playerState.value.copyWith(isGenerating: isGenerating);
       final mediaItem = MediaItem(
         id: brief.id,
         title: 'Brief',
