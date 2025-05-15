@@ -15,47 +15,48 @@ class HomefeedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomefeedController>();
-    final topicsByCategory = controller.topics.value;
     final playerController = Get.find<PlayerController>();
 
-    return Scaffold(
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          MiniPlayerNavbar(controller: playerController),
-          BottomNavBar(
-            currentIndex: 0,
-            onTap: (index) {
-              if (index == 0) {
-                // Already on Homefeed, do nothing
-              }
-              // Implement navigation for other tabs when needed
-            },
-          ),
-        ],
-      ),
-      body: DarkBackgroundLayout(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...((topicsByCategory ?? {})
-                  .entries
-                  .map((entry) => [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            entry.key,
-                            style: TextStyles.headingLg,
+    return Obx(
+      () => Scaffold(
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MiniPlayerNavbar(controller: playerController),
+            BottomNavBar(
+              currentIndex: 0,
+              onTap: (index) {
+                if (index == 0) {
+                  // Already on Homefeed, do nothing
+                }
+                // Implement navigation for other tabs when needed
+              },
+            ),
+          ],
+        ),
+        body: DarkBackgroundLayout(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...((controller.topics.value ?? {})
+                    .entries
+                    .map((entry) => [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              entry.key,
+                              style: TextStyles.headingLg,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 28),
-                        _buildTopicRow(entry.value),
-                        const SizedBox(height: 20),
-                      ])
-                  .expand((widgetList) => widgetList)),
-            ],
+                          const SizedBox(height: 28),
+                          _buildTopicRow(entry.value),
+                          const SizedBox(height: 20),
+                        ])
+                    .expand((widgetList) => widgetList)),
+              ],
+            ),
           ),
         ),
       ),
