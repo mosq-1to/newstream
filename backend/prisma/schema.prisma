@@ -36,8 +36,8 @@ model Article {
   briefs Brief[] @relation("ArticleToBrief")
 
   // Relationship to Topic
-  topicId String?
-  topic   Topic?  @relation(fields: [topicId], references: [id])
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id])
 
   @@unique([sourceId, source])
 }
@@ -78,6 +78,6 @@ model Brief {
   articles Article[] @relation("ArticleToBrief")
 
   // Relationship to Topic
-  topicId String?
-  topic   Topic?  @relation(fields: [topicId], references: [id])
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id])
 }

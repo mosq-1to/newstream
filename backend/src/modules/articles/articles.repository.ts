@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Article } from '@prisma/client';
 import { DatabaseService } from '../../utils/database/database.service';
 import { ArticlesApi } from './api/articles.api';
-import { ArticleReadModel } from './api/read-models/article.read-model';
+import { ArticleWriteDto } from './interface/article-write.dto';
 
 @Injectable()
 export class ArticlesRepository {
@@ -43,7 +43,7 @@ export class ArticlesRepository {
     return this.articlesApi.getArticles();
   }
 
-  async saveArticles(articles: ArticleReadModel[]) {
+  async saveArticles(articles: ArticleWriteDto[]) {
     return this.databaseService.article.createManyAndReturn({
       data: articles,
       skipDuplicates: true,

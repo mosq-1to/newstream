@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BriefsRepository } from './briefs.repository';
 import { GenerateBriefUseCase } from './use-cases/generate-brief.use-case';
 import { ArticlesRepository } from '../articles/articles.repository';
-import { BriefCreateDto } from './interface/brief.create.dto';
+import { BriefCreateDto } from './interface/brief.create-model';
 
 @Injectable()
 export class BriefsService {
@@ -22,7 +22,8 @@ export class BriefsService {
 
   async createBrief(briefCreateDto: BriefCreateDto) {
     const articles = await this.articlesRepository.findByTopicId(briefCreateDto.topicId);
-    const briefDto = await this.generateBriefUseCase.execute(articles);
+    // get only first 3 articles for testing
+    const briefDto = await this.generateBriefUseCase.execute(articles.slice(0, 3));
     return this.briefsRepository.saveBrief(briefDto);
   }
 }

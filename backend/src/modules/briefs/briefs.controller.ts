@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
 import { BriefsService } from './briefs.service';
 import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
-import { BriefCreateDto } from './interface/brief.create.dto';
+import { BriefCreateDto } from './interface/brief.create-model';
 
 @Controller('briefs')
 @SkipAuth()
