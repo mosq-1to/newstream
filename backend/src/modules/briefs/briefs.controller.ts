@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
 import { BriefsService } from './briefs.service';
 import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
+import { BriefCreateDto } from './interface/brief.create.dto';
 
 @Controller('briefs')
 @SkipAuth()
@@ -18,8 +19,7 @@ export class BriefsController {
   }
 
   @Post()
-  create(@Body() createBriefDto: { articleIds: string[] }) {
-    console.log({ createBriefDto });
-    return this.briefsService.createBrief(createBriefDto.articleIds);
+  create(@Body() briefCreateDto: BriefCreateDto) {
+    return this.briefsService.createBrief(briefCreateDto);
   }
 }

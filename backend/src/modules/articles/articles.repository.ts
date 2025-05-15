@@ -9,7 +9,7 @@ export class ArticlesRepository {
   constructor(
     private readonly articlesApi: ArticlesApi,
     private readonly databaseService: DatabaseService,
-  ) {}
+  ) { }
 
   async getAllArticles() {
     return this.databaseService.article.findMany();
@@ -27,6 +27,14 @@ export class ArticlesRepository {
         id: {
           in: articleIds,
         },
+      },
+    });
+  }
+
+  async findByTopicId(topicId: string) {
+    return this.databaseService.article.findMany({
+      where: {
+        topicId,
       },
     });
   }
