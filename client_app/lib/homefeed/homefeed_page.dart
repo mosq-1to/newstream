@@ -15,7 +15,7 @@ class HomefeedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomefeedController>();
-    final topicsByCategory = controller.fetchTopics();
+    final topicsByCategory = controller.topics.value;
     final playerController = Get.find<PlayerController>();
 
     return Scaffold(
@@ -40,18 +40,21 @@ class HomefeedPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final entry in topicsByCategory.entries) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    entry.key,
-                    style: TextStyles.headingLg,
-                  ),
-                ),
-                const SizedBox(height: 28),
-                _buildTopicRow(entry.value),
-                const SizedBox(height: 20),
-              ],
+              ...((topicsByCategory ?? {})
+                  .entries
+                  .map((entry) => [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            entry.key,
+                            style: TextStyles.headingLg,
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+                        _buildTopicRow(entry.value),
+                        const SizedBox(height: 20),
+                      ])
+                  .expand((widgetList) => widgetList)),
             ],
           ),
         ),

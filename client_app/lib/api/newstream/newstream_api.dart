@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:client_app/api/newstream/auth/current_user_model.dart';
 import 'package:client_app/api/newstream/auth/google_auth_code_validation_model.dart';
 import 'package:client_app/api/newstream/models/brief_model.dart';
+import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/user/user_repository.dart';
 import 'package:get/get.dart';
@@ -69,6 +70,35 @@ class NewstreamApi {
     _accessToken = await UserRepository.getAccessToken();
   }
   /* END Auth */
+
+  /* Topics */
+
+  Future<List<Topic>> fetchTopics() async {
+    await _loadAccessToken();
+
+    if (_accessToken == null) {
+      throw Exception('accessToken is not set');
+    }
+
+    final response = await http.get(
+      Uri.http(
+        AppConfig().env.newstreamApiUrl,
+        'topics',
+      ),
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to fetch topics: ${response.body}');
+    }
+
+    final responseBody = jsonDecode(response.body) as List<dynamic>;
+    return responseBody
+        .map<Topic>((topic) => Topic.fromJson(topic as Map<String, dynamic>))
+        .toList();
+  }
 
   /* Brief */
   Future<Brief> createBrief(List<String> articleIds) async {

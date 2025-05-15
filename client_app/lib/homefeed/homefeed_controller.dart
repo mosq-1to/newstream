@@ -1,18 +1,23 @@
 import 'package:client_app/api/newstream/models/topic_model.dart';
-import 'package:client_app/player/player_controller.dart';
-import 'package:client_app/topics/mock_topics.dart';
+import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:get/get.dart';
 
 class HomefeedController extends GetxController {
-  // Reference to the unified mock topics data
+  final NewstreamApi _newstreamApi = Get.find();
+  final Rxn<Map<String, List<Topic>>> topics = Rxn<Map<String, List<Topic>>>();
 
-  Map<String, List<Topic>> fetchTopics() {
-    // In a real app, this would fetch from an API
-    return MockTopics.topicsByCategory;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchTopics();
   }
 
-  final PlayerController _playerController;
-
-  HomefeedController({required PlayerController playerController})
-      : _playerController = playerController;
+  Future<void> fetchTopics() async {
+    final fetchedTopics = await _newstreamApi.fetchTopics();
+    final Map<String, List<Topic>> grouped = {};
+    for (final topic in fetchedTopics) {
+      grouped.putIfAbsent(topic.categoryTitle, () => []).add(topic);
+    }
+    topics.value = grouped;
+  }
 }
