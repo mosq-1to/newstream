@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ArticlesQueue } from '../queue/articles.queue';
 import { ConfigService } from '@nestjs/config';
 import * as xml2js from 'xml2js';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 @Injectable()
 export class FetchArticlesUseCase {
@@ -16,17 +17,31 @@ export class FetchArticlesUseCase {
 
   public async fetchArticles() {
     try {
-      // Fetch RSS feed using native fetch
-      const response = await fetch(this.googleNewsRssUrl);
+      const proxyUrl = this.configService.getOrThrow<string>('HTTP_PROXY_URL');
+      const proxyUser = this.configService.getOrThrow<string>('HTTP_PROXY_USER');
+      const proxyPassword = this.configService.getOrThrow<string>('HTTP_PROXY_PASSWORD');
+
+      const fetchOptions: any = {};
+
+      if (proxyUrl) {
+        const proxyAuth = proxyUser && proxyPassword
+          ? `${encodeURIComponent(proxyUser)}:${encodeURIComponent(proxyPassword)}@`
+          : '';
+        const formattedProxyUrl = proxyUrl.includes('://')
+          ? proxyUrl.replace('://', `://${proxyAuth}`)
+          : `http://${proxyAuth}${proxyUrl}`;
+
+        fetchOptions.agent = new HttpsProxyAgent(formattedProxyUrl);
+      }
+
+      const response = await fetch(this.googleNewsRssUrl, fetchOptions);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch RSS feed: ${response.statusText}`);
       }
 
-      // Get the XML content
       const xmlContent = await response.text();
 
-      // Parse XML to JS object
       const parser = new xml2js.Parser({
         explicitArray: false,
         normalize: true,
@@ -35,13 +50,10 @@ export class FetchArticlesUseCase {
 
       const result = await parser.parseStringPromise(xmlContent);
 
-      // Extract articles from the parsed RSS feed
       const items = result.rss.channel.item || [];
       const articles = Array.isArray(items) ? items : [items];
 
-      // Transform the data into a consistent format
-      const transformedArticles = articles.map(item => {
-        // Extract source information from item.source
+      const transformedArticles = items.map(item => {
         const sourceName = item.source?._;
         const sourceUrl = item.source?.$ ? item.source.$.url : '';
 
