@@ -4,7 +4,6 @@ import { ArticlesApi } from './api/articles.api';
 import { ArticlesTasks } from './articles.tasks';
 import { DatabaseService } from '../../utils/database/database.service';
 import { HttpModule } from '@nestjs/axios';
-import { ArticleScrapingService } from './scraping/article-scraping.service';
 import { NewsdataArticleMapper } from './api/providers/newsdata/newsdata-article.mapper';
 import { WorldNewsApi } from './api/providers/worldnewsapi/worldnews.api';
 import { WorldNewsArticleMapper } from './api/providers/worldnewsapi/world-news-article.mapper';
@@ -15,6 +14,7 @@ import { ArticlesController } from './articles.controller';
 import { ArticlesQueue } from './queue/articles.queue';
 import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
 import { ArticlesJobProcessor } from './queue/articles.job-processor';
+import { ScrapeArticleContentUseCase } from './use-cases/scrape-article-content.use-case';
 
 @Module({
   imports: [HttpModule, BullModule.registerQueue({ name: QueueName.Articles })],
@@ -28,11 +28,11 @@ import { ArticlesJobProcessor } from './queue/articles.job-processor';
       provide: ArticlesApi,
       useClass: WorldNewsApi,
     },
-    ArticleScrapingService,
     ArticlesTasks,
     ArticlesQueue,
     FetchArticlesUseCase,
     ArticlesJobProcessor,
+    ScrapeArticleContentUseCase,
   ],
   controllers: [ArticlesController],
   exports: [ArticlesService, ArticlesRepository],

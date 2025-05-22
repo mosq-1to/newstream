@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import Firecrawl from '@mendable/firecrawl-js';
 import { ConfigService } from '@nestjs/config';
+import Firecrawl from '@mendable/firecrawl-js';
 import { z } from 'zod';
 
-// todo - move to an external ScraperModule
-
 @Injectable()
-export class ArticleScrapingService {
+export class ScrapeArticleContentUseCase {
   private readonly firecrawl: Firecrawl;
 
   constructor(private readonly configService: ConfigService) {
@@ -15,22 +13,22 @@ export class ArticleScrapingService {
     });
   }
 
-  async scrapeArticleContent(url: string): Promise<string> | null {
+  public async execute(url: string): Promise<string | null> {
     const result = await this.firecrawl.scrapeUrl(url, {
       formats: ['json'],
       jsonOptions: {
-        schema: z.object(
-          {
-            title: z.string(),
-            content: z.string(),
-          }
-        )
+        schema: z.object({
+          title: z.string(),
+          content: z.string(),
+        })
       },
     });
+
     if (!result.success) {
       console.error(result.error);
       return null;
     }
+
     return result.json?.content;
   }
 }
