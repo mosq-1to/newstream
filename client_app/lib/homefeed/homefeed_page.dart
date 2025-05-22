@@ -1,78 +1,83 @@
-import 'package:client_app/api/newstream/stories/story_model.dart';
+import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/common/theme/dark_background_layout.dart';
 import 'package:client_app/common/theme/text_styles.dart';
-import 'package:client_app/common/ui/tappable.dart';
 import 'package:client_app/homefeed/homefeed_controller.dart';
-import 'package:client_app/homefeed/widgets/stories_list_entry.dart';
-import 'package:client_app/player/widgets/player_navbar.dart';
+import 'package:client_app/navbar/bottom_navbar.dart';
+import 'package:client_app/player/player_controller.dart';
+import 'package:client_app/player/widgets/mini_player_navbar.dart';
+import 'package:client_app/topics/widgets/topic_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomefeedPage extends StatelessWidget {
-  final ScrollController _scrollController = ScrollController();
-  final controller = Get.find<HomefeedController>();
-
-  HomefeedPage() {
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    final scrollPosition = _scrollController.position.pixels;
-    final maxScrollExtent = _scrollController.position.maxScrollExtent;
-
-    if (scrollPosition >= maxScrollExtent - 500) {
-      controller.fetchMoreStories();
-    }
-  }
+  const HomefeedPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DarkBackgroundLayout(
-        child: Obx(
-          () => ListView.builder(
-            controller: _scrollController,
-            // +1 for the header
-            itemCount: controller.stories.length + 1,
-            // Add padding for the player navbar
-            padding: const EdgeInsets.only(bottom: 88),
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return _buildRecentStoriesHeader();
-              } else {
-                final story = controller.stories[index - 1];
-                return _buildStoryEntry(story, controller);
-              }
-            },
+    final controller = Get.find<HomefeedController>();
+    final playerController = Get.find<PlayerController>();
+
+    return Obx(
+      () => Scaffold(
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MiniPlayerNavbar(controller: playerController),
+            BottomNavBar(
+              currentIndex: 0,
+              onTap: (index) {
+                if (index == 0) {
+                  // Already on Homefeed, do nothing
+                }
+                // Implement navigation for other tabs when needed
+              },
+            ),
+          ],
+        ),
+        body: DarkBackgroundLayout(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...((controller.topics.value ?? {})
+                    .entries
+                    .map((entry) => [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              entry.key,
+                              style: TextStyles.headingLg,
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+                          _buildTopicRow(entry.value),
+                          const SizedBox(height: 20),
+                        ])
+                    .expand((widgetList) => widgetList)),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildRecentStoriesHeader() {
-    return const Padding(
-      padding: EdgeInsets.only(top: 24, bottom: 48),
-      child: Text(
-        'Recent stories',
-        style: TextStyles.headingXl,
+  Widget _buildTopicRow(List<Topic> topics) {
+    return SizedBox(
+      height: 160,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        scrollDirection: Axis.horizontal,
+        itemCount: topics.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 20),
+        itemBuilder: (context, index) {
+          final topic = topics[index];
+          return TopicTile(
+            topic: topic,
+          );
+        },
       ),
     );
-  }
-
-  Widget _buildStoryEntry(Story story, HomefeedController controller) {
-    return Obx(() {
-      final currentlyPlayed = controller.getCurrentlyPlayedStory();
-      final isPlaying = currentlyPlayed?.id == story.id;
-
-      return Tappable(
-        onTap: isPlaying ? null : () => controller.openStory(story),
-        child: StoriesListEntry(
-          title: story.title,
-          thumbnailUrl: story.thumbnailUrl,
-          isPlaying: isPlaying,
-        ),
-      );
-    });
   }
 }

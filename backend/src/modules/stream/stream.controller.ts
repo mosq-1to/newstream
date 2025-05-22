@@ -9,26 +9,27 @@ export class StreamController {
   constructor(private readonly streamService: StreamService) {}
 
   // todo - remove SkipAuth once well tested
+
   @SkipAuth()
-  @Get('story/:storyId/playlist.m3u8')
-  async getStoryStream(@Param('storyId') storyId: string, @Res() res: Response) {
+  @Get('brief/:briefId/playlist.m3u8')
+  async getBriefStream(@Param('briefId') briefId: string, @Res() res: Response) {
     res.header('Content-Type', 'application/vnd.apple.mpegurl');
     res.header('Cache-Control', 'no-cache, no-store, must-revalidate, public, max-age=2');
-    const playlistPath = await this.streamService.getStoryPlaylistFile(storyId);
+    const playlistPath = await this.streamService.getBriefPlaylistFile(briefId);
     const fileStream = createReadStream(playlistPath);
     fileStream.pipe(res);
   }
 
   @SkipAuth()
-  @Get('story/:storyId/:segmentFilename')
-  async getStorySegment(
-    @Param('storyId') storyId: string,
+  @Get('brief/:briefId/:segmentFilename')
+  async getBriefSegment(
+    @Param('briefId') briefId: string,
     @Param('segmentFilename') segmentFilename: string,
     @Res() res: Response,
   ) {
     res.header('Content-Type', 'video/mp2t');
     res.header('Cache-Control', 'public, max-age=3600');
-    const filePath = await this.streamService.getStorySegmentFile(storyId, segmentFilename);
+    const filePath = await this.streamService.getBriefSegmentFile(briefId, segmentFilename);
     const fileStream = createReadStream(filePath);
     fileStream.pipe(res);
   }

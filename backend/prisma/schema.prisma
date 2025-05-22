@@ -28,21 +28,43 @@ model Article {
   url          String
   content      String?
   thumbnailUrl String?
-  story        Story?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  // Relationship to Brief
+  briefs Brief[] @relation("ArticleToBrief")
+
+  // Relationship to Topic
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id])
 
   @@unique([sourceId, source])
 }
 
-model Story {
-  id              String   @id @default(uuid())
-  title           String
-  content         String
-  thumbnailUrl    String?
-  sourceArticleId String   @unique
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model Topic {
+  id            String   @id @default(uuid())
+  title         String
+  thumbnailUrl  String
+  categoryTitle String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  article Article @relation(fields: [sourceArticleId], references: [id])
+  // Relationship to Briefs
+  briefs   Brief[]
+  articles Article[]
+}
+
+model Brief {
+  id      String @id @default(uuid())
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationship to Articles
+  articles Article[] @relation("ArticleToBrief")
+
+  // Relationship to Topic
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id])
 }

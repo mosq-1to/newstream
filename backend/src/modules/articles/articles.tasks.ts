@@ -9,7 +9,7 @@ export class ArticlesTasks {
   constructor(
     private readonly fetchArticlesUseCase: FetchArticlesUseCase,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   @Cron(EVERYDAY_AT_10_AND_20)
   async fetchLatestArticlesToDatabase() {
@@ -17,7 +17,7 @@ export class ArticlesTasks {
       return;
     }
 
-    const articles = await this.fetchArticlesUseCase.fetchArticles();
+    const articles = await this.fetchArticlesUseCase.execute();
 
     console.log(
       `[${new Date().toISOString()}] Fetched ${articles.length} articles and saved to database in the background`,

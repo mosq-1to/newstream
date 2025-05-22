@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
-import { StreamController } from './stream.controller';
-import { StreamService } from './stream.service';
-import { HlsService } from '../../utils/audio/hls.service';
-import { StoryAudioGenerationModule } from '../story-audio-generation/story-audio-generation.module';
 import { StorageModule } from '../storage/storage.module';
+import { BriefAudioGenerationModule } from '../brief-audio-generation/brief-audio-generation.module';
+import { BriefsModule } from '../briefs/briefs.module';
+import { HlsService } from '../../utils/audio/hls.service';
 
 @Module({
-  imports: [StoryAudioGenerationModule, StorageModule],
-  providers: [StreamService, HlsService],
-  controllers: [StreamController],
+  imports: [
+    StorageModule,
+    BriefAudioGenerationModule,
+    BriefsModule
+  ],
+  controllers: [],
+  providers: [HlsService],
 })
-export class StreamModule {}
+export class StreamModule { }

@@ -1,14 +1,17 @@
+import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:audio_session/audio_session.dart';
+import 'package:client_app/api/newstream/models/brief_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
-import 'package:client_app/api/newstream/stories/story_model.dart';
 import 'package:client_app/player/player_model.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart' as audio;
 import 'package:just_audio_background/just_audio_background.dart';
 
 class PlayerController extends GetxController {
+  Timer? _playlistCheckTimer;
   final NewstreamApi _newstreamApi = Get.find();
   final Rx<PlayerState> playerState = const PlayerState().obs;
   final audio.AudioPlayer _audioPlayer = audio.AudioPlayer();
@@ -74,45 +77,72 @@ class PlayerController extends GetxController {
 
   @override
   void onClose() {
+    _playlistCheckTimer?.cancel();
     _audioPlayer.dispose();
     super.onClose();
   }
 
-  Future<void> playStory(Story story) async {
+  Future<void> playBrief(Brief brief) async {
     try {
-      // Stop any currently playing audio
       await _audioPlayer.stop();
-
-      // Update player state to show loading with processing indicator
       playerState.value = PlayerState(
-        currentStory: story,
+        currentBrief: brief,
         isProcessing: true,
+        isGenerating: true,
       );
-
       final playlistUrl =
-          await _newstreamApi.getStoryStreamPlaylistUrl(story.id);
+          await _newstreamApi.getBriefStreamPlaylistUrl(brief.id);
 
-      // Create a MediaItem for the notification
-      final mediaItem = MediaItem(
-        id: story.id,
-        title: story.title,
-        artUri: Uri.parse(story.thumbnailUrl),
-        displayTitle: story.title,
-      );
+      // Cancel any previous timer
+      _playlistCheckTimer?.cancel();
 
-      // Set the audio source with the MediaItem
+      // Initial check
+      await _checkPlaylistGenerating(playlistUrl, initial: true);
+
+      // Start periodic check if still generating
+      if (playerState.value.isGenerating == true) {
+        _playlistCheckTimer =
+            Timer.periodic(const Duration(seconds: 2), (timer) async {
+          await _checkPlaylistGenerating(playlistUrl);
+        });
+      }
+
       final audioSource = audio.AudioSource.uri(
         Uri.parse(playlistUrl),
-        tag: mediaItem,
+        tag: MediaItem(
+          id: brief.id,
+          title: 'Brief',
+        ),
       );
 
       final session = await AudioSession.instance;
       await session.configure(const AudioSessionConfiguration.speech());
-
       await _audioPlayer.setAudioSource(audioSource);
-      await _audioPlayer.play();
+
+      return _audioPlayer.play();
     } catch (e) {
       _handleError(e);
+    }
+  }
+
+  Future<void> _checkPlaylistGenerating(String playlistUrl,
+      {bool initial = false}) async {
+    try {
+      final playlistResponse = await http.get(Uri.parse(playlistUrl));
+      bool isGenerating = true;
+      if (playlistResponse.statusCode == 200) {
+        final content = playlistResponse.body;
+        isGenerating = !content.contains('#EXT-X-ENDLIST');
+      }
+      if (playerState.value.isGenerating != isGenerating || initial) {
+        playerState.value =
+            playerState.value.copyWith(isGenerating: isGenerating);
+      }
+      if (!isGenerating) {
+        _playlistCheckTimer?.cancel();
+      }
+    } catch (e) {
+      developer.log('[PlayerController Playlist Check Error] $e');
     }
   }
 

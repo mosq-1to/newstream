@@ -1,7 +1,7 @@
 import { Job } from 'bullmq';
-import { ArticleReadModel } from '../../api/read-models/article.read-model';
+import { ArticleWriteDto } from '../../interface/article-write.dto';
 import { Article } from '@prisma/client';
 
-export class SaveArticlesJob extends Job<ArticleReadModel[], Article[]> {
+export class SaveArticlesJob extends Job<ArticleWriteDto[], Article[]> {
   public readonly name = 'save-articles';
 }

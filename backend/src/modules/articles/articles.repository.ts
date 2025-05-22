@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Article } from '@prisma/client';
 import { DatabaseService } from '../../utils/database/database.service';
 import { ArticlesApi } from './api/articles.api';
-import { ArticleReadModel } from './api/read-models/article.read-model';
+import { ArticleWriteDto } from './interface/article-write.dto';
 
 @Injectable()
 export class ArticlesRepository {
   constructor(
     private readonly articlesApi: ArticlesApi,
     private readonly databaseService: DatabaseService,
-  ) {}
+  ) { }
 
   async getAllArticles() {
     return this.databaseService.article.findMany();
@@ -21,11 +21,29 @@ export class ArticlesRepository {
     });
   }
 
+  async findByIds(articleIds: string[]): Promise<Article[]> {
+    return this.databaseService.article.findMany({
+      where: {
+        id: {
+          in: articleIds,
+        },
+      },
+    });
+  }
+
+  async findByTopicId(topicId: string) {
+    return this.databaseService.article.findMany({
+      where: {
+        topicId,
+      },
+    });
+  }
+
   async fetchLatestArticles() {
     return this.articlesApi.getArticles();
   }
 
-  async saveArticles(articles: ArticleReadModel[]) {
+  async saveArticles(articles: ArticleWriteDto[]) {
     return this.databaseService.article.createManyAndReturn({
       data: articles,
       skipDuplicates: true,

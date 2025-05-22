@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:client_app/api/newstream/auth/current_user_model.dart';
 import 'package:client_app/api/newstream/auth/google_auth_code_validation_model.dart';
-import 'package:client_app/api/newstream/stories/story_model.dart';
+import 'package:client_app/api/newstream/models/brief_model.dart';
+import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/user/user_repository.dart';
 import 'package:get/get.dart';
@@ -68,11 +69,11 @@ class NewstreamApi {
   Future<void> _loadAccessToken() async {
     _accessToken = await UserRepository.getAccessToken();
   }
-
   /* END Auth */
 
-  /* Stories */
-  Future<List<Story>> getStories() async {
+  /* Topics */
+
+  Future<List<Topic>> fetchTopics() async {
     await _loadAccessToken();
 
     if (_accessToken == null) {
@@ -82,7 +83,7 @@ class NewstreamApi {
     final response = await http.get(
       Uri.http(
         AppConfig().env.newstreamApiUrl,
-        'stories',
+        'topics',
       ),
       headers: {
         'Authorization': 'Bearer $_accessToken',
@@ -90,17 +91,19 @@ class NewstreamApi {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to get stories: ${response.body}');
+      throw Exception('Failed to fetch topics: ${response.body}');
     }
 
     final responseBody = jsonDecode(response.body) as List<dynamic>;
     return responseBody
-        .map((json) => Story.fromJson(json as Map<String, dynamic>))
+        .map<Topic>((topic) => Topic.fromJson(topic as Map<String, dynamic>))
         .toList();
   }
 
-  /* Stream */
-  Future<String> getStoryStreamPlaylistUrl(String storyId) async {
+  /* Brief */
+  Future<Brief> createBrief(String topicId) async {
+    print('topicId: $topicId');
+
     await _loadAccessToken();
 
     if (_accessToken == null) {
@@ -109,8 +112,40 @@ class NewstreamApi {
 
     final httpUri = Uri.http(
       AppConfig().env.newstreamApiUrl,
-      'stream/story/$storyId/playlist.m3u8',
-      {'access_token': _accessToken},
+      'briefs',
+    );
+
+    final response = await http.post(
+      httpUri,
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'topicId': topicId,
+      }),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create brief: ${response.body}');
+    }
+
+    final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+
+    return Brief.fromJson(responseBody);
+  }
+
+  /* Stream */
+  Future<String> getBriefStreamPlaylistUrl(String briefId) async {
+    await _loadAccessToken();
+
+    if (_accessToken == null) {
+      throw Exception('accessToken is not set');
+    }
+
+    final httpUri = Uri.http(
+      AppConfig().env.newstreamApiUrl,
+      'stream/brief/$briefId/playlist.m3u8',
     );
 
     return httpUri.toString();
