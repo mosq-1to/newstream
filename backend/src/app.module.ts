@@ -6,10 +6,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ArticlesModule } from './modules/articles/articles.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { StoriesModule } from './modules/stories/stories.module';
 import { TextGenerationModule } from './modules/text-generation/text-generation.module';
 import { BullModule } from '@nestjs/bullmq';
-import { StoryGenerationModule } from './modules/story-generation/story-generation.module';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 import { AudioGenerationModule } from './modules/audio-generation/audio-generation.module';
@@ -37,10 +35,8 @@ import { TopicsModule } from './modules/topics/topics.module';
     }),
     UsersModule,
     ArticlesModule,
-    StoriesModule,
     AuthModule,
     TextGenerationModule,
-    StoryGenerationModule,
     AudioGenerationModule,
     StreamModule,
     StorageModule,
@@ -55,4 +51,4 @@ import { TopicsModule } from './modules/topics/topics.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

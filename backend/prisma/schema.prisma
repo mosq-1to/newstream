@@ -28,7 +28,6 @@ model Article {
   url          String
   content      String?
   thumbnailUrl String?
-  story        Story?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -40,18 +39,6 @@ model Article {
   topic   Topic  @relation(fields: [topicId], references: [id])
 
   @@unique([sourceId, source])
-}
-
-model Story {
-  id              String   @id @default(uuid())
-  title           String
-  content         String
-  thumbnailUrl    String?
-  sourceArticleId String   @unique
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  article Article @relation(fields: [sourceArticleId], references: [id])
 }
 
 model Topic {
