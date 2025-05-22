@@ -31,6 +31,7 @@
     "@extractus/article-extractor": "^8.0.10",
     "@google/generative-ai": "^0.21.0",
     "@huggingface/transformers": "3.3.3",
+    "@mendable/firecrawl-js": "^1.25.1",
     "@nestjs/axios": "^3.0.3",
     "@nestjs/bullmq": "^10.2.1",
     "@nestjs/common": "^10.0.0",
@@ -57,7 +58,8 @@
     "redis": "^4.7.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "zod": "^3.25.20"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

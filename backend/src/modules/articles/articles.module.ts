@@ -5,7 +5,6 @@ import { ArticlesTasks } from './articles.tasks';
 import { DatabaseService } from '../../utils/database/database.service';
 import { HttpModule } from '@nestjs/axios';
 import { ArticleScrapingService } from './scraping/article-scraping.service';
-import { ExtractorScrapingStrategy } from './scraping/strategies/extractor/extractor-scraping-strategy';
 import { NewsdataArticleMapper } from './api/providers/newsdata/newsdata-article.mapper';
 import { WorldNewsApi } from './api/providers/worldnewsapi/worldnews.api';
 import { WorldNewsArticleMapper } from './api/providers/worldnewsapi/world-news-article.mapper';
@@ -29,7 +28,7 @@ import { ArticlesJobProcessor } from './queue/articles.job-processor';
       provide: ArticlesApi,
       useClass: WorldNewsApi,
     },
-    { provide: ArticleScrapingService, useClass: ExtractorScrapingStrategy },
+    ArticleScrapingService,
     ArticlesTasks,
     ArticlesQueue,
     FetchArticlesUseCase,
