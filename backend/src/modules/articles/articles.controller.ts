@@ -1,19 +1,19 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
 import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { ScrapeArticleContentUseCase } from './use-cases/scrape-article-content.use-case';
+import { ArticlesService } from './articles.service';
 
 @SkipAuth()
 @Controller('articles')
 export class ArticlesController {
   constructor(
-    private readonly fetchArticlesUseCase: FetchArticlesUseCase,
+    private readonly articlesService: ArticlesService,
     private readonly scrapeArticleContentUseCase: ScrapeArticleContentUseCase,
   ) { }
 
   @Post('debug/fetch')
   async fetchArticles() {
-    return this.fetchArticlesUseCase.execute();
+    return this.articlesService.fetchAndSaveArticles();
   }
 
   @Post('debug/scrape')
