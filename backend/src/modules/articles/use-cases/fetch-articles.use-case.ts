@@ -1,59 +1,64 @@
 import { ArticlesService } from '../articles.service';
 import { Injectable } from '@nestjs/common';
 import { ArticlesQueue } from '../queue/articles.queue';
-import Firecrawl from '@mendable/firecrawl-js';
 import { ConfigService } from '@nestjs/config';
-import { z } from 'zod';
+import * as xml2js from 'xml2js';
 
 @Injectable()
 export class FetchArticlesUseCase {
-  private readonly firecrawl: Firecrawl;
   private readonly googleNewsRssUrl = 'https://news.google.com/rss?topic=m&hl=en-US&gl=US&ceid=US:en';
 
   constructor(
     private readonly articlesService: ArticlesService,
     private readonly articlesQueue: ArticlesQueue,
     private readonly configService: ConfigService,
-  ) {
-    this.firecrawl = new Firecrawl({
-      apiUrl: this.configService.getOrThrow('FIRECRAWL_API_URL'),
-    });
-  }
+  ) { }
 
   public async fetchArticles() {
     try {
-      const result = await this.firecrawl.scrapeUrl(this.googleNewsRssUrl, {
-        formats: ['json'],
-        timeout: 120 * 1000,
-        jsonOptions: {
-          schema: z.array(
-            z.object(
-              {
-                title: z.string(),
-                url: z.string(),
-                publishDate: z.string(),
-                sourceName: z.string(),
-                sourceUrl: z.string(),
-                thumbnailUrl: z.string(),
-              }
-            )
-          )
-        },
-      });
+      // Fetch RSS feed using native fetch
+      const response = await fetch(this.googleNewsRssUrl);
 
-      if (!result.success) {
-        console.error('Failed to fetch articles:', result.error);
-        return [];
+      if (!response.ok) {
+        throw new Error(`Failed to fetch RSS feed: ${response.statusText}`);
       }
 
-      const articles = result.json || [];
+      // Get the XML content
+      const xmlContent = await response.text();
+
+      // Parse XML to JS object
+      const parser = new xml2js.Parser({
+        explicitArray: false,
+        normalize: true,
+        normalizeTags: true
+      });
+
+      const result = await parser.parseStringPromise(xmlContent);
+
+      // Extract articles from the parsed RSS feed
+      const items = result.rss.channel.item || [];
+      const articles = Array.isArray(items) ? items : [items];
+
+      // Transform the data into a consistent format
+      const transformedArticles = articles.map(item => {
+        // Extract source information from item.source
+        const sourceName = item.source?._;
+        const sourceUrl = item.source?.$ ? item.source.$.url : '';
+
+        return {
+          title: item.title || '',
+          url: item.link || '',
+          publishDate: item.pubdate || '',
+          sourceName: sourceName || '',
+          sourceUrl: sourceUrl || '',
+        };
+      });
 
       // todo: hard-coded topicId for now, change it later
       // void this.articlesQueue.addSaveArticlesJob(
-      //   articles.map((article) => ({
+      //   transformedArticles.map((article) => ({
       //     title: article.title,
       //     url: article.url,
-      //     thumbnailUrl: article.thumbnailUrl,
       //     sourceId: article.sourceName, // Using sourceName as sourceId
       //     source: article.sourceName,
       //     content: '', // Will be populated later when needed
@@ -61,7 +66,7 @@ export class FetchArticlesUseCase {
       //   })),
       // );
 
-      return articles;
+      return transformedArticles;
     } catch (error) {
       console.error('Error fetching articles:', error);
       return [];
