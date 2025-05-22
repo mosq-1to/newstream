@@ -15,7 +15,7 @@ export class FetchArticlesUseCase {
     private readonly configService: ConfigService,
   ) { }
 
-  public async fetchArticles() {
+  public async execute() {
     try {
       const proxyUrl = this.configService.getOrThrow<string>('HTTP_PROXY_URL');
       const proxyUser = this.configService.getOrThrow<string>('HTTP_PROXY_USER');
