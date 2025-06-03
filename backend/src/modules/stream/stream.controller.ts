@@ -6,13 +6,14 @@ import { createReadStream } from 'fs';
 
 @Controller('stream')
 export class StreamController {
-  constructor(private readonly streamService: StreamService) {}
+  constructor(private readonly streamService: StreamService) { }
 
   // todo - remove SkipAuth once well tested
 
   @SkipAuth()
   @Get('brief/:briefId/playlist.m3u8')
   async getBriefStream(@Param('briefId') briefId: string, @Res() res: Response) {
+    console.log('requested to stream briefId', briefId);
     res.header('Content-Type', 'application/vnd.apple.mpegurl');
     res.header('Cache-Control', 'no-cache, no-store, must-revalidate, public, max-age=2');
     const playlistPath = await this.streamService.getBriefPlaylistFile(briefId);
