@@ -2,15 +2,15 @@ class Article {
   final String id;
   final String title;
   final String content;
-  final String thumbnailUrl;
   final String url;
+  final String? thumbnailUrl;
 
   const Article({
     required this.id,
     required this.title,
     required this.content,
-    required this.thumbnailUrl,
     required this.url,
+    this.thumbnailUrl,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) => switch (json) {
@@ -18,15 +18,15 @@ class Article {
           'id': final String id,
           'title': final String title,
           'content': final String content,
-          'thumbnailUrl': final String thumbnailUrl,
           'url': final String url,
+          'thumbnailUrl': final String? thumbnailUrl,
         } =>
           Article(
             id: id,
             title: title,
             content: content,
-            thumbnailUrl: thumbnailUrl,
             url: url,
+            thumbnailUrl: thumbnailUrl,
           ),
         _ => throw const FormatException('Failed to load Article.'),
       };
