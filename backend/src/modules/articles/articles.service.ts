@@ -10,16 +10,19 @@ export class ArticlesService {
   ) { }
 
   async fetchAndSaveArticles() {
-    const articles = await this.fetchArticlesUseCase.execute();
+    const articles = await this.fetchArticlesUseCase.execute({
+      startDate: new Date().toISOString().split('T')[0],
+    });
 
     // todo: hard-coded topicId for now, change it later
     void this.articlesQueue.addSaveArticlesJob(
       articles.map((article) => ({
         title: article.title,
         url: article.url,
-        sourceId: article.sourceName, // Using sourceName as sourceId
+        sourceId: article.sourceId,
         source: article.sourceName,
         content: '', // Will be populated later when needed
+        thumbnailUrl: '',
         topicId: '1b5831a4-a72d-4abe-9d4e-7c5bcf592c28',
       })),
     );
