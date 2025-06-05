@@ -16,6 +16,8 @@ export class ScrapeArticleContentUseCase {
   public async execute(url: string): Promise<string | null> {
     const result = await this.firecrawl.scrapeUrl(url, {
       formats: ['json'],
+      waitFor: 5000,
+      removeBase64Images: true,
       jsonOptions: {
         schema: z.object({
           title: z.string(),

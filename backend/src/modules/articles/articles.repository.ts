@@ -11,8 +11,12 @@ export class ArticlesRepository {
     private readonly databaseService: DatabaseService,
   ) { }
 
-  async getAllArticles() {
-    return this.databaseService.article.findMany();
+  async getAllArticles(filterOptions?: { content?: string }) {
+    return this.databaseService.article.findMany({
+      where: {
+        content: filterOptions?.content,
+      },
+    });
   }
 
   async getArticleById(articleId: Article['id']) {
@@ -47,6 +51,13 @@ export class ArticlesRepository {
     return this.databaseService.article.createManyAndReturn({
       data: articles,
       skipDuplicates: true,
+    });
+  }
+
+  async updateArticle(article: Article) {
+    return this.databaseService.article.update({
+      where: { id: article.id },
+      data: article,
     });
   }
 }

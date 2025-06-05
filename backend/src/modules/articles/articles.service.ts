@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
 import { ArticlesQueue } from './queue/articles.queue';
+import { ArticlesRepository } from './articles.repository';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     private readonly fetchArticlesUseCase: FetchArticlesUseCase,
     private readonly articlesQueue: ArticlesQueue,
+    private readonly articlesRepository: ArticlesRepository,
   ) { }
 
   async fetchAndSaveArticles() {
@@ -28,5 +30,11 @@ export class ArticlesService {
     );
 
     return articles;
+  }
+
+  async scrapeAllArticles(batchSize: number) {
+    const articles = await this.articlesRepository.getAllArticles({ content: '' });
+    await this.articlesQueue.addScrapeArticlesJob(articles.slice(0, batchSize));
+    return { queued: articles.length };
   }
 }

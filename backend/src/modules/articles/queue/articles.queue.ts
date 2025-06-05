@@ -3,6 +3,8 @@ import { QueueName } from '../../../types/queue-name.enum';
 import { Queue } from 'bullmq';
 import { Injectable } from '@nestjs/common';
 import { SaveArticlesJob } from './jobs/save-articles.job';
+import { ScrapeArticleJob } from './jobs/scrape-article.job';
+import { Article } from '@prisma/client';
 
 @Injectable()
 export class ArticlesQueue {
@@ -12,5 +14,15 @@ export class ArticlesQueue {
 
   public addSaveArticlesJob(articles: SaveArticlesJob['data']) {
     return this.articlesQueue.add(SaveArticlesJob.name, articles);
+  }
+
+  public addScrapeArticleJob(article: Article) {
+    return this.articlesQueue.add(ScrapeArticleJob.name, article);
+  }
+
+  public addScrapeArticlesJob(articles: Article[]) {
+    return Promise.all(
+      articles.map(article => this.addScrapeArticleJob(article))
+    );
   }
 }

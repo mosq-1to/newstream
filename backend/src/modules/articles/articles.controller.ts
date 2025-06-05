@@ -20,4 +20,9 @@ export class ArticlesController {
   async scrapeArticleContent(@Body() body: { url: string }) {
     return this.scrapeArticleContentUseCase.execute(body.url);
   }
+
+  @Post('debug/scrapeAll')
+  async scrapeAllArticles(@Body() body: { batchSize: number }) {
+    return await this.articlesService.scrapeAllArticles(body.batchSize);
+  }
 }
