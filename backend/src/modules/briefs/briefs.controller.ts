@@ -1,20 +1,20 @@
-import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
-import { BriefsService } from './briefs.service';
-import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
-import { BriefCreateDto } from './interface/brief.create-model';
+import { Controller, Get, Post, Body, Param, Put } from "@nestjs/common";
+import { BriefsService } from "./briefs.service";
+import { SkipAuth } from "../auth/decorators/skip-auth.decorator";
+import { BriefCreateDto } from "./interface/brief.create-model";
 
-@Controller('briefs')
+@Controller("briefs")
 @SkipAuth()
 export class BriefsController {
-  constructor(private readonly briefsService: BriefsService) { }
+  constructor(private readonly briefsService: BriefsService) {}
 
   @Get()
   findAll() {
     return this.briefsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.briefsService.findOne(id);
   }
 

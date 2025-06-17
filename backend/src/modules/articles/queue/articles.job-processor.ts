@@ -1,9 +1,9 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { QueueName } from '../../../types/queue-name.enum';
-import { SaveArticlesJob } from './jobs/save-articles.job';
-import { ScrapeArticleJob } from './jobs/scrape-article.job';
-import { ArticlesRepository } from '../articles.repository';
-import { ScrapeArticleContentUseCase } from '../use-cases/scrape-article-content.use-case';
+import { Processor, WorkerHost } from "@nestjs/bullmq";
+import { QueueName } from "../../../types/queue-name.enum";
+import { SaveArticlesJob } from "./jobs/save-articles.job";
+import { ScrapeArticleJob } from "./jobs/scrape-article.job";
+import { ArticlesRepository } from "../articles.repository";
+import { ScrapeArticleContentUseCase } from "../use-cases/scrape-article-content.use-case";
 
 @Processor(QueueName.Articles)
 export class ArticlesJobProcessor extends WorkerHost {
@@ -35,14 +35,21 @@ export class ArticlesJobProcessor extends WorkerHost {
   private async processScrapeArticleJob(job: ScrapeArticleJob) {
     const article = job.data;
     try {
-      const content = await this.scrapeArticleContentUseCase.execute(article.url);
+      const content = await this.scrapeArticleContentUseCase.execute(
+        article.url,
+      );
       const updatedArticle = { ...article, content };
 
       await this.articlesRepository.updateArticle(updatedArticle);
-      console.log(`ScrapeArticleJob: Successfully scraped content for article ${article.id}`);
+      console.log(
+        `ScrapeArticleJob: Successfully scraped content for article ${article.id}`,
+      );
       return updatedArticle;
     } catch (error) {
-      console.error(`ScrapeArticleJob: Failed to scrape article ${article.id}:`, error);
+      console.error(
+        `ScrapeArticleJob: Failed to scrape article ${article.id}:`,
+        error,
+      );
       throw error;
     }
   }

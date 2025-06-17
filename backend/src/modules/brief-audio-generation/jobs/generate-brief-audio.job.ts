@@ -1,13 +1,13 @@
-import { Job } from 'bullmq';
-import { Brief } from '@prisma/client';
+import { Job } from "bullmq";
+import { Brief } from "@prisma/client";
 
-export class GenerateBriefAudioJob extends Job<{ briefId: Brief['id'] }> {
+export class GenerateBriefAudioJob extends Job<{ briefId: Brief["id"] }> {
   public static getName = (briefId: string) =>
     `generate-brief-audio-${briefId}`;
 }
 
 export class GenerateBriefAudioProcessChunkJob extends Job<{
-  briefId: Brief['id'];
+  briefId: Brief["id"];
   text: string;
   chunkIndex: number;
 }> {

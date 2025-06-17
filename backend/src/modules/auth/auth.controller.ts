@@ -1,16 +1,16 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
-import { SkipAuth } from './decorators/skip-auth.decorator';
-import { UserResponseDto } from './dto/user-response.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { Controller, Get, Req, UseGuards } from "@nestjs/common";
+import { AuthService } from "./auth.service";
+import { AuthGuard } from "@nestjs/passport";
+import { SkipAuth } from "./decorators/skip-auth.decorator";
+import { UserResponseDto } from "./dto/user-response.dto";
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('users/me')
+  @Get("users/me")
   async getCurrentUser(@Req() req): Promise<UserResponseDto> {
     const currentUser = await this.authService.getCurrentUser(req.user.id);
     return {
@@ -20,13 +20,13 @@ export class AuthController {
   }
 
   @SkipAuth()
-  @UseGuards(AuthGuard('google'))
-  @Get('google')
+  @UseGuards(AuthGuard("google"))
+  @Get("google")
   async googleLogin() {}
 
   @SkipAuth()
-  @UseGuards(AuthGuard('google'))
-  @Get('google/callback')
+  @UseGuards(AuthGuard("google"))
+  @Get("google/callback")
   async googleLoginCallback(@Req() req) {
     return this.authService.signJwt(req.user);
   }

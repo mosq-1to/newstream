@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { ArticlesApi } from '../../articles.api';
-import { HttpService } from '@nestjs/axios';
-import { ArticleReadModel } from '../../read-models/article.read-model';
-import { WorldNewsSearchNewsDto } from './dto/world-news-search-news.dto';
-import { ConfigService } from '@nestjs/config';
-import { WorldNewsArticleMapper } from './world-news-article.mapper';
+import { Injectable } from "@nestjs/common";
+import { ArticlesApi } from "../../articles.api";
+import { HttpService } from "@nestjs/axios";
+import { ArticleReadModel } from "../../read-models/article.read-model";
+import { WorldNewsSearchNewsDto } from "./dto/world-news-search-news.dto";
+import { ConfigService } from "@nestjs/config";
+import { WorldNewsArticleMapper } from "./world-news-article.mapper";
 
 @Injectable()
 export class WorldNewsApi implements ArticlesApi {
-  httpService: HttpService['axiosRef'];
+  httpService: HttpService["axiosRef"];
 
   constructor(
     httpService: HttpService,
@@ -19,7 +19,7 @@ export class WorldNewsApi implements ArticlesApi {
   }
 
   async getArticles(): Promise<ArticleReadModel[]> {
-    const apiKey = this.configService.get('WORLDNEWS_API_KEY');
+    const apiKey = this.configService.get("WORLDNEWS_API_KEY");
 
     const response = await this.httpService.get<WorldNewsSearchNewsDto>(
       `https://api.worldnewsapi.com/search-news?api-key=${apiKey}&language=en&number=20`,
@@ -34,7 +34,7 @@ export class WorldNewsApi implements ArticlesApi {
       }),
     );
     const successfulArticles = articleReadModels
-      .filter((article) => article.status === 'fulfilled')
+      .filter((article) => article.status === "fulfilled")
       .map(
         (article: PromiseFulfilledResult<ArticleReadModel>) => article.value,
       );

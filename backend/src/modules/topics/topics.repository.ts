@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../../utils/database/database.service';
-import { TopicWriteDto } from './interface/topic-write.dto';
-import { Topic } from '@prisma/client';
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "../../utils/database/database.service";
+import { TopicWriteDto } from "./interface/topic-write.dto";
+import { Topic } from "@prisma/client";
 
 @Injectable()
 export class TopicsRepository {
-  constructor(private readonly databaseService: DatabaseService) { }
+  constructor(private readonly databaseService: DatabaseService) {}
 
   async findAll(): Promise<Topic[]> {
     return this.databaseService.topic.findMany({
