@@ -30,6 +30,7 @@ model Article {
   thumbnailUrl String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  publishedAt  DateTime 
 
   // Relationship to Brief
   briefs Brief[] @relation("ArticleToBrief")
