@@ -54,7 +54,8 @@ class NewstreamApi {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to get current user: ${response.body}');
+      await UserRepository.setAccessToken(null);
+      return null;
     }
 
     final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
