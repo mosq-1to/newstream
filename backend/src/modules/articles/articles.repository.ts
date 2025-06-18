@@ -8,7 +8,7 @@ import { ArticleWriteDto } from "./interface/article-write.dto";
 export class ArticlesRepository {
   constructor(
     private readonly articlesApi: ArticlesApi,
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: DatabaseService
   ) {}
 
   async getAllArticles(filterOptions?: { content?: string }) {
@@ -35,10 +35,13 @@ export class ArticlesRepository {
     });
   }
 
-  async findByTopicId(topicId: string) {
+  async findByTopicId(topicId: string, publishedAfter?: Date) {
     return this.databaseService.article.findMany({
       where: {
         topicId,
+        publishedAt: {
+          gte: publishedAfter,
+        },
       },
     });
   }
