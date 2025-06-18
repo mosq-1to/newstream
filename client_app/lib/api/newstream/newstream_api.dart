@@ -102,8 +102,9 @@ class NewstreamApi {
   }
 
   /* Brief */
-  Future<Brief> createBrief(String topicId) async {
+  Future<Brief> createBrief(String topicId, int timeframeInDays) async {
     print('topicId: $topicId');
+    print('timeframeInDays: $timeframeInDays');
 
     await _loadAccessToken();
 
@@ -124,6 +125,7 @@ class NewstreamApi {
       },
       body: jsonEncode({
         'topicId': topicId,
+        'timeframeInDays': timeframeInDays,
       }),
     );
 

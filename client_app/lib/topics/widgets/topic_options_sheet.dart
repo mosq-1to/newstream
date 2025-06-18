@@ -25,8 +25,8 @@ class TopicOptionsSheet extends StatefulWidget {
 }
 
 class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
-  int _selectedTimeframeIndex = 2; // Default to 15 minutes
-  int _selectedLengthIndex = 0; // Default to 1 day
+  int _selectedLengthIndex = 2; // Default to 1 day
+  int _selectedTimeframeIndex = 0; // Default to 15 minutes
   bool _isLoading = false;
 
   @override
@@ -177,10 +177,10 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
               itemExtent: 40,
               backgroundColor: Colors.transparent,
               scrollController: FixedExtentScrollController(
-                  initialItem: _selectedLengthIndex),
+                  initialItem: _selectedTimeframeIndex),
               onSelectedItemChanged: (int index) {
                 setState(() {
-                  _selectedLengthIndex = index;
+                  _selectedTimeframeIndex = index;
                 });
               },
               children: TopicOptions.timeframes
@@ -206,10 +206,10 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
               itemExtent: 40,
               backgroundColor: Colors.transparent,
               scrollController: FixedExtentScrollController(
-                  initialItem: _selectedTimeframeIndex),
+                  initialItem: _selectedLengthIndex),
               onSelectedItemChanged: (int index) {
                 setState(() {
-                  _selectedTimeframeIndex = index;
+                  _selectedLengthIndex = index;
                 });
               },
               children: TopicOptions.lengths
@@ -255,6 +255,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                 try {
                   final brief = await Get.find<NewstreamApi>().createBrief(
                     widget.topic.id,
+                    selectedTimeframe.duration.inDays,
                   );
                   final playerController = Get.find<PlayerController>();
                   Navigator.of(context).pop(result);
