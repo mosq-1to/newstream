@@ -13,6 +13,7 @@ import { QueueName } from "../../types/queue-name.enum";
 import { ArticlesController } from "./articles.controller";
 import { ArticlesQueue } from "./queue/articles.queue";
 import { FetchArticlesUseCase } from "./use-cases/fetch-articles.use-case";
+import { FetchArticlesFromApiUseCase } from "./use-cases/fetch-articles-from-api.use-case";
 import { ArticlesJobProcessor } from "./queue/articles.job-processor";
 import { ScrapeArticleContentUseCase } from "./use-cases/scrape-article-content.use-case";
 import { BullBoardModule } from "@bull-board/nestjs";
@@ -40,6 +41,7 @@ import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
     ArticlesTasks,
     ArticlesQueue,
     FetchArticlesUseCase,
+    FetchArticlesFromApiUseCase,
     ArticlesJobProcessor,
     ScrapeArticleContentUseCase,
   ],

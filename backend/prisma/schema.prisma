@@ -22,8 +22,8 @@ model User {
 
 model Article {
   id           String   @id @default(uuid())
-  sourceId     String
-  source       String
+  sourceName   String
+  sourceUrl    String?
   title        String
   url          String
   content      String?
@@ -39,7 +39,7 @@ model Article {
   topicId String
   topic   Topic  @relation(fields: [topicId], references: [id])
 
-  @@unique([sourceId, source])
+  @@unique([url])
 }
 
 model Topic {

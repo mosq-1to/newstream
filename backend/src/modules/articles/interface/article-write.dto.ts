@@ -1,6 +1,6 @@
 export interface ArticleWriteDto {
-  sourceId: string;
-  source: string;
+  sourceName: string;
+  sourceUrl?: string;
   title: string;
   url: string;
   content: string;

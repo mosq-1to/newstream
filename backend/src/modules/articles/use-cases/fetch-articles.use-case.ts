@@ -32,7 +32,7 @@ export class FetchArticlesUseCase {
       const proxyUser =
         this.configService.getOrThrow<string>("HTTP_PROXY_USER");
       const proxyPassword = this.configService.getOrThrow<string>(
-        "HTTP_PROXY_PASSWORD",
+        "HTTP_PROXY_PASSWORD"
       );
 
       const fetchOptions: any = {};
@@ -50,6 +50,7 @@ export class FetchArticlesUseCase {
       }
 
       const url = this.buildRssUrl(options);
+      console.log(url);
 
       const response = await fetch(url, fetchOptions);
 
