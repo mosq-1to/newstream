@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "../../utils/database/database.service";
-import { TopicWriteDto } from "./interface/topic-write.dto";
-import { Topic } from "@prisma/client";
+import { Injectable } from '@nestjs/common';
+import { DatabaseService } from '../../utils/database/database.service';
+import { TopicWriteDto } from './interface/topic-write.dto';
+import { Topic } from '@prisma/client';
 
 @Injectable()
 export class TopicsRepository {

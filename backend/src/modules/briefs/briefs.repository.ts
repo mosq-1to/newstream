@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "../../utils/database/database.service";
-import { BriefWriteDto } from "./interface/brief-write.dto";
-import { Brief } from "@prisma/client";
+import { Injectable } from '@nestjs/common';
+import { DatabaseService } from '../../utils/database/database.service';
+import { BriefWriteDto } from './interface/brief-write.dto';
+import { Brief } from '@prisma/client';
 
 @Injectable()
 export class BriefsRepository {

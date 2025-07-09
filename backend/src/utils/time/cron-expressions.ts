@@ -1,1 +1,1 @@
-export const EVERYDAY_AT_10_AND_20 = "0 10,20 * * *";
+export const EVERYDAY_AT_10_AND_20 = '0 10,20 * * *';

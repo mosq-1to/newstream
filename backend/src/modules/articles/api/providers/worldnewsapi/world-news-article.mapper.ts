@@ -1,9 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import {
-  ArticleReadModel,
-  ArticleSource,
-} from "../../read-models/article.read-model";
-import { WorldNewsArticleDto } from "./dto/world-news-article.dto";
+import { Injectable } from '@nestjs/common';
+import { ArticleReadModel, ArticleSource } from '../../read-models/article.read-model';
+import { WorldNewsArticleDto } from './dto/world-news-article.dto';
 
 @Injectable()
 export class WorldNewsArticleMapper {

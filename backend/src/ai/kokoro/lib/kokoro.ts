@@ -3,10 +3,10 @@ import {
   AutoTokenizer,
   Tensor,
   RawAudio,
-} from "@huggingface/transformers";
-import { phonemize } from "./phonemize";
-import { TextSplitterStream } from "./splitter";
-import { getVoiceData, VOICES } from "./voices";
+} from '@huggingface/transformers';
+import { phonemize } from './phonemize';
+import { TextSplitterStream } from './splitter';
+import { getVoiceData, VOICES } from './voices';
 
 const STYLE_DIM = 256;
 const SAMPLE_RATE = 24000;
@@ -28,19 +28,19 @@ export type StreamGenerateOptions = GenerateOptions & StreamProperties;
 export class KokoroTTS {
   constructor(
     public model: StyleTextToSpeech2Model,
-    public tokenizer: import("@huggingface/transformers").PreTrainedTokenizer,
+    public tokenizer: import('@huggingface/transformers').PreTrainedTokenizer,
   ) {}
 
   static async from_pretrained(
     model_id: string,
     {
-      dtype = "fp32",
+      dtype = 'fp32',
       device = null,
       progress_callback = null,
     }: {
-      dtype?: "fp32" | "fp16" | "q8" | "q4" | "q4f16";
-      device?: "wasm" | "webgpu" | "cpu" | null;
-      progress_callback?: import("@huggingface/transformers").ProgressCallback;
+      dtype?: 'fp32' | 'fp16' | 'q8' | 'q4' | 'q4f16';
+      device?: 'wasm' | 'webgpu' | 'cpu' | null;
+      progress_callback?: import('@huggingface/transformers').ProgressCallback;
     } = {},
   ): Promise<KokoroTTS> {
     const model = StyleTextToSpeech2Model.from_pretrained(model_id, {
@@ -64,21 +64,21 @@ export class KokoroTTS {
     console.table(VOICES);
   }
 
-  private _validate_voice(voice: string): "a" | "b" {
+  private _validate_voice(voice: string): 'a' | 'b' {
     if (!VOICES.hasOwnProperty(voice)) {
       console.error(`Voice "${voice}" not found. Available voices:`);
       console.table(VOICES);
       throw new Error(
-        `Voice "${voice}" not found. Should be one of: ${Object.keys(VOICES).join(", ")}.`,
+        `Voice "${voice}" not found. Should be one of: ${Object.keys(VOICES).join(', ')}.`,
       );
     }
-    const language = voice.at(0) as "a" | "b"; // "a" or "b"
+    const language = voice.at(0) as 'a' | 'b'; // "a" or "b"
     return language;
   }
 
   async generate(
     text: string,
-    { voice = "af_heart", speed = 1 }: GenerateOptions = {},
+    { voice = 'af_heart', speed = 1 }: GenerateOptions = {},
   ): Promise<RawAudio> {
     const language = this._validate_voice(voice);
 
@@ -92,7 +92,7 @@ export class KokoroTTS {
 
   async generate_from_ids(
     input_ids: Tensor,
-    { voice = "af_heart", speed = 1 }: GenerateOptions = {},
+    { voice = 'af_heart', speed = 1 }: GenerateOptions = {},
   ): Promise<RawAudio> {
     // Select voice style based on number of input tokens
     const num_tokens = Math.min(Math.max(input_ids.dims.at(-1) - 2, 0), 509);
@@ -105,8 +105,8 @@ export class KokoroTTS {
     // Prepare model inputs
     const inputs = {
       input_ids,
-      style: new Tensor("float32", voiceData, [1, STYLE_DIM]),
-      speed: new Tensor("float32", [speed], [1]),
+      style: new Tensor('float32', voiceData, [1, STYLE_DIM]),
+      speed: new Tensor('float32', [speed], [1]),
     };
 
     // Generate audio
@@ -116,22 +116,14 @@ export class KokoroTTS {
 
   async *stream(
     text: string | TextSplitterStream,
-    {
-      voice = "af_heart",
-      speed = 1,
-      split_pattern = null,
-    }: StreamGenerateOptions = {},
-  ): AsyncGenerator<
-    { text: string; phonemes: string; audio: RawAudio },
-    void,
-    void
-  > {
+    { voice = 'af_heart', speed = 1, split_pattern = null }: StreamGenerateOptions = {},
+  ): AsyncGenerator<{ text: string; phonemes: string; audio: RawAudio }, void, void> {
     const language = this._validate_voice(voice);
 
     let splitter: TextSplitterStream;
     if (text instanceof TextSplitterStream) {
       splitter = text;
-    } else if (typeof text === "string") {
+    } else if (typeof text === 'string') {
       splitter = new TextSplitterStream();
       const chunks = split_pattern
         ? text
@@ -141,9 +133,7 @@ export class KokoroTTS {
         : [text];
       splitter.push(...chunks);
     } else {
-      throw new Error(
-        "Invalid input type. Expected string or TextSplitterStream.",
-      );
+      throw new Error('Invalid input type. Expected string or TextSplitterStream.');
     }
     for await (const sentence of splitter) {
       const phonemes = await phonemize(sentence, language);

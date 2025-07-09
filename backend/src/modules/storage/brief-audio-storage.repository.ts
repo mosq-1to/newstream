@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import path from "path";
-import { ensureDirectoryExists } from "../../utils/files/ensure-directory-exists";
-import fs from "fs";
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import path from 'path';
+import { ensureDirectoryExists } from '../../utils/files/ensure-directory-exists';
+import fs from 'fs';
 
 @Injectable()
 export class BriefAudioStorageRepository {
@@ -24,8 +24,8 @@ export class BriefAudioStorageRepository {
 
   private getBriefOutputDir(briefId: string) {
     const outputDir = path.join(
-      this.configService.getOrThrow<string>("AUDIO_STORAGE_DIR"),
-      "briefs-audio",
+      this.configService.getOrThrow<string>('AUDIO_STORAGE_DIR'),
+      'briefs-audio',
       briefId,
     );
     ensureDirectoryExists(outputDir);
@@ -35,7 +35,7 @@ export class BriefAudioStorageRepository {
 
   private getBriefWavFilesDir(briefId: string) {
     const outputDir = this.getBriefOutputDir(briefId);
-    const wavFilesDir = path.join(outputDir, "wav");
+    const wavFilesDir = path.join(outputDir, 'wav');
     ensureDirectoryExists(wavFilesDir);
 
     return wavFilesDir;
@@ -50,7 +50,7 @@ export class BriefAudioStorageRepository {
 
   private getBriefHlsFilesDir(briefId: string) {
     const outputDir = this.getBriefOutputDir(briefId);
-    const hlsFilesDir = path.join(outputDir, "hls");
+    const hlsFilesDir = path.join(outputDir, 'hls');
     ensureDirectoryExists(hlsFilesDir);
 
     return hlsFilesDir;

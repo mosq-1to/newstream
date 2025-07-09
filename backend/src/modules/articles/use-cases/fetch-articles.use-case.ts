@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import * as xml2js from "xml2js";
-import { HttpsProxyAgent } from "https-proxy-agent";
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import * as xml2js from 'xml2js';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 export interface ArticleFilterOptions {
   /** Search query term */
@@ -22,18 +22,15 @@ export interface ArticleFilterOptions {
 
 @Injectable()
 export class FetchArticlesUseCase {
-  private readonly baseGoogleNewsRssUrl = "https://news.google.com/rss";
+  private readonly baseGoogleNewsRssUrl = 'https://news.google.com/rss';
 
   constructor(private readonly configService: ConfigService) {}
 
   public async execute(options: ArticleFilterOptions = {}) {
     try {
-      const proxyUrl = this.configService.getOrThrow<string>("HTTP_PROXY_URL");
-      const proxyUser =
-        this.configService.getOrThrow<string>("HTTP_PROXY_USER");
-      const proxyPassword = this.configService.getOrThrow<string>(
-        "HTTP_PROXY_PASSWORD"
-      );
+      const proxyUrl = this.configService.getOrThrow<string>('HTTP_PROXY_URL');
+      const proxyUser = this.configService.getOrThrow<string>('HTTP_PROXY_USER');
+      const proxyPassword = this.configService.getOrThrow<string>('HTTP_PROXY_PASSWORD');
 
       const fetchOptions: any = {};
 
@@ -41,9 +38,9 @@ export class FetchArticlesUseCase {
         const proxyAuth =
           proxyUser && proxyPassword
             ? `${encodeURIComponent(proxyUser)}:${encodeURIComponent(proxyPassword)}@`
-            : "";
-        const formattedProxyUrl = proxyUrl.includes("://")
-          ? proxyUrl.replace("://", `://${proxyAuth}`)
+            : '';
+        const formattedProxyUrl = proxyUrl.includes('://')
+          ? proxyUrl.replace('://', `://${proxyAuth}`)
           : `http://${proxyAuth}${proxyUrl}`;
 
         fetchOptions.agent = new HttpsProxyAgent(formattedProxyUrl);
@@ -72,52 +69,44 @@ export class FetchArticlesUseCase {
 
       const transformedArticles = items.map((item) => {
         const sourceName = item.source?._;
-        const sourceUrl = item.source?.$ ? item.source.$.url : "";
+        const sourceUrl = item.source?.$ ? item.source.$.url : '';
         const sourceId = item.guid._;
         return {
-          title: item.title || "",
-          url: item.link || "",
-          publishDate: item.pubdate || "",
-          sourceName: sourceName || "",
-          sourceUrl: sourceUrl || "",
-          sourceId: sourceId || "",
+          title: item.title || '',
+          url: item.link || '',
+          publishDate: item.pubdate || '',
+          sourceName: sourceName || '',
+          sourceUrl: sourceUrl || '',
+          sourceId: sourceId || '',
         };
       });
 
       return transformedArticles;
     } catch (error) {
-      console.error("Error fetching articles:", error);
+      console.error('Error fetching articles:', error);
       return [];
     }
   }
 
   private buildRssUrl(options: ArticleFilterOptions): string {
-    const {
-      query,
-      geolocation,
-      language,
-      startDate,
-      endDate,
-      timeRange,
-      topic,
-    } = options;
+    const { query, geolocation, language, startDate, endDate, timeRange, topic } = options;
 
     const params = new URLSearchParams();
 
     if (topic) {
-      params.append("topic", topic);
+      params.append('topic', topic);
     } else if (!query) {
-      params.append("topic", "m");
+      params.append('topic', 'm');
     }
 
-    const hl = language || "en-US";
-    params.append("hl", hl);
+    const hl = language || 'en-US';
+    params.append('hl', hl);
 
-    const gl = geolocation || "US";
-    params.append("gl", gl);
+    const gl = geolocation || 'US';
+    params.append('gl', gl);
 
-    const ceid = `${gl}:${hl.split("-")[0]}`;
-    params.append("ceid", ceid);
+    const ceid = `${gl}:${hl.split('-')[0]}`;
+    params.append('ceid', ceid);
 
     let url = `${this.baseGoogleNewsRssUrl}`;
 
@@ -131,7 +120,7 @@ export class FetchArticlesUseCase {
         queryString += ` when:${timeRange}`;
       }
 
-      params.append("q", queryString);
+      params.append('q', queryString);
     }
 
     return `${url}?${params.toString()}`;

@@ -1,16 +1,11 @@
-import { NewsdataArticleDto } from "./dto/newsdata-article.dto";
-import {
-  ArticleReadModel,
-  ArticleSource,
-} from "../../read-models/article.read-model";
-import { Injectable } from "@nestjs/common";
-import { ScrapeArticleContentUseCase } from "src/modules/articles/use-cases/scrape-article-content.use-case";
+import { NewsdataArticleDto } from './dto/newsdata-article.dto';
+import { ArticleReadModel, ArticleSource } from '../../read-models/article.read-model';
+import { Injectable } from '@nestjs/common';
+import { ScrapeArticleContentUseCase } from 'src/modules/articles/use-cases/scrape-article-content.use-case';
 
 @Injectable()
 export class NewsdataArticleMapper {
-  constructor(
-    private readonly scrapeArticleContentUseCase: ScrapeArticleContentUseCase,
-  ) {}
+  constructor(private readonly scrapeArticleContentUseCase: ScrapeArticleContentUseCase) {}
 
   async mapNewsdataArticleToArticleReadModel(
     newsdataArticle: NewsdataArticleDto,
@@ -25,9 +20,7 @@ export class NewsdataArticleMapper {
     };
   }
 
-  private async getArticleFullContent(
-    newsdataArticle: NewsdataArticleDto,
-  ): Promise<string> {
+  private async getArticleFullContent(newsdataArticle: NewsdataArticleDto): Promise<string> {
     if (newsdataArticle.content.length > 100) return newsdataArticle.content;
 
     return this.scrapeArticleContentUseCase.execute(newsdataArticle.link);

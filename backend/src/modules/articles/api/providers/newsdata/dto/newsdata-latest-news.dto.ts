@@ -1,17 +1,10 @@
-import {
-  IsArray,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  ValidateIf,
-  ValidateNested,
-} from "class-validator";
-import { NewsdataArticleDto } from "./newsdata-article.dto";
-import { Type } from "class-transformer";
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, ValidateIf, ValidateNested } from 'class-validator';
+import { NewsdataArticleDto } from './newsdata-article.dto';
+import { Type } from 'class-transformer';
 
 export enum NewsdataResponseStatus {
-  Success = "success",
-  Error = "error",
+  Success = 'success',
+  Error = 'error',
 }
 
 export class NewsdataLatestNewsDto {

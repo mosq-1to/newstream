@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { BriefsRepository } from "../../briefs/briefs.repository";
-import { BriefAudioGenerationQueue } from "../brief-audio-generation.queue";
+import { Injectable } from '@nestjs/common';
+import { BriefsRepository } from '../../briefs/briefs.repository';
+import { BriefAudioGenerationQueue } from '../brief-audio-generation.queue';
 
 @Injectable()
 export class GenerateBriefAudioUseCase {
@@ -17,9 +17,6 @@ export class GenerateBriefAudioUseCase {
     }
 
     // Generate audio using the queue
-    await this.briefAudioGenerationQueue.generateBriefAudio(
-      briefId,
-      brief.content,
-    );
+    await this.briefAudioGenerationQueue.generateBriefAudio(briefId, brief.content);
   }
 }

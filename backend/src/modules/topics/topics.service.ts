@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { TopicsRepository } from "./topics.repository";
-import { TopicWriteDto } from "./interface/topic-write.dto";
+import { Injectable } from '@nestjs/common';
+import { TopicsRepository } from './topics.repository';
+import { TopicWriteDto } from './interface/topic-write.dto';
 
 @Injectable()
 export class TopicsService {

@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { Article } from "@prisma/client";
-import { TextGenerationService } from "../../text-generation/text-generation.service";
-import { BriefWriteDto } from "../interface/brief-write.dto";
+import { Injectable } from '@nestjs/common';
+import { Article } from '@prisma/client';
+import { TextGenerationService } from '../../text-generation/text-generation.service';
+import { BriefWriteDto } from '../interface/brief-write.dto';
 
 @Injectable()
 export class GenerateBriefUseCase {
@@ -14,9 +14,9 @@ export class GenerateBriefUseCase {
           `<article>
         <title>${article.title}</title>
         <content>${article.content}</content>
-      </article>`
+      </article>`,
       )
-      .join("\n");
+      .join('\n');
 
     const prompt = `
       You are a world-class news analyst and summarizer. Your task is to analyze the following content, which consists of multiple news articles and reports, and generate a brief, clear summary of the most important global events. Focus on time-sensitive news
@@ -37,7 +37,7 @@ export class GenerateBriefUseCase {
         - If article seems not relevant to the topic or its content seems broken or invalid, skip it.
       </rules>
 
-      Topic of the brief is ${"Artificial Intelligence"}, so focus on it while analyzing the articles. Avoid any other not relevant topics.
+      Topic of the brief is ${'Artificial Intelligence'}, so focus on it while analyzing the articles. Avoid any other not relevant topics.
 
       <objective>
         Generate a concise brief summarizing the articles. Include only the most important data and events from each relevant article.
@@ -50,7 +50,7 @@ export class GenerateBriefUseCase {
       content,
       articleIds: articles.map((article) => article.id),
       // todo - hardcoded for now. make it dynamic later on
-      topicId: "1b5831a4-a72d-4abe-9d4e-7c5bcf592c28",
+      topicId: '1b5831a4-a72d-4abe-9d4e-7c5bcf592c28',
     };
   }
 }

@@ -1,7 +1,7 @@
-import { Module } from "@nestjs/common";
-import { TextGenerationStrategy } from "./strategies/text-generation.strategy";
-import { GeminiTextGenerationStrategy } from "./strategies/gemini-text-generation.strategy";
-import { TextGenerationService } from "./text-generation.service";
+import { Module } from '@nestjs/common';
+import { TextGenerationStrategy } from './strategies/text-generation.strategy';
+import { GeminiTextGenerationStrategy } from './strategies/gemini-text-generation.strategy';
+import { TextGenerationService } from './text-generation.service';
 
 @Module({
   providers: [
