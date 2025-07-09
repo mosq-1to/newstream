@@ -1,5 +1,5 @@
-import path from 'path';
-import fs from 'fs/promises';
+import path from "path";
+import fs from "fs/promises";
 
 export interface VoiceInfo {
   name: string;
@@ -12,18 +12,18 @@ export interface VoiceInfo {
 
 export const VOICES: Record<string, VoiceInfo> = {
   af_heart: {
-    name: 'Heart',
-    language: 'en-us',
-    gender: 'Female',
-    traits: '❤️',
-    targetQuality: 'A',
-    overallGrade: 'A',
+    name: "Heart",
+    language: "en-us",
+    gender: "Female",
+    traits: "❤️",
+    targetQuality: "A",
+    overallGrade: "A",
   },
   // TODO Add more voices on demand
 } as const;
 
 const VOICE_DATA_URL: string =
-  'https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/resolve/main/voices';
+  "https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/resolve/main/voices";
 
 async function getVoiceFile(id: keyof typeof VOICES): Promise<ArrayBufferLike> {
   if (fs?.readFile) {
@@ -36,13 +36,13 @@ async function getVoiceFile(id: keyof typeof VOICES): Promise<ArrayBufferLike> {
 
   let cache;
   try {
-    cache = await caches.open('kokoro-voices');
+    cache = await caches.open("kokoro-voices");
     const cachedResponse = await cache.match(url);
     if (cachedResponse) {
       return await cachedResponse.arrayBuffer();
     }
   } catch (e) {
-    console.warn('Unable to open cache', e);
+    console.warn("Unable to open cache", e);
   }
 
   // No cache, or cache failed to open. Fetch the file.
@@ -59,7 +59,7 @@ async function getVoiceFile(id: keyof typeof VOICES): Promise<ArrayBufferLike> {
         }),
       );
     } catch (e) {
-      console.warn('Unable to cache file', e);
+      console.warn("Unable to cache file", e);
     }
   }
 

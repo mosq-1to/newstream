@@ -1,5 +1,5 @@
-import { ArticleReadModel } from './read-models/article.read-model';
-import { Injectable } from '@nestjs/common';
+import { ArticleReadModel } from "./read-models/article.read-model";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export abstract class ArticlesApi {

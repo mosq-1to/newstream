@@ -1,8 +1,8 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 
 export enum ArticleSource {
-  Newsdata = 'Newsdata',
-  WorldNewsApi = 'WorldNewsApi',
+  Newsdata = "Newsdata",
+  WorldNewsApi = "WorldNewsApi",
 }
 
 export class ArticleReadModel {

@@ -1,14 +1,14 @@
-import { ArticlesApi } from '../../articles.api';
-import { ArticleReadModel } from '../../read-models/article.read-model';
-import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { ConfigService } from '@nestjs/config';
-import { NewsdataLatestNewsDto } from './dto/newsdata-latest-news.dto';
-import { NewsdataArticleMapper } from './newsdata-article.mapper';
+import { ArticlesApi } from "../../articles.api";
+import { ArticleReadModel } from "../../read-models/article.read-model";
+import { Injectable } from "@nestjs/common";
+import { HttpService } from "@nestjs/axios";
+import { ConfigService } from "@nestjs/config";
+import { NewsdataLatestNewsDto } from "./dto/newsdata-latest-news.dto";
+import { NewsdataArticleMapper } from "./newsdata-article.mapper";
 
 @Injectable()
 export class NewsdataApi implements ArticlesApi {
-  httpService: HttpService['axiosRef'];
+  httpService: HttpService["axiosRef"];
 
   constructor(
     httpService: HttpService,
@@ -20,10 +20,10 @@ export class NewsdataApi implements ArticlesApi {
 
   async getArticles(): Promise<ArticleReadModel[]> {
     const response = await this.httpService.get<NewsdataLatestNewsDto>(
-      'https://newsdata.io/api/1/latest?size=10&language=en',
+      "https://newsdata.io/api/1/latest?size=10&language=en",
       {
         headers: {
-          'X-ACCESS-KEY': this.configService.get('NEWSDATA_API_KEY'),
+          "X-ACCESS-KEY": this.configService.get("NEWSDATA_API_KEY"),
         },
       },
     );
@@ -37,7 +37,7 @@ export class NewsdataApi implements ArticlesApi {
       }),
     );
     const successfulArticles = articleReadModels
-      .filter((article) => article.status === 'fulfilled')
+      .filter((article) => article.status === "fulfilled")
       .map(
         (article: PromiseFulfilledResult<ArticleReadModel>) => article.value,
       );

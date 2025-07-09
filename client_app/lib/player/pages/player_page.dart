@@ -128,7 +128,8 @@ class _PlayerPageState extends State<PlayerPage> {
                                         const SizedBox(height: 48),
                                         PlayerControls(),
                                         const SizedBox(height: 48),
-                                        _buildSourcesSection(currentBrief.articles),
+                                        _buildSourcesSection(
+                                            currentBrief.articles),
                                       ],
                                     ),
                                   ),
@@ -204,9 +205,9 @@ class _PlayerPageState extends State<PlayerPage> {
                   // Article thumbnail
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: article.thumbnailUrl.isNotEmpty
+                    child: article.thumbnailUrl?.isNotEmpty == true
                         ? Image.network(
-                            article.thumbnailUrl,
+                            article.thumbnailUrl!,
                             width: 80,
                             height: 60,
                             fit: BoxFit.cover,

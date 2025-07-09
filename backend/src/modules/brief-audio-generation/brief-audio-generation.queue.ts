@@ -1,14 +1,14 @@
-import { InjectFlowProducer, InjectQueue } from '@nestjs/bullmq';
-import { Injectable } from '@nestjs/common';
-import { FlowProducer, Job, Queue } from 'bullmq';
-import { v4 as uuidv4 } from 'uuid';
-import { FlowProducerName } from '../../types/flow-producer.enum';
-import { QueueName } from '../../types/queue-name.enum';
+import { InjectFlowProducer, InjectQueue } from "@nestjs/bullmq";
+import { Injectable } from "@nestjs/common";
+import { FlowProducer, Job, Queue } from "bullmq";
+import { v4 as uuidv4 } from "uuid";
+import { FlowProducerName } from "../../types/flow-producer.enum";
+import { QueueName } from "../../types/queue-name.enum";
 import {
   GenerateBriefAudioJob,
   GenerateBriefAudioProcessChunkJob,
-} from './jobs/generate-brief-audio.job';
-import { TextSplitterStream } from '../../ai/kokoro/lib/splitter';
+} from "./jobs/generate-brief-audio.job";
+import { TextSplitterStream } from "../../ai/kokoro/lib/splitter";
 
 @Injectable()
 export class BriefAudioGenerationQueue {
@@ -17,7 +17,7 @@ export class BriefAudioGenerationQueue {
     private readonly queue: Queue,
     @InjectFlowProducer(FlowProducerName.BriefAudioGeneration)
     private readonly flowProducer: FlowProducer,
-  ) { }
+  ) {}
 
   async generateBriefAudio(briefId: string, content: string) {
     const jobName = GenerateBriefAudioJob.getName(briefId);
@@ -69,6 +69,8 @@ export class BriefAudioGenerationQueue {
     //todo - think about less resource intensive way
     const jobs = (await this.queue.getJobs()) as Job[];
 
-    return jobs.some((job) => job.name === GenerateBriefAudioJob.getName(briefId));
+    return jobs.some(
+      (job) => job.name === GenerateBriefAudioJob.getName(briefId),
+    );
   }
 }

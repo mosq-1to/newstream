@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { TextGenerationStrategy } from './strategies/text-generation.strategy';
+import { Injectable } from "@nestjs/common";
+import { TextGenerationStrategy } from "./strategies/text-generation.strategy";
 
 @Injectable()
 export class TextGenerationService {

@@ -1,12 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { TopicsRepository } from './topics.repository';
-import { TopicWriteDto } from './interface/topic-write.dto';
+import { Injectable } from "@nestjs/common";
+import { TopicsRepository } from "./topics.repository";
+import { TopicWriteDto } from "./interface/topic-write.dto";
 
 @Injectable()
 export class TopicsService {
-  constructor(
-    private topicsRepository: TopicsRepository,
-  ) { }
+  constructor(private topicsRepository: TopicsRepository) {}
 
   async findAll() {
     return this.topicsRepository.findAll();

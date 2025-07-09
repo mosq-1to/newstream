@@ -54,7 +54,8 @@ class NewstreamApi {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to get current user: ${response.body}');
+      await UserRepository.setAccessToken(null);
+      return null;
     }
 
     final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
@@ -101,8 +102,9 @@ class NewstreamApi {
   }
 
   /* Brief */
-  Future<Brief> createBrief(String topicId) async {
+  Future<Brief> createBrief(String topicId, int timeframeInDays) async {
     print('topicId: $topicId');
+    print('timeframeInDays: $timeframeInDays');
 
     await _loadAccessToken();
 
@@ -123,6 +125,7 @@ class NewstreamApi {
       },
       body: jsonEncode({
         'topicId': topicId,
+        'timeframeInDays': timeframeInDays,
       }),
     );
 

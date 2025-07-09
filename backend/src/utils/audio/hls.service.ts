@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import fs from 'fs';
-import * as path from 'path';
-import ffmpeg from 'fluent-ffmpeg';
+import { Injectable } from "@nestjs/common";
+import fs from "fs";
+import * as path from "path";
+import ffmpeg from "fluent-ffmpeg";
 
 @Injectable()
 export class HlsService {
   public async getPlaylistFile(outputDir: string): Promise<string> {
-    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
+    const playlistFilePath = path.join(outputDir, "playlist.m3u8");
 
     return fs.existsSync(playlistFilePath)
       ? playlistFilePath
@@ -19,32 +19,37 @@ export class HlsService {
     chunkIndex: number,
   ): Promise<void> {
     try {
-      const tsFilename = `${path.basename(wavPath, '.wav')}.ts`;
+      const tsFilename = `${path.basename(wavPath, ".wav")}.ts`;
       const tsPath = path.join(outputDir, tsFilename);
 
       await this.convertWavToTs(wavPath, tsPath);
       const duration = await this.getDuration(tsPath);
-      this.appendToPlaylist(outputDir, duration, path.basename(tsPath), chunkIndex === 0);
+      this.appendToPlaylist(
+        outputDir,
+        duration,
+        path.basename(tsPath),
+        chunkIndex === 0,
+      );
     } catch (error) {
-      console.error('Error processing wav:', error);
+      console.error("Error processing wav:", error);
       throw error;
     }
   }
 
   public closePlaylistFile(outputDir: string): void {
-    const playlistPath = path.join(outputDir, 'playlist.m3u8');
-    fs.appendFileSync(playlistPath, '#EXT-X-ENDLIST\n');
+    const playlistPath = path.join(outputDir, "playlist.m3u8");
+    fs.appendFileSync(playlistPath, "#EXT-X-ENDLIST\n");
   }
 
   private initializeHlsDirectory(outputDir: string): string {
-    const playlistFilePath = path.join(outputDir, 'playlist.m3u8');
+    const playlistFilePath = path.join(outputDir, "playlist.m3u8");
     const initialContent = [
-      '#EXTM3U',
-      '#EXT-X-VERSION:3',
-      '#EXT-X-PLAYLIST-TYPE:EVENT',
-      '#EXT-X-TARGETDURATION:4',
-      '#EXT-X-MEDIA-SEQUENCE:0',
-    ].join('\n');
+      "#EXTM3U",
+      "#EXT-X-VERSION:3",
+      "#EXT-X-PLAYLIST-TYPE:EVENT",
+      "#EXT-X-TARGETDURATION:4",
+      "#EXT-X-MEDIA-SEQUENCE:0",
+    ].join("\n");
 
     fs.writeFileSync(playlistFilePath, initialContent);
     return playlistFilePath;
@@ -56,27 +61,27 @@ export class HlsService {
     tsFilename: string,
     isFirstChunk: boolean,
   ): void {
-    const playlistPath = path.join(outputDir, 'playlist.m3u8');
+    const playlistPath = path.join(outputDir, "playlist.m3u8");
     const line = [
-      '',
-      !isFirstChunk ? '#EXT-X-DISCONTINUITY' : '',
+      "",
+      !isFirstChunk ? "#EXT-X-DISCONTINUITY" : "",
       `#EXTINF:${duration.toFixed(3)},`,
       tsFilename,
-      '',
-    ].join('\n');
+      "",
+    ].join("\n");
     fs.appendFileSync(playlistPath, line);
   }
 
   private convertWavToTs(wavPath: string, tsPath: string): Promise<void> {
     return new Promise((resolve, reject) => {
       ffmpeg(wavPath)
-        .audioCodec('aac')
-        .audioBitrate('128k')
-        .format('mpegts')
-        .outputOptions('-f mpegts')
+        .audioCodec("aac")
+        .audioBitrate("128k")
+        .format("mpegts")
+        .outputOptions("-f mpegts")
         .save(tsPath)
-        .on('end', () => resolve())
-        .on('error', reject);
+        .on("end", () => resolve())
+        .on("error", reject);
     });
   }
 
