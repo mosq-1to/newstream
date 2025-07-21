@@ -9,7 +9,7 @@ export class ArticlesService {
     private readonly fetchArticlesUseCase: FetchArticlesFromApiUseCase,
     private readonly articlesQueue: ArticlesQueue,
     private readonly articlesRepository: ArticlesRepository,
-  ) {}
+  ) { }
 
   async fetchAndSaveArticles() {
     const articles = await this.fetchArticlesUseCase.fetchLastNDays(13, {
@@ -25,7 +25,7 @@ export class ArticlesService {
         sourceUrl: article.source.url,
         content: '',
         thumbnailUrl: article.image,
-        topicId: '1b5831a4-a72d-4abe-9d4e-7c5bcf592c28',
+        topicId: '127d284f-af22-4212-a65d-ae9517913274',
         publishedAt: new Date(article.publishedAt),
       })),
     );
