@@ -21,6 +21,9 @@ An MVP of a news articles streaming application. Leverages AI models such as LLM
 ## Tools
 ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
 
-| Auth screen | Home feed | Player |
+| Auth screen | Home feed | Generate a brief |
 |----------|----------|----------|
-| ![Login screen](https://github.com/user-attachments/assets/7af661ef-23e6-42b1-92ac-863d4ae8bcc3)   | ![Home feed](https://github.com/user-attachments/assets/a4630a98-3178-49f0-b153-391098ff7cdb)   | ![Player](https://github.com/user-attachments/assets/ed001a4f-6c77-431a-b1d6-95baeca62d4b)   |
+| ![Login screen](https://github.com/user-attachments/assets/73f9a1fb-1391-49f1-87b8-deb659ec594b)   |  ![Home feed](https://github.com/user-attachments/assets/1b2e535e-8b1f-4e92-963f-f1709c3bf8c6) | ![Generate a brief](https://github.com/user-attachments/assets/10357c3a-5264-435d-8c29-5ae314426e13) |
+| Search | Player (design) |----------|
+|  ![Search](https://github.com/user-attachments/assets/f29c58bd-4b3e-4a45-8e7b-cebd5250b2d7) | ![Player](https://github.com/user-attachments/assets/d2eda412-e0bc-4c3b-a53d-6ab521238a2b)
+ |
