@@ -5,9 +5,9 @@ import { BriefWriteDto } from '../interface/brief-write.dto';
 
 @Injectable()
 export class GenerateBriefUseCase {
-  constructor(private textGenerationService: TextGenerationService) {}
+  constructor(private textGenerationService: TextGenerationService) { }
 
-  async execute(articles: Article[]): Promise<BriefWriteDto> {
+  async execute(articles: Article[], topicId: string): Promise<BriefWriteDto> {
     const articlesContent = articles
       .map(
         (article) =>
@@ -35,6 +35,7 @@ export class GenerateBriefUseCase {
         - Do not use any markdown features such as headings or text boldings.
         - Do not use any symbols for emphasis or structure.
         - If article seems not relevant to the topic or its content seems broken or invalid, skip it.
+        - It has to contain around 500 words.
       </rules>
 
       Topic of the brief is ${'Artificial Intelligence'}, so focus on it while analyzing the articles. Avoid any other not relevant topics.
@@ -49,8 +50,7 @@ export class GenerateBriefUseCase {
     return {
       content,
       articleIds: articles.map((article) => article.id),
-      // todo - hardcoded for now. make it dynamic later on
-      topicId: '1b5831a4-a72d-4abe-9d4e-7c5bcf592c28',
+      topicId,
     };
   }
 }

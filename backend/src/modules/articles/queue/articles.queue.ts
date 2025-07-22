@@ -19,6 +19,6 @@ export class ArticlesQueue {
   }
 
   public addScrapeArticlesJob(articles: Article[]) {
-    return Promise.all(articles.map((article) => this.addScrapeArticleJob(article)));
+    return articles.map((article) => this.addScrapeArticleJob(article));
   }
 }

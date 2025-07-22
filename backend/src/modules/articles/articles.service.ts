@@ -9,35 +9,46 @@ export class ArticlesService {
     private readonly fetchArticlesUseCase: FetchArticlesFromApiUseCase,
     private readonly articlesQueue: ArticlesQueue,
     private readonly articlesRepository: ArticlesRepository,
-  ) { }
+  ) {}
 
   async fetchAndSaveArticles() {
-    const articles = await this.fetchArticlesUseCase.fetchLastNDays(13, {
-      q: 'Artificial Intelligence',
-    });
+    this.fetchArticlesUseCase
+      .fetchLastNDays(7, {
+        q: 'Artificial Intelligence',
+      })
+      .then((articles) => {
+        // todo: hard-coded topicId for now, change it later
+        return this.articlesQueue.addSaveArticlesJob(
+          articles.map((article) => ({
+            title: article.title,
+            url: article.url,
+            sourceName: article.source.name,
+            sourceUrl: article.source.url,
+            content: '',
+            thumbnailUrl: article.image,
+            topicId: '00000000-0000-0000-0000-000000000001',
+            publishedAt: new Date(article.publishedAt),
+          })),
+        );
+      })
+      .catch((error) => {
+        console.error('Error fetching articles:', error);
+      });
 
-    // todo: hard-coded topicId for now, change it later
-    void this.articlesQueue.addSaveArticlesJob(
-      articles.map((article) => ({
-        title: article.title,
-        url: article.url,
-        sourceName: article.source.name,
-        sourceUrl: article.source.url,
-        content: '',
-        thumbnailUrl: article.image,
-        topicId: '127d284f-af22-4212-a65d-ae9517913274',
-        publishedAt: new Date(article.publishedAt),
-      })),
-    );
-
-    return articles;
+    return { started: true };
   }
 
   async scrapeAllArticles(batchSize: number) {
     const articles = await this.articlesRepository.getAllArticles({
       content: '',
     });
-    await this.articlesQueue.addScrapeArticlesJob(articles.slice(0, batchSize));
+    void this.articlesQueue.addScrapeArticlesJob(articles.slice(0, batchSize));
     return { queued: articles.length };
+  }
+
+  async scrapeSingleArticle(articleId: string) {
+    const article = await this.articlesRepository.getArticleById(articleId);
+    void this.articlesQueue.addScrapeArticleJob(article);
+    return { queued: 1 };
   }
 }

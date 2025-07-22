@@ -25,8 +25,7 @@ export class BriefsService {
       briefCreateDto.topicId,
       briefCreateDto.timeframeInDays,
     );
-    // get only first 3 articles for testing
-    const briefDto = await this.generateBriefUseCase.execute(articles.slice(0, 3));
+    const briefDto = await this.generateBriefUseCase.execute(articles, briefCreateDto.topicId);
     return this.briefsRepository.saveBrief(briefDto);
   }
 

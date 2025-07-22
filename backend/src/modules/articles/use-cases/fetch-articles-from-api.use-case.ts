@@ -71,7 +71,7 @@ export class FetchArticlesFromApiUseCase {
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
     const cumulativeArticles: GNewsArticle[] = [];
-    const today = new Date('2025-05-31');
+    const today = new Date();
     for (let i = 0; i < nDays; i++) {
       if (i > 0) {
         await sleep(2000);
