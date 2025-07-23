@@ -1,9 +1,10 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { QueueName } from '../../../../types/queue-name.enum';
 import { ArticlesRepository } from '../../articles.repository';
 import { ArticleCategorizeJob } from './article-categorize.job';
 import { TopicsService } from 'src/modules/topics/topics.service';
 import { CategorizeArticleUseCase } from '../../use-cases/categorize-article.use-case';
+import { ArticlesQueuesOrchestratorService } from '../../articles-queues-orchestrator.service';
 
 @Processor(QueueName.ArticleCategorize)
 export class ArticleCategorizeJobProcessor extends WorkerHost {
@@ -11,6 +12,7 @@ export class ArticleCategorizeJobProcessor extends WorkerHost {
     private readonly articlesRepository: ArticlesRepository,
     private readonly topicsService: TopicsService,
     private readonly categorizeArticleUseCase: CategorizeArticleUseCase,
+    private readonly articlesQueuesOrchestratorService: ArticlesQueuesOrchestratorService,
   ) {
     super();
   }
@@ -40,5 +42,13 @@ export class ArticleCategorizeJobProcessor extends WorkerHost {
     const topicId = await this.categorizeArticleUseCase.execute(topics, title, content);
 
     return topicId;
+  }
+
+  @OnWorkerEvent('completed')
+  async onCompleted(job: ArticleCategorizeJob) {
+    const article = await this.articlesRepository.getArticleById(job.data.articleId);
+    if (!article) throw new Error('[ArticleCategorizeJobProcessor] Article not found');
+
+    await this.articlesQueuesOrchestratorService.onArticleCategorized(article);
   }
 }
