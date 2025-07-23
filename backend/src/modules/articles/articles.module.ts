@@ -18,6 +18,7 @@ import { TopicsModule } from '../topics/topics.module';
 import { TopicsService } from '../topics/topics.service';
 import { ArticleScrapeQueue } from './queues/article-scrape-queue/article-scrape.queue';
 import { ArticleScrapeJobProcessor } from './queues/article-scrape-queue/article-scrape.job-processor';
+import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrator.service';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ArticleScrapeJobProcessor } from './queues/article-scrape-queue/article
     TopicsService,
     ArticleScrapeQueue,
     ArticleScrapeJobProcessor,
+    ArticlesQueuesOrchestratorService,
   ],
   controllers: [ArticlesController],
   exports: [ArticlesService, ArticlesRepository],

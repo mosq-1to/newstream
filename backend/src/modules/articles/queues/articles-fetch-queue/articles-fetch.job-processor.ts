@@ -1,9 +1,11 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { QueueName } from '../../../../types/queue-name.enum';
 
 import { ArticlesRepository } from '../../articles.repository';
 import { FetchArticlesFromApiUseCase } from '../../use-cases/fetch-articles-from-api.use-case';
 import { TopicsService } from 'src/modules/topics/topics.service';
+import { FetchArticlesJob } from './fetch-articles.job';
+import { ArticlesQueuesOrchestratorService } from '../../articles-queues-orchestrator.service';
 
 @Processor(QueueName.ArticlesFetch)
 export class ArticlesFetchJobProcessor extends WorkerHost {
@@ -11,6 +13,7 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
     private readonly articlesRepository: ArticlesRepository,
     private readonly fetchArticlesUseCase: FetchArticlesFromApiUseCase,
     private readonly topicsService: TopicsService,
+    private readonly articlesQueuesOrchestratorService: ArticlesQueuesOrchestratorService,
   ) {
     super();
   }
@@ -23,7 +26,7 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
       q: allKeywordsQuery,
     });
 
-    return this.articlesRepository.saveArticles(
+    return await this.articlesRepository.saveArticles(
       articles.map((article) => ({
         title: article.title,
         url: article.url,
@@ -34,5 +37,10 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
         publishedAt: new Date(article.publishedAt),
       })),
     );
+  }
+
+  @OnWorkerEvent('completed')
+  async onCompleted(job: FetchArticlesJob) {
+    await this.articlesQueuesOrchestratorService.onArticlesFetched(job.returnvalue);
   }
 }

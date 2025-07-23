@@ -18,4 +18,9 @@ export class ArticlesService {
     await this.articleScrapeQueue.addArticleScrapeJob(articleId);
     return { job_started: true };
   }
+
+  async scrapeArticles(articleIds: string[]) {
+    await this.articleScrapeQueue.addArticleScrapeJobs(articleIds);
+    return { job_started: true };
+  }
 }
