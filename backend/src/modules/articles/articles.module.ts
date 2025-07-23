@@ -18,6 +18,8 @@ import { ArticlesJobProcessor } from './queue/articles.job-processor';
 import { ScrapeArticleContentUseCase } from './use-cases/scrape-article-content.use-case';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { TopicsModule } from '../topics/topics.module';
+import { TopicsService } from '../topics/topics.service';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
       name: QueueName.Articles,
       adapter: BullMQAdapter,
     }),
+    TopicsModule,
   ],
   providers: [
     DatabaseService,
@@ -44,6 +47,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
     FetchArticlesFromApiUseCase,
     ArticlesJobProcessor,
     ScrapeArticleContentUseCase,
+    TopicsService,
   ],
   controllers: [ArticlesController],
   exports: [ArticlesService, ArticlesRepository],

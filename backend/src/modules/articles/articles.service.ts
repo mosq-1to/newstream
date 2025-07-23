@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ArticlesQueue } from './queue/articles.queue';
 import { ArticlesRepository } from './articles.repository';
 import { FetchArticlesFromApiUseCase } from './use-cases/fetch-articles-from-api.use-case';
+import { TopicsService } from '../topics/topics.service';
 
 @Injectable()
 export class ArticlesService {
@@ -9,12 +10,16 @@ export class ArticlesService {
     private readonly fetchArticlesUseCase: FetchArticlesFromApiUseCase,
     private readonly articlesQueue: ArticlesQueue,
     private readonly articlesRepository: ArticlesRepository,
+    private readonly topicsService: TopicsService,
   ) {}
 
   async fetchAndSaveArticles() {
+    const allKeywords = await this.topicsService.getAllKeywords();
+    const allKeywordsQuery = allKeywords.map((k) => `"${k}"`).join(' OR ');
+
     this.fetchArticlesUseCase
       .fetchLastNDays(7, {
-        q: 'Artificial Intelligence',
+        q: allKeywordsQuery,
       })
       .then((articles) => {
         // todo: hard-coded topicId for now, change it later

@@ -17,4 +17,9 @@ export class TopicsService {
   async createTopic(topic: TopicWriteDto) {
     return this.topicsRepository.saveTopic(topic);
   }
+
+  async getAllKeywords() {
+    const topics = await this.topicsRepository.findAll();
+    return topics.map((topic) => topic.keywords).flat();
+  }
 }
