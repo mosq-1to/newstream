@@ -18,6 +18,8 @@ import { TopicsModule } from '../topics/topics.module';
 import { TopicsService } from '../topics/topics.service';
 import { ArticleScrapeQueue } from './queues/article-scrape-queue/article-scrape.queue';
 import { ArticleScrapeJobProcessor } from './queues/article-scrape-queue/article-scrape.job-processor';
+import { ArticleCategorizeQueue } from './queues/article-categorize-queue/article-categorize.queue';
+import { ArticleCategorizeJobProcessor } from './queues/article-categorize-queue/article-categorize.job-processor';
 import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrator.service';
 
 @Module({
@@ -31,6 +33,11 @@ import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrato
     BullModule.registerQueue({ name: QueueName.ArticleScrape }),
     BullBoardModule.forFeature({
       name: QueueName.ArticleScrape,
+      adapter: BullMQAdapter,
+    }),
+    BullModule.registerQueue({ name: QueueName.ArticleCategorize }),
+    BullBoardModule.forFeature({
+      name: QueueName.ArticleCategorize,
       adapter: BullMQAdapter,
     }),
     TopicsModule,
@@ -48,6 +55,8 @@ import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrato
     TopicsService,
     ArticleScrapeQueue,
     ArticleScrapeJobProcessor,
+    ArticleCategorizeQueue,
+    ArticleCategorizeJobProcessor,
     ArticlesQueuesOrchestratorService,
   ],
   controllers: [ArticlesController],
