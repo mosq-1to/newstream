@@ -13,6 +13,6 @@ export class ArticleScrapeQueue {
   ) {}
 
   public async addArticleScrapeJob(articleId: string) {
-    await this.queue.add(ArticleScrapeJob.name, { articleId });
+    await this.queue.add(ArticleScrapeJob.name, { articleId }, { attempts: 3 });
   }
 }

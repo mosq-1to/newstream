@@ -16,27 +16,23 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
   }
 
   async process() {
-    try {
-      const allKeywords = await this.topicsService.getAllKeywords();
-      const allKeywordsQuery = allKeywords.map((k) => `"${k}"`).join(' OR ');
+    const allKeywords = await this.topicsService.getAllKeywords();
+    const allKeywordsQuery = allKeywords.map((k) => `"${k}"`).join(' OR ');
 
-      const articles = await this.fetchArticlesUseCase.fetchLastNDays(1, {
-        q: allKeywordsQuery,
-      });
+    const articles = await this.fetchArticlesUseCase.fetchLastNDays(1, {
+      q: allKeywordsQuery,
+    });
 
-      return this.articlesRepository.saveArticles(
-        articles.map((article) => ({
-          title: article.title,
-          url: article.url,
-          sourceName: article.source.name,
-          sourceUrl: article.source.url,
-          content: '',
-          thumbnailUrl: article.image,
-          publishedAt: new Date(article.publishedAt),
-        })),
-      );
-    } catch (err) {
-      console.error('[ArticlesFetchJobProcessor] Error fetching articles:', err);
-    }
+    return this.articlesRepository.saveArticles(
+      articles.map((article) => ({
+        title: article.title,
+        url: article.url,
+        sourceName: article.source.name,
+        sourceUrl: article.source.url,
+        content: '',
+        thumbnailUrl: article.image,
+        publishedAt: new Date(article.publishedAt),
+      })),
+    );
   }
 }
