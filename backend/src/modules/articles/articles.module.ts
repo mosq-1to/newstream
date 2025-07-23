@@ -16,6 +16,7 @@ import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { TopicsModule } from '../topics/topics.module';
 import { TopicsService } from '../topics/topics.service';
+import { ArticleScrapeQueue } from './queues/article-scrape-queue/article-scrape.queue';
 
 @Module({
   imports: [
@@ -23,6 +24,11 @@ import { TopicsService } from '../topics/topics.service';
     BullModule.registerQueue({ name: QueueName.ArticlesFetch }),
     BullBoardModule.forFeature({
       name: QueueName.ArticlesFetch,
+      adapter: BullMQAdapter,
+    }),
+    BullModule.registerQueue({ name: QueueName.ArticleScrape }),
+    BullBoardModule.forFeature({
+      name: QueueName.ArticleScrape,
       adapter: BullMQAdapter,
     }),
     TopicsModule,
@@ -39,6 +45,7 @@ import { TopicsService } from '../topics/topics.service';
     ScrapeArticleContentUseCase,
     TopicsService,
     ArticlesFetchQueue,
+    ArticleScrapeQueue,
   ],
   controllers: [ArticlesController],
   exports: [ArticlesService, ArticlesRepository],

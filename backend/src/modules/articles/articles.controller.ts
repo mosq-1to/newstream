@@ -1,4 +1,5 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ScrapeArticleDto } from './dto/scrape-article.dto';
 import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { ArticlesService } from './articles.service';
 
@@ -10,5 +11,10 @@ export class ArticlesController {
   @Post('debug/fetch')
   async fetchArticles() {
     return this.articlesService.fetchAndSaveArticles();
+  }
+
+  @Post('debug/scrapeArticle')
+  async scrapeArticle(@Body() dto: ScrapeArticleDto) {
+    return this.articlesService.scrapeArticle(dto.articleId);
   }
 }
