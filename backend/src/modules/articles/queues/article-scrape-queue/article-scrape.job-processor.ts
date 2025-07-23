@@ -27,6 +27,7 @@ export class ArticleScrapeJobProcessor extends WorkerHost {
 
     return content;
   }
+
   @OnWorkerEvent('failed')
   async onFailed(job: ArticleScrapeJob) {
     if (job.attemptsMade === 3) {
