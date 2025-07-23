@@ -30,6 +30,8 @@ export class TopicsRepository {
         title: topic.title,
         thumbnailUrl: topic.thumbnailUrl,
         categoryTitle: topic.categoryTitle,
+        description: topic.description,
+        keywords: topic.keywords,
       },
       include: {
         briefs: true,
