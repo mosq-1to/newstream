@@ -1,8 +1,8 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { QueueName } from '../../../types/queue-name.enum';
+import { QueueName } from '../../../../types/queue-name.enum';
 
-import { ArticlesRepository } from '../articles.repository';
-import { FetchArticlesFromApiUseCase } from '../use-cases/fetch-articles-from-api.use-case';
+import { ArticlesRepository } from '../../articles.repository';
+import { FetchArticlesFromApiUseCase } from '../../use-cases/fetch-articles-from-api.use-case';
 import { TopicsService } from 'src/modules/topics/topics.service';
 
 @Processor(QueueName.ArticlesFetch)

@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Queue } from 'bullmq';
 import { FetchArticlesJob } from './jobs/fetch-articles.job';
 import { InjectQueue } from '@nestjs/bullmq';
-import { QueueName } from '../../../types/queue-name.enum';
+import { QueueName } from '../../../../types/queue-name.enum';
 
 @Injectable()
 export class ArticlesFetchQueue {

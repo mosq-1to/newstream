@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ArticlesFetchQueue } from './queue/articles-fetch.queue';
+import { ArticlesFetchQueue } from './queues/articles-fetch-queue/articles-fetch.queue';
 
 @Injectable()
 export class ArticlesService {
