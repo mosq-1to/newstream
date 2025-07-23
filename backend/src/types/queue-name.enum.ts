@@ -3,4 +3,5 @@ export enum QueueName {
   BriefAudioGeneration = 'brief-audio-generation-queue',
   ArticleScrape = 'article-scrape-queue',
   ArticleCategorize = 'article-categorize-queue',
+  ArticleTransform = 'article-transform-queue',
 }

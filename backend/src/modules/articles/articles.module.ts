@@ -20,8 +20,11 @@ import { ArticleScrapeQueue } from './queues/article-scrape-queue/article-scrape
 import { ArticleScrapeJobProcessor } from './queues/article-scrape-queue/article-scrape.job-processor';
 import { ArticleCategorizeQueue } from './queues/article-categorize-queue/article-categorize.queue';
 import { ArticleCategorizeJobProcessor } from './queues/article-categorize-queue/article-categorize.job-processor';
+import { ArticleTransformQueue } from './queues/article-transform-queue/article-transform.queue';
+import { ArticleTransformJobProcessor } from './queues/article-transform-queue/article-transform.job-processor';
 import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrator.service';
 import { CategorizeArticleUseCase } from './use-cases/categorize-article.use-case';
+import { TransformArticleUseCase } from './use-cases/transform-article.use-case';
 import { TextGenerationModule } from '../text-generation/text-generation.module';
 
 @Module({
@@ -42,6 +45,11 @@ import { TextGenerationModule } from '../text-generation/text-generation.module'
       name: QueueName.ArticleCategorize,
       adapter: BullMQAdapter,
     }),
+    BullModule.registerQueue({ name: QueueName.ArticleTransform }),
+    BullBoardModule.forFeature({
+      name: QueueName.ArticleTransform,
+      adapter: BullMQAdapter,
+    }),
     TopicsModule,
     TextGenerationModule,
   ],
@@ -60,8 +68,11 @@ import { TextGenerationModule } from '../text-generation/text-generation.module'
     ArticleScrapeJobProcessor,
     ArticleCategorizeQueue,
     ArticleCategorizeJobProcessor,
+    ArticleTransformQueue,
+    ArticleTransformJobProcessor,
     ArticlesQueuesOrchestratorService,
     CategorizeArticleUseCase,
+    TransformArticleUseCase,
   ],
   controllers: [ArticlesController],
   exports: [ArticlesService, ArticlesRepository],
