@@ -32,6 +32,7 @@ model Article {
   updatedAt    DateTime @updatedAt
   publishedAt  DateTime
   relevant     Boolean @default(true)
+  transformedContent String?
 
   // Relationship to Brief
   briefs Brief[] @relation("ArticleToBrief")
