@@ -16,7 +16,10 @@ export class ArticlesQueuesOrchestratorService {
       .map((article) => article.id);
 
     await this.articleScrapeQueue.addArticleScrapeJobs(relevantArticleIds);
-    // todo - move to the onArticleScraped method because it's dependent on the article's content
-    await this.articleCategorizeQueue.addArticleCategorizeJobs(relevantArticleIds);
+  }
+
+  public async onArticleScraped(article: Article) {
+    if (!article.relevant) return;
+    await this.articleCategorizeQueue.addArticleCategorizeJob(article.id);
   }
 }

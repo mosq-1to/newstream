@@ -3,12 +3,14 @@ import { QueueName } from '../../../../types/queue-name.enum';
 import { ArticlesRepository } from '../../articles.repository';
 import { ScrapeArticleContentUseCase } from '../../use-cases/scrape-article-content.use-case';
 import { ArticleScrapeJob } from './article-scrape.job';
+import { ArticlesQueuesOrchestratorService } from '../../articles-queues-orchestrator.service';
 
 @Processor(QueueName.ArticleScrape)
 export class ArticleScrapeJobProcessor extends WorkerHost {
   constructor(
     private readonly articlesRepository: ArticlesRepository,
     private readonly scrapeArticleContentUseCase: ScrapeArticleContentUseCase,
+    private readonly articlesQueuesOrchestratorService: ArticlesQueuesOrchestratorService,
   ) {
     super();
   }
@@ -38,5 +40,13 @@ export class ArticleScrapeJobProcessor extends WorkerHost {
       article.relevant = false;
       await this.articlesRepository.updateArticle(article);
     }
+  }
+
+  @OnWorkerEvent('completed')
+  async onCompleted(job: ArticleScrapeJob) {
+    const article = await this.articlesRepository.getArticleById(job.data.articleId);
+    if (!article) throw new Error('[ArticleScrapeJobProcessor] Article not found');
+
+    await this.articlesQueuesOrchestratorService.onArticleScraped(article);
   }
 }
