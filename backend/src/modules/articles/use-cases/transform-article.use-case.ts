@@ -21,6 +21,9 @@ export class TransformArticleUseCase {
         - Keep important quotes intact along with their attribution
         - Preserve key statistics, data points, and research findings
         - Extract the most important takeaways from the article
+        - Don't put any formatting in the response, just mere tags and plain text
+        - Don't put any additional information, just the response
+        - Don't structurize the output, it has to be in plain text
       </rules>
 
       <output_format>
