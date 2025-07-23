@@ -37,8 +37,8 @@ model Article {
   briefs Brief[] @relation("ArticleToBrief")
 
   // Relationship to Topic
-  topicId String
-  topic   Topic  @relation(fields: [topicId], references: [id])
+  topicId     String?
+  topic       Topic?  @relation(fields: [topicId], references: [id])
 
   @@unique([url])
 }
