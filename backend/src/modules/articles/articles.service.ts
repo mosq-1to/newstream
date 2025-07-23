@@ -18,11 +18,10 @@ export class ArticlesService {
     const allKeywordsQuery = allKeywords.map((k) => `"${k}"`).join(' OR ');
 
     this.fetchArticlesUseCase
-      .fetchLastNDays(7, {
+      .fetchLastNDays(1, {
         q: allKeywordsQuery,
       })
       .then((articles) => {
-        // todo: hard-coded topicId for now, change it later
         return this.articlesQueue.addSaveArticlesJob(
           articles.map((article) => ({
             title: article.title,

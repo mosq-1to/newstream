@@ -32,7 +32,7 @@ export interface GNewsOptions {
 
 @Injectable()
 export class FetchArticlesFromApiUseCase {
-  private readonly baseUrl = 'https://gnews.io/api/v4/top-headlines';
+  private readonly baseUrl = 'https://gnews.io/api/v4/search';
 
   constructor(private readonly configService: ConfigService) {}
 
