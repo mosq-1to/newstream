@@ -26,7 +26,6 @@ export class ArticlesService {
             sourceUrl: article.source.url,
             content: '',
             thumbnailUrl: article.image,
-            topicId: '00000000-0000-0000-0000-000000000001',
             publishedAt: new Date(article.publishedAt),
           })),
         );
