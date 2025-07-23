@@ -10,13 +10,14 @@ import { ArticlesController } from './articles.controller';
 import { ArticlesFetchQueue } from './queues/articles-fetch-queue/articles-fetch.queue';
 import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
 import { FetchArticlesFromApiUseCase } from './use-cases/fetch-articles-from-api.use-case';
-import { ArticlesJobProcessor } from './queues/articles-fetch-queue/articles-fetch.job-processor';
+import { ArticlesFetchJobProcessor } from './queues/articles-fetch-queue/articles-fetch.job-processor';
 import { ScrapeArticleContentUseCase } from './use-cases/scrape-article-content.use-case';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { TopicsModule } from '../topics/topics.module';
 import { TopicsService } from '../topics/topics.service';
 import { ArticleScrapeQueue } from './queues/article-scrape-queue/article-scrape.queue';
+import { ArticleScrapeJobProcessor } from './queues/article-scrape-queue/article-scrape.job-processor';
 
 @Module({
   imports: [
@@ -41,11 +42,11 @@ import { ArticleScrapeQueue } from './queues/article-scrape-queue/article-scrape
     ArticlesFetchQueue,
     FetchArticlesUseCase,
     FetchArticlesFromApiUseCase,
-    ArticlesJobProcessor,
+    ArticlesFetchJobProcessor,
     ScrapeArticleContentUseCase,
     TopicsService,
-    ArticlesFetchQueue,
     ArticleScrapeQueue,
+    ArticleScrapeJobProcessor,
   ],
   controllers: [ArticlesController],
   exports: [ArticlesService, ArticlesRepository],

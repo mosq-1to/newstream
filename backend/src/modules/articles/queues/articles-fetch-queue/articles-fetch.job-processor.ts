@@ -6,7 +6,7 @@ import { FetchArticlesFromApiUseCase } from '../../use-cases/fetch-articles-from
 import { TopicsService } from 'src/modules/topics/topics.service';
 
 @Processor(QueueName.ArticlesFetch)
-export class ArticlesJobProcessor extends WorkerHost {
+export class ArticlesFetchJobProcessor extends WorkerHost {
   constructor(
     private readonly articlesRepository: ArticlesRepository,
     private readonly fetchArticlesUseCase: FetchArticlesFromApiUseCase,
@@ -36,7 +36,7 @@ export class ArticlesJobProcessor extends WorkerHost {
         })),
       );
     } catch (err) {
-      console.error('[ArticlesJobProcessor] Error fetching articles:', err);
+      console.error('[ArticlesFetchJobProcessor] Error fetching articles:', err);
     }
   }
 }
