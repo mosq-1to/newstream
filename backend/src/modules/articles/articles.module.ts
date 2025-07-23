@@ -21,6 +21,8 @@ import { ArticleScrapeJobProcessor } from './queues/article-scrape-queue/article
 import { ArticleCategorizeQueue } from './queues/article-categorize-queue/article-categorize.queue';
 import { ArticleCategorizeJobProcessor } from './queues/article-categorize-queue/article-categorize.job-processor';
 import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrator.service';
+import { CategorizeArticleUseCase } from './use-cases/categorize-article.use-case';
+import { TextGenerationModule } from '../text-generation/text-generation.module';
 
 @Module({
   imports: [
@@ -41,6 +43,7 @@ import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrato
       adapter: BullMQAdapter,
     }),
     TopicsModule,
+    TextGenerationModule,
   ],
   providers: [
     DatabaseService,
@@ -58,6 +61,7 @@ import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrato
     ArticleCategorizeQueue,
     ArticleCategorizeJobProcessor,
     ArticlesQueuesOrchestratorService,
+    CategorizeArticleUseCase,
   ],
   controllers: [ArticlesController],
   exports: [ArticlesService, ArticlesRepository],

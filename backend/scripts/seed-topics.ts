@@ -7,8 +7,8 @@ async function main() {
       title: 'Artificial Intelligence',
       thumbnailUrl: 'https://images.pexels.com/photos/6153354/pexels-photo-6153354.jpeg',
       categoryTitle: 'Popular topics',
-      description:
-        'This topic encompasses advancements, breakthroughs, and the latest use cases of AI technologies. It highlights innovative applications and showcases trends that indicate the future direction of technological development in the field of artificial intelligence. Articles should focus on content that is engaging and relevant to the general public, ensuring accessibility and interest beyond the scientific community.',
+      description: `This topic encompasses advancements, breakthroughs, and the latest use cases of AI technologies. It highlights innovative applications and showcases trends that indicate the future direction of technological development in the field of artificial intelligence. Articles should focus on content that is engaging and relevant to the general public, ensuring accessibility and interest beyond the scientific community.
+        Articles about stock prices or financial reports of various companies should be marked as irrelevant.`,
       keywords: ['Artificial Intelligence', 'AI', 'Machinge learning'],
     },
   ];
