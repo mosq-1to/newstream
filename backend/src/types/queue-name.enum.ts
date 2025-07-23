@@ -1,4 +1,4 @@
 export enum QueueName {
-  Articles = 'articles-queue',
+  ArticlesFetch = 'articles-fetch-queue',
   BriefAudioGeneration = 'brief-audio-generation-queue',
 }

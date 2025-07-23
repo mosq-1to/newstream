@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Article } from '@prisma/client';
 import { DatabaseService } from '../../utils/database/database.service';
-import { ArticlesApi } from './api/articles.api';
 import { ArticleWriteDto } from './interface/article-write.dto';
 
 @Injectable()
 export class ArticlesRepository {
-  constructor(
-    private readonly articlesApi: ArticlesApi,
-    private readonly databaseService: DatabaseService,
-  ) {}
+  constructor(private readonly databaseService: DatabaseService) {}
 
   async getAllArticles(filterOptions?: { content?: string }) {
     return this.databaseService.article.findMany({
@@ -44,10 +40,6 @@ export class ArticlesRepository {
         },
       },
     });
-  }
-
-  async fetchLatestArticles() {
-    return this.articlesApi.getArticles();
   }
 
   async saveArticles(articles: ArticleWriteDto[]) {
