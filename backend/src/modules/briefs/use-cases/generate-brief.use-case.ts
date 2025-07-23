@@ -5,7 +5,7 @@ import { BriefWriteDto } from '../interface/brief-write.dto';
 
 @Injectable()
 export class GenerateBriefUseCase {
-  constructor(private textGenerationService: TextGenerationService) { }
+  constructor(private textGenerationService: TextGenerationService) {}
 
   async execute(articles: Article[], topicId: string): Promise<BriefWriteDto> {
     const articlesContent = articles
