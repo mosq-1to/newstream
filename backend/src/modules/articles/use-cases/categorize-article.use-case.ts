@@ -52,7 +52,14 @@ export class CategorizeArticleUseCase {
       </output_format>
       `;
 
-    const trace = this.promptTracingService.createTrace({ name: 'categorize-article' });
+    const trace = this.promptTracingService.createTrace({
+      name: 'categorize-article',
+    });
+
+    trace.update({
+      metadata: { articleId: article.id },
+      input: prompt,
+    });
 
     const generation = trace.generation({
       input: prompt,
@@ -63,6 +70,7 @@ export class CategorizeArticleUseCase {
 
     generation.update({ model: modelUsed });
     generation.end({ output: result });
+    trace.update({ output: result });
 
     const cleanedResult = result.trim();
 
