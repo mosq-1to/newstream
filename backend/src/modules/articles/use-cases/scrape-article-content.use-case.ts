@@ -28,6 +28,6 @@ export class ScrapeArticleContentUseCase {
   }
 
   private removeHtmlTags(html: string): string {
-    return html.replace(/<[^>]*>/g, '');
+    return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ');
   }
 }
