@@ -5,6 +5,7 @@ import { ArticleCategorizeJob } from './article-categorize.job';
 import { TopicsService } from 'src/modules/topics/topics.service';
 import { CategorizeArticleUseCase } from '../../use-cases/categorize-article.use-case';
 import { ArticlesQueuesOrchestratorService } from '../../articles-queues-orchestrator.service';
+import { Article } from '@prisma/client';
 
 @Processor(QueueName.ArticleCategorize)
 export class ArticleCategorizeJobProcessor extends WorkerHost {
@@ -23,7 +24,7 @@ export class ArticleCategorizeJobProcessor extends WorkerHost {
     const article = await this.articlesRepository.getArticleById(articleId);
     if (!article) throw new Error('[ArticleCategorizeJobProcessor] Article not found');
 
-    const topic = await this.findMatchingTopic(article.title, article.content);
+    const topic = await this.findMatchingTopic(article);
 
     if (!topic) {
       article.relevant = false;
@@ -37,9 +38,9 @@ export class ArticleCategorizeJobProcessor extends WorkerHost {
     return topic;
   }
 
-  private async findMatchingTopic(title: string, content: string): Promise<string | null> {
+  private async findMatchingTopic(article: Article): Promise<string | null> {
     const topics = await this.topicsService.findAll();
-    const topicId = await this.categorizeArticleUseCase.execute(topics, title, content);
+    const topicId = await this.categorizeArticleUseCase.execute(topics, article);
 
     return topicId;
   }

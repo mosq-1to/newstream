@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Topic } from '@prisma/client';
+import { Article, Topic } from '@prisma/client';
 import { TextGenerationService } from '../../text-generation/text-generation.service';
 import { PromptTracingService } from '../../observability/prompt-tracing.service';
 
@@ -10,11 +10,7 @@ export class CategorizeArticleUseCase {
     private readonly promptTracingService: PromptTracingService,
   ) {}
 
-  async execute(
-    topics: Topic[],
-    articleTitle: string,
-    articleContent: string,
-  ): Promise<string | null> {
+  async execute(topics: Topic[], article: Article): Promise<string | null> {
     const topicsContent = topics
       .map(
         (topic) =>
@@ -34,8 +30,8 @@ export class CategorizeArticleUseCase {
       </topics>
 
       <article>
-        <title>${articleTitle}</title>
-        <content>${articleContent.trim()}</content>
+        <title>${article.title}</title>
+        <content>${article.content.trim()}</content>
       </article>
 
       <rules>
@@ -60,7 +56,7 @@ export class CategorizeArticleUseCase {
 
     const result = await this.textGenerationService.generateContent(prompt);
 
-    span.update({ input: prompt, output: result });
+    span.update({ input: prompt, output: result, metadata: { articleId: article.id } });
     const cleanedResult = result.trim();
 
     if (cleanedResult === 'null' || cleanedResult === '"null"') {
@@ -75,6 +71,7 @@ export class CategorizeArticleUseCase {
       throw new Error('[CategorizeArticleUseCase] Invalid topic ID');
     }
 
+    span.end();
     return cleanedResult;
   }
 }
