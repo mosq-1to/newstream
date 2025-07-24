@@ -35,7 +35,7 @@ export class CategorizeArticleUseCase {
 
       <article>
         <title>${articleTitle}</title>
-        <content>${articleContent}</content>
+        <content>${articleContent.trim()}</content>
       </article>
 
       <rules>
