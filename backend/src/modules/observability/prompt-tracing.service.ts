@@ -10,7 +10,7 @@ export class PromptTracingService {
     this.langfuse = new Langfuse({
       publicKey: this.configService.getOrThrow<string>('LANGFUSE_PUBLIC_KEY'),
       secretKey: this.configService.getOrThrow<string>('LANGFUSE_SECRET_KEY'),
-      baseUrl: this.configService.getOrThrow<string>('LANGFUSE_HOST'),
+      baseUrl: this.configService.getOrThrow<string>('LANGFUSE_BASE_URL'),
     });
   }
 
