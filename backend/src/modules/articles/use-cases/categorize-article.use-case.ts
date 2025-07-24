@@ -45,6 +45,7 @@ export class CategorizeArticleUseCase {
         - If the article doesn't clearly match any of the provided topics, consider it irrelevant.
         - Do not guess or force a match if there isn't a clear connection between the article and a topic.
         - The article should be substantially about the topic, not just mentioning it in passing.
+        - If the article content doesn't match any of the provided topics, consider it irrelevant.
       </rules>
 
       <output_format>
