@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Article, Topic } from '@prisma/client';
 import { TextGenerationService } from '../../text-generation/text-generation.service';
-import { PromptTracingService } from '../../observability/prompt-tracing.service';
 
 @Injectable()
 export class CategorizeArticleUseCase {
-  constructor(
-    private textGenerationService: TextGenerationService,
-    private readonly promptTracingService: PromptTracingService,
-  ) {}
+  constructor(private textGenerationService: TextGenerationService) {}
 
   async execute(topics: Topic[], article: Article): Promise<string | null> {
     const topicsContent = topics
@@ -52,25 +48,11 @@ export class CategorizeArticleUseCase {
       </output_format>
       `;
 
-    const trace = this.promptTracingService.createTrace({
+    const { result } = await this.textGenerationService.generateContent({
+      prompt,
       name: 'categorize-article',
-    });
-
-    trace.update({
-      metadata: { articleId: article.id },
-      input: prompt,
-    });
-
-    const generation = trace.generation({
-      input: prompt,
       metadata: { articleId: article.id },
     });
-
-    const { result, modelUsed } = await this.textGenerationService.generateContent(prompt);
-
-    generation.update({ model: modelUsed });
-    generation.end({ output: result });
-    trace.update({ output: result });
 
     const cleanedResult = result.trim();
 
@@ -80,7 +62,6 @@ export class CategorizeArticleUseCase {
 
     const isValidTopicId = topics.some((topic) => topic.id === cleanedResult);
     if (!isValidTopicId) {
-      generation.update({ statusMessage: 'Invalid topic ID' });
       throw new Error('[CategorizeArticleUseCase] Invalid topic ID');
     }
 

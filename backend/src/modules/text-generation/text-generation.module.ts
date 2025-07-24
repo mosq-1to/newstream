@@ -3,9 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TextGenerationStrategy } from './strategies/text-generation.strategy';
 import { TextGenerationService } from './text-generation.service';
 import { GptTextGenerationStrategy } from './strategies/gpt-text-generation.strategy';
+import { ObservabilityModule } from '../observability/observability.module';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, ObservabilityModule],
   providers: [
     TextGenerationService,
     {

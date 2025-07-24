@@ -46,10 +46,16 @@ export class GenerateBriefUseCase {
       </objective>
       `;
 
-    const { result: content } = await this.textGenerationService.generateContent(
+    const { result: content } = await this.textGenerationService.generateContent({
       prompt,
-      'advanced',
-    );
+      modelAdvancement: 'advanced',
+      name: 'generate-brief',
+      metadata: {
+        topicId: topic.id,
+        topicTitle: topic.title,
+        articleIds: articles.map((article) => article.id),
+      },
+    });
 
     return {
       content,

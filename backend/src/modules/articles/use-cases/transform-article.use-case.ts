@@ -49,7 +49,11 @@ export class TransformArticleUseCase {
       </output_format>
       `;
 
-    const { result } = await this.textGenerationService.generateContent(prompt);
+    const { result } = await this.textGenerationService.generateContent({
+      prompt,
+      name: 'transform-article',
+      metadata: { articleTitle },
+    });
 
     return result;
   }
