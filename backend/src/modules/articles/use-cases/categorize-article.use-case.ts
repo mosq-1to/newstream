@@ -53,10 +53,10 @@ export class CategorizeArticleUseCase {
       `;
 
     const trace = this.promptTracingService.createTrace({ name: 'categorize-article' });
-    const span = trace.span({ name: 'categorize-article' });
 
-    const generation = span.generation({
+    const generation = trace.generation({
       input: prompt,
+      metadata: { articleId: article.id },
     });
 
     const { result, modelUsed } = await this.textGenerationService.generateContent(prompt);
@@ -67,18 +67,15 @@ export class CategorizeArticleUseCase {
     const cleanedResult = result.trim();
 
     if (cleanedResult === 'null' || cleanedResult === '"null"') {
-      span.end();
       return null;
     }
 
     const isValidTopicId = topics.some((topic) => topic.id === cleanedResult);
     if (!isValidTopicId) {
-      span.update({ statusMessage: 'Invalid topic ID' });
-      span.end();
+      generation.update({ statusMessage: 'Invalid topic ID' });
       throw new Error('[CategorizeArticleUseCase] Invalid topic ID');
     }
 
-    span.end();
     return cleanedResult;
   }
 }
