@@ -10,14 +10,11 @@ export class LangfuseService {
     this.langfuse = new Langfuse({
       publicKey: this.configService.getOrThrow<string>('LANGFUSE_PUBLIC_KEY'),
       secretKey: this.configService.getOrThrow<string>('LANGFUSE_SECRET_KEY'),
-      baseUrl: this.configService.getOrThrow<string>('LANGFUSE_BASE_URL'),
+      baseUrl: this.configService.getOrThrow<string>('LANGFUSE_HOST'),
     });
   }
 
-  createTrace(userId: string) {
-    return this.langfuse.trace({
-      name: 'openai-interaction',
-      userId,
-    });
+  public createTrace({ name, userId = 'system' }: { name: string; userId?: string }) {
+    return this.langfuse.trace({ name, userId });
   }
 }
