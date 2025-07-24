@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Topic } from '@prisma/client';
 import { TextGenerationService } from '../../text-generation/text-generation.service';
+import { PromptTracingService } from '../../observability/prompt-tracing.service';
 
 @Injectable()
 export class CategorizeArticleUseCase {
-  constructor(private textGenerationService: TextGenerationService) {}
+  constructor(
+    private textGenerationService: TextGenerationService,
+    private readonly promptTracingService: PromptTracingService,
+  ) {}
 
   async execute(
     topics: Topic[],
@@ -50,16 +54,23 @@ export class CategorizeArticleUseCase {
       </output_format>
       `;
 
+    const trace = this.promptTracingService.createTrace({ name: 'categorize-article' });
+    const span = trace.span({ name: 'categorize-article' });
+
     const result = await this.textGenerationService.generateContent(prompt);
 
+    span.update({ input: prompt, output: result });
     const cleanedResult = result.trim();
 
     if (cleanedResult === 'null' || cleanedResult === '"null"') {
+      span.end();
       return null;
     }
 
     const isValidTopicId = topics.some((topic) => topic.id === cleanedResult);
     if (!isValidTopicId) {
+      span.update({ statusMessage: 'Invalid topic ID' });
+      span.end();
       throw new Error('[CategorizeArticleUseCase] Invalid topic ID');
     }
 

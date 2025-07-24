@@ -26,6 +26,7 @@ import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrato
 import { CategorizeArticleUseCase } from './use-cases/categorize-article.use-case';
 import { TransformArticleUseCase } from './use-cases/transform-article.use-case';
 import { TextGenerationModule } from '../text-generation/text-generation.module';
+import { ObservabilityModule } from '../observability/observability.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { TextGenerationModule } from '../text-generation/text-generation.module'
     }),
     TopicsModule,
     TextGenerationModule,
+    ObservabilityModule,
   ],
   providers: [
     DatabaseService,

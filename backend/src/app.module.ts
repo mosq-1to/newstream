@@ -16,6 +16,7 @@ import { StorageModule } from './modules/storage/storage.module';
 import { BriefsModule } from './modules/briefs/briefs.module';
 import { BriefAudioGenerationModule } from './modules/brief-audio-generation/brief-audio-generation.module';
 import { TopicsModule } from './modules/topics/topics.module';
+import { ObservabilityModule } from './modules/observability/observability.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { TopicsModule } from './modules/topics/topics.module';
     BriefsModule,
     BriefAudioGenerationModule,
     TopicsModule,
+    ObservabilityModule,
   ],
   providers: [
     {

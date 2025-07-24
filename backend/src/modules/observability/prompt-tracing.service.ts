@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Langfuse } from 'langfuse';
 
 @Injectable()
-export class LangfuseService {
+export class PromptTracingService {
   private langfuse: Langfuse;
 
   constructor(private readonly configService: ConfigService) {
