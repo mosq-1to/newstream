@@ -20,7 +20,7 @@ export class TextGenerationService {
     modelAdvancement?: ModelAdvancement;
     name: string;
     metadata?: Record<string, any>;
-  }): Promise<{ result: string }> {
+  }): Promise<string> {
     const trace = this.promptTracingService.createTrace({ name });
 
     trace.update({
@@ -33,7 +33,6 @@ export class TextGenerationService {
       metadata,
     });
 
-    // Call the strategy to generate content
     const { result, modelUsed } = await this.textGenerationStrategy.generateContent(
       prompt,
       modelAdvancement,
@@ -44,6 +43,6 @@ export class TextGenerationService {
 
     trace.update({ output: result });
 
-    return { result };
+    return result;
   }
 }

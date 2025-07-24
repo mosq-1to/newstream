@@ -48,7 +48,7 @@ export class CategorizeArticleUseCase {
       </output_format>
       `;
 
-    const { result } = await this.textGenerationService.generateContent({
+    const result = await this.textGenerationService.generateContent({
       prompt,
       name: 'categorize-article',
       metadata: { articleId: article.id },
