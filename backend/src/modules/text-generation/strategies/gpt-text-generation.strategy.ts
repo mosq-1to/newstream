@@ -14,10 +14,7 @@ export class GptTextGenerationStrategy implements TextGenerationStrategy {
     });
   }
 
-  async generateContent(
-    prompt: string,
-    modelAdvancement: ModelAdvancement = 'nano',
-  ): Promise<string> {
+  async generateContent(prompt: string, modelAdvancement: ModelAdvancement = 'nano') {
     let model = `gpt-4.1-nano`;
     if (modelAdvancement === 'advanced') {
       model = `gpt-4.1`;
@@ -30,6 +27,6 @@ export class GptTextGenerationStrategy implements TextGenerationStrategy {
       messages: [{ role: 'user', content: prompt }],
     });
 
-    return completion.choices[0].message.content || '';
+    return { result: completion.choices[0].message.content || '', modelUsed: model };
   }
 }

@@ -55,9 +55,15 @@ export class CategorizeArticleUseCase {
     const trace = this.promptTracingService.createTrace({ name: 'categorize-article' });
     const span = trace.span({ name: 'categorize-article' });
 
-    const result = await this.textGenerationService.generateContent(prompt);
-    trace.update({ input: prompt, output: result, metadata: { articleId: article.id } });
-    span.update({ input: prompt, output: result, metadata: { articleId: article.id } });
+    const generation = span.generation({
+      input: prompt,
+    });
+
+    const { result, modelUsed } = await this.textGenerationService.generateContent(prompt);
+
+    generation.update({ model: modelUsed });
+    generation.end({ output: result });
+
     const cleanedResult = result.trim();
 
     if (cleanedResult === 'null' || cleanedResult === '"null"') {

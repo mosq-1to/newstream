@@ -12,9 +12,9 @@ export class GeminiTextGenerationStrategy implements TextGenerationStrategy {
     this.model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
   }
 
-  async generateContent(prompt: string): Promise<string> {
+  async generateContent(prompt: string): Promise<{ result: string; modelUsed: string }> {
     const result = await this.model.generateContent(prompt);
 
-    return result.response.text();
+    return { result: result.response.text(), modelUsed: 'gemini-1.5-flash' };
   }
 }

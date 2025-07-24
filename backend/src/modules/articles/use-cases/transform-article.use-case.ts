@@ -49,6 +49,8 @@ export class TransformArticleUseCase {
       </output_format>
       `;
 
-    return await this.textGenerationService.generateContent(prompt);
+    const { result } = await this.textGenerationService.generateContent(prompt);
+
+    return result;
   }
 }

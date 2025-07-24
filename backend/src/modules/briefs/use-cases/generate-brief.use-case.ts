@@ -46,7 +46,10 @@ export class GenerateBriefUseCase {
       </objective>
       `;
 
-    const content = await this.textGenerationService.generateContent(prompt, 'advanced');
+    const { result: content } = await this.textGenerationService.generateContent(
+      prompt,
+      'advanced',
+    );
 
     return {
       content,
