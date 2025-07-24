@@ -3,6 +3,7 @@ import { BriefsRepository } from './briefs.repository';
 import { GenerateBriefUseCase } from './use-cases/generate-brief.use-case';
 import { ArticlesRepository } from '../articles/articles.repository';
 import { BriefCreateDto } from './interface/brief.create-model';
+import { TopicsService } from '../topics/topics.service';
 
 @Injectable()
 export class BriefsService {
@@ -10,6 +11,7 @@ export class BriefsService {
     private briefsRepository: BriefsRepository,
     private articlesRepository: ArticlesRepository,
     private generateBriefUseCase: GenerateBriefUseCase,
+    private topicsService: TopicsService,
   ) {}
 
   async findAll() {
@@ -25,7 +27,8 @@ export class BriefsService {
       briefCreateDto.topicId,
       briefCreateDto.timeframeInDays,
     );
-    const briefDto = await this.generateBriefUseCase.execute(articles, briefCreateDto.topicId);
+    const topic = await this.topicsService.findOne(briefCreateDto.topicId);
+    const briefDto = await this.generateBriefUseCase.execute(articles, topic);
     return this.briefsRepository.saveBrief(briefDto);
   }
 

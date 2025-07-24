@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Article } from '@prisma/client';
+import { Article, Topic } from '@prisma/client';
 import { TextGenerationService } from '../../text-generation/text-generation.service';
 import { BriefWriteDto } from '../interface/brief-write.dto';
 
@@ -7,13 +7,13 @@ import { BriefWriteDto } from '../interface/brief-write.dto';
 export class GenerateBriefUseCase {
   constructor(private textGenerationService: TextGenerationService) {}
 
-  async execute(articles: Article[], topicId: string): Promise<BriefWriteDto> {
+  async execute(articles: Article[], topic: Topic): Promise<BriefWriteDto> {
     const articlesContent = articles
       .map(
         (article) =>
           `<article>
         <title>${article.title}</title>
-        <content>${article.content}</content>
+        <content>${article.transformedContent}</content>
       </article>`,
       )
       .join('\n');
@@ -38,19 +38,20 @@ export class GenerateBriefUseCase {
         - It has to contain around 500 words.
       </rules>
 
-      Topic of the brief is ${'Artificial Intelligence'}, so focus on it while analyzing the articles. Avoid any other not relevant topics.
+      Topic of the brief is ${topic.title}, so focus on it while analyzing the articles. Avoid any other not relevant topics.
+    
 
       <objective>
         Generate a concise brief summarizing the articles. Include only the most important data and events from each relevant article.
       </objective>
       `;
 
-    const content = await this.textGenerationService.generateContent(prompt);
+    const content = await this.textGenerationService.generateContent(prompt, 'advanced');
 
     return {
       content,
       articleIds: articles.map((article) => article.id),
-      topicId,
+      topicId: topic.id,
     };
   }
 }
