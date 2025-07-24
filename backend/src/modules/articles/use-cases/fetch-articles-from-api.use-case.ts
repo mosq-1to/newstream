@@ -28,6 +28,7 @@ export interface GNewsOptions {
   q?: string;
   from?: string;
   to?: string;
+  sortby?: 'publishedAt' | 'relevance';
 }
 
 @Injectable()
@@ -43,6 +44,7 @@ export class FetchArticlesFromApiUseCase {
     params.append('lang', options.lang || 'en');
     params.append('country', options.country || 'us');
     params.append('max', String(options.max || 10));
+    params.append('sortby', options.sortby || 'publishedAt');
     if (options.category) params.append('category', options.category);
     if (options.q) params.append('q', options.q);
     if (options.from) params.append('from', toApiDateString(new Date(options.from)));
@@ -84,7 +86,6 @@ export class FetchArticlesFromApiUseCase {
       date2.setDate(today.getDate() - i + 1);
       const dateStr = toApiDateString(date);
       const date2Str = toApiDateString(date2);
-      console.log(dateStr, date2Str);
       // eslint-disable-next-line no-await-in-loop
       const articles = await this.execute({
         ...options,
@@ -96,5 +97,18 @@ export class FetchArticlesFromApiUseCase {
       }
     }
     return cumulativeArticles;
+  }
+
+  async fetchLastNHours(nHours: number, options: GNewsOptions = {}): Promise<GNewsArticle[]> {
+    const today = new Date();
+
+    const dateStr = toApiDateString(new Date(today.getTime() - nHours * 60 * 60 * 1000));
+
+    console.log('fetching the articles from - ', dateStr);
+
+    return await this.execute({
+      ...options,
+      from: dateStr,
+    });
   }
 }

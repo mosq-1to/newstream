@@ -16,11 +16,13 @@ export class GptTextGenerationStrategy implements TextGenerationStrategy {
 
   async generateContent(
     prompt: string,
-    modelAdvancement: ModelAdvancement = 'mini',
+    modelAdvancement: ModelAdvancement = 'nano',
   ): Promise<string> {
-    let model = `gpt-4.1-mini`;
+    let model = `gpt-4.1-nano`;
     if (modelAdvancement === 'advanced') {
-      model = `gpt-o3`;
+      model = `gpt-4.1`;
+    } else if (modelAdvancement === 'mini') {
+      model = `gpt-4.1-mini`;
     }
 
     const completion = await this.client.chat.completions.create({

@@ -22,8 +22,9 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
     const allKeywords = await this.topicsService.getAllKeywords();
     const allKeywordsQuery = allKeywords.map((k) => `"${k}"`).join(' OR ');
 
-    const articles = await this.fetchArticlesUseCase.fetchLastNDays(1, {
+    const articles = await this.fetchArticlesUseCase.fetchLastNHours(12, {
       q: allKeywordsQuery,
+      sortby: 'relevance',
     });
 
     return await this.articlesRepository.saveArticles(

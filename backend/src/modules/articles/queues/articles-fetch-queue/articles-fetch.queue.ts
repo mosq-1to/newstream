@@ -16,7 +16,7 @@ export class ArticlesFetchQueue {
     await this.queue.add(FetchArticlesJob.name, {});
   }
 
-  @Cron(CronExpression.EVERY_4_HOURS)
+  @Cron(CronExpression.EVERY_12_HOURS)
   async handleFetchArticlesCron() {
     console.log(
       `[ArticlesFetchQueue] Started fetching latest articles at ${new Date().toISOString()}`,

@@ -1,1 +1,1 @@
-export type ModelAdvancement = 'mini' | 'advanced';
+export type ModelAdvancement = 'nano' | 'mini' | 'advanced';
