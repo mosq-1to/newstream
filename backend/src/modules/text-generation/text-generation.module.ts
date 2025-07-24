@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TextGenerationStrategy } from './strategies/text-generation.strategy';
-import { GeminiTextGenerationStrategy } from './strategies/gemini-text-generation.strategy';
 import { TextGenerationService } from './text-generation.service';
+import { GptTextGenerationStrategy } from './strategies/gpt-text-generation.strategy';
 
 @Module({
   imports: [ConfigModule],
@@ -10,7 +10,7 @@ import { TextGenerationService } from './text-generation.service';
     TextGenerationService,
     {
       provide: TextGenerationStrategy,
-      useClass: GeminiTextGenerationStrategy,
+      useClass: GptTextGenerationStrategy,
     },
   ],
   exports: [TextGenerationService],
