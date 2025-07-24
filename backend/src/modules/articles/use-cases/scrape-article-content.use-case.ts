@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Firecrawl from '@mendable/firecrawl-js';
-import { z } from 'zod';
 
 @Injectable()
 export class ScrapeArticleContentUseCase {
@@ -15,15 +14,9 @@ export class ScrapeArticleContentUseCase {
 
   public async execute(url: string): Promise<string | null> {
     const result = await this.firecrawl.scrapeUrl(url, {
-      formats: ['json'],
+      formats: ['html'],
       waitFor: 5000,
       removeBase64Images: true,
-      jsonOptions: {
-        schema: z.object({
-          title: z.string(),
-          content: z.string(),
-        }),
-      },
     });
 
     if (!result.success) {
@@ -31,6 +24,10 @@ export class ScrapeArticleContentUseCase {
       return null;
     }
 
-    return result.json?.content;
+    return this.removeHtmlTags(result.html);
+  }
+
+  private removeHtmlTags(html: string): string {
+    return html.replace(/<[^>]*>/g, '');
   }
 }

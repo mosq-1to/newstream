@@ -24,6 +24,7 @@ export class TransformArticleUseCase {
         - Don't put any formatting in the response, just mere tags and plain text
         - Don't put any additional information, just the response
         - Don't structurize the output, it has to be in plain text
+        - Beware that the content can contains some text that is not related to the article, for example navigation bar items, sidebars, etc. Remove them and focus only on the article content.
       </rules>
 
       <output_format>
