@@ -42,6 +42,7 @@ export class CategorizeArticleUseCase {
         - Do not guess or force a match if there isn't a clear connection between the article and a topic.
         - The article should be substantially about the topic, not just mentioning it in passing.
         - If the article content doesn't match any of the provided topics, consider it irrelevant.
+        - It is very possible that the article's content will be just a random part of the website e.g. Privacy policy or Cookies policy, or even an advertisement. If there's no article's content beside such out of place content then you MUST mark it as irrelevant.
       </rules>
 
       <output_format>
@@ -55,7 +56,7 @@ export class CategorizeArticleUseCase {
     const span = trace.span({ name: 'categorize-article' });
 
     const result = await this.textGenerationService.generateContent(prompt);
-
+    trace.update({ input: prompt, output: result, metadata: { articleId: article.id } });
     span.update({ input: prompt, output: result, metadata: { articleId: article.id } });
     const cleanedResult = result.trim();
 
