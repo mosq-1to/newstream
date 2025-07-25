@@ -17,4 +17,8 @@ export class PromptTracingService {
   public createTrace({ name, userId = 'system' }: { name: string; userId?: string }) {
     return this.langfuse.trace({ name, userId });
   }
+
+  public getPrompt(name: string) {
+    return this.langfuse.getPrompt(name);
+  }
 }
