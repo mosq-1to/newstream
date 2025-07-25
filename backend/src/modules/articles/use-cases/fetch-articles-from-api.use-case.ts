@@ -29,6 +29,7 @@ export interface GNewsOptions {
   from?: string;
   to?: string;
   sortby?: 'publishedAt' | 'relevance';
+  in?: ['title', 'description', 'content'];
 }
 
 @Injectable()
@@ -45,6 +46,7 @@ export class FetchArticlesFromApiUseCase {
     params.append('country', options.country || 'us');
     params.append('max', String(options.max || 10));
     params.append('sortby', options.sortby || 'publishedAt');
+    params.append('in', options.in?.join(',') || 'title,description,content');
     if (options.category) params.append('category', options.category);
     if (options.q) params.append('q', options.q);
     if (options.from) params.append('from', toApiDateString(new Date(options.from)));
@@ -103,8 +105,6 @@ export class FetchArticlesFromApiUseCase {
     const today = new Date();
 
     const dateStr = toApiDateString(new Date(today.getTime() - nHours * 60 * 60 * 1000));
-
-    console.log('fetching the articles from - ', dateStr);
 
     return await this.execute({
       ...options,
