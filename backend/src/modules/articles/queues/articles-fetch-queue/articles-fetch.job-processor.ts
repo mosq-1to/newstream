@@ -3,7 +3,6 @@ import { QueueName } from '../../../../types/queue-name.enum';
 
 import { ArticlesRepository } from '../../articles.repository';
 import { FetchArticlesFromApiUseCase } from '../../use-cases/fetch-articles-from-api.use-case';
-import { TopicsService } from 'src/modules/topics/topics.service';
 import { FetchArticlesJob } from './fetch-articles.job';
 import { ArticlesQueuesOrchestratorService } from '../../articles-queues-orchestrator.service';
 
@@ -12,19 +11,16 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
   constructor(
     private readonly articlesRepository: ArticlesRepository,
     private readonly fetchArticlesUseCase: FetchArticlesFromApiUseCase,
-    private readonly topicsService: TopicsService,
     private readonly articlesQueuesOrchestratorService: ArticlesQueuesOrchestratorService,
   ) {
     super();
   }
 
-  async process() {
-    const allKeywords = await this.topicsService.getAllKeywords();
-    const allKeywordsQuery = allKeywords.map((k) => `"${k}"`).join(' OR ');
-
-    const articles = await this.fetchArticlesUseCase.fetchLastNHours(12, {
-      q: allKeywordsQuery,
-      sortby: 'relevance',
+  async process(job: FetchArticlesJob) {
+    const articles = await this.fetchArticlesUseCase.execute({
+      query: job.data.query,
+      fromDate: job.data.fromDate,
+      toDate: job.data.toDate,
     });
 
     return await this.articlesRepository.saveArticles(
@@ -33,6 +29,7 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
         url: article.url,
         sourceName: article.source.name,
         sourceUrl: article.source.url,
+        // todo - use content from api once we have the paid subscription
         content: '',
         thumbnailUrl: article.image,
         publishedAt: new Date(article.publishedAt),

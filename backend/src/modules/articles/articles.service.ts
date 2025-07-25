@@ -16,7 +16,7 @@ export class ArticlesService {
   ) {}
 
   async fetchAndSaveArticles() {
-    await this.articlesFetchQueue.addFetchArticlesJob();
+    await this.articlesFetchQueue.fetchArticlesPublishedLastHour();
     return { job_started: true };
   }
 

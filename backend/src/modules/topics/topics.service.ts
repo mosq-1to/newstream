@@ -20,6 +20,6 @@ export class TopicsService {
 
   async getAllKeywords() {
     const topics = await this.topicsRepository.findAll();
-    return topics.map((topic) => topic.keywords).flat();
+    return topics.map((topic) => topic.keywords);
   }
 }

@@ -4,23 +4,33 @@ import { Queue } from 'bullmq';
 import { FetchArticlesJob } from './fetch-articles.job';
 import { InjectQueue } from '@nestjs/bullmq';
 import { QueueName } from '../../../../types/queue-name.enum';
+import { TopicsService } from 'src/modules/topics/topics.service';
 
 @Injectable()
 export class ArticlesFetchQueue {
   constructor(
     @InjectQueue(QueueName.ArticlesFetch)
     private readonly queue: Queue,
+    private readonly topicsService: TopicsService,
   ) {}
 
-  public async addFetchArticlesJob() {
-    await this.queue.add(FetchArticlesJob.name, {});
+  public async addFetchArticlesJob(data: FetchArticlesJob['data']) {
+    await this.queue.add(FetchArticlesJob.name, data);
   }
 
-  @Cron(CronExpression.EVERY_12_HOURS)
-  async handleFetchArticlesCron() {
+  @Cron(CronExpression.EVERY_HOUR)
+  public async fetchArticlesPublishedLastHour() {
     console.log(
-      `[ArticlesFetchQueue] Started fetching latest articles at ${new Date().toISOString()}`,
+      `[ArticlesFetchQueue] Fetching articles published last hour at ${new Date().toISOString()}`,
     );
-    await this.addFetchArticlesJob();
+
+    const allKeywords = await this.topicsService.getAllKeywords();
+
+    for (const topicKeywords of allKeywords) {
+      await this.addFetchArticlesJob({
+        query: topicKeywords.join(' OR '),
+        fromDate: new Date(Date.now() - 1 * 60 * 60 * 1000),
+      });
+    }
   }
 }
