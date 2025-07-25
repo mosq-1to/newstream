@@ -28,8 +28,12 @@ export class BriefsService {
       briefCreateDto.timeframeInDays,
     );
     const topic = await this.topicsService.findOne(briefCreateDto.topicId);
-    const briefDto = await this.generateBriefUseCase.execute(articles, topic);
-    return this.briefsRepository.saveBrief(briefDto);
+    const content = await this.generateBriefUseCase.execute(articles, topic);
+    return this.briefsRepository.saveBrief({
+      content,
+      articleIds: articles.map((article) => article.id),
+      topicId: topic.id,
+    });
   }
 
   private getArticlesForBrief(topicId: string, timeframeInDays: number) {

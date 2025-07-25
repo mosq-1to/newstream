@@ -1,6 +1,7 @@
 export const enum Prompt {
   CategorizeArticle = 'categorize-article',
   TransformArticle = 'transform-article',
+  GenerateBrief = 'generate-brief',
 }
 
 export type PromptVariables = {
@@ -13,5 +14,10 @@ export type PromptVariables = {
   [Prompt.TransformArticle]: {
     articleTitle: string;
     articleContent: string;
+  };
+
+  [Prompt.GenerateBrief]: {
+    articlesContent: string;
+    topicTitle: string;
   };
 };
