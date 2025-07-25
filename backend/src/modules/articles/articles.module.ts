@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
-import { ArticlesTasks } from './articles.tasks';
 import { DatabaseService } from '../../utils/database/database.service';
 import { HttpModule } from '@nestjs/axios';
 import { ArticlesRepository } from './articles.repository';
@@ -59,7 +58,6 @@ import { ObservabilityModule } from '../observability/observability.module';
     DatabaseService,
     ArticlesService,
     ArticlesRepository,
-    ArticlesTasks,
     ArticlesFetchQueue,
     FetchArticlesUseCase,
     FetchArticlesFromApiUseCase,
