@@ -21,10 +21,7 @@ export class ArticleTransformJobProcessor extends WorkerHost {
 
     if (!article.relevant || !article.content) return;
 
-    const transformedContent = await this.transformArticleUseCase.execute(
-      article.title,
-      article.content,
-    );
+    const transformedContent = await this.transformArticleUseCase.execute(article);
 
     article.transformedContent = transformedContent;
     await this.articlesRepository.updateArticle(article);
