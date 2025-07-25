@@ -4,9 +4,12 @@ import { ArticlesRepository } from '../../articles.repository';
 import { ScrapeArticleContentUseCase } from '../../use-cases/scrape-article-content.use-case';
 import { ArticleScrapeJob } from './article-scrape.job';
 import { ArticlesQueuesOrchestratorService } from '../../articles-queues-orchestrator.service';
+import { Logger } from '@nestjs/common';
 
 @Processor(QueueName.ArticleScrape)
 export class ArticleScrapeJobProcessor extends WorkerHost {
+  private readonly logger = new Logger(ArticleScrapeJobProcessor.name);
+
   constructor(
     private readonly articlesRepository: ArticlesRepository,
     private readonly scrapeArticleContentUseCase: ScrapeArticleContentUseCase,
@@ -35,7 +38,7 @@ export class ArticleScrapeJobProcessor extends WorkerHost {
     if (job.attemptsMade === 3) {
       const { articleId } = job.data;
       const article = await this.articlesRepository.getArticleById(articleId);
-      if (!article) throw new Error('[ArticleScrapeJobProcessor] Article not found');
+      if (!article) return this.logger.error(`Article not found for article ${articleId}`);
 
       article.relevant = false;
       await this.articlesRepository.updateArticle(article);

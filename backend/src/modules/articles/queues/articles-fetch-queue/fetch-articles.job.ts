@@ -3,8 +3,8 @@ import { Article } from '@prisma/client';
 
 interface FetchArticlesJobData {
   query: string;
-  fromDate?: Date;
-  toDate?: Date;
+  fromDate?: string;
+  toDate?: string;
 }
 
 export class FetchArticlesJob extends Job<FetchArticlesJobData, Article[]> {

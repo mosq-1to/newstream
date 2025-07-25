@@ -19,8 +19,8 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
   async process(job: FetchArticlesJob) {
     const articles = await this.fetchArticlesUseCase.execute({
       query: job.data.query,
-      fromDate: job.data.fromDate,
-      toDate: job.data.toDate,
+      fromDate: job.data.fromDate ? new Date(job.data.fromDate) : undefined,
+      toDate: job.data.toDate ? new Date(job.data.toDate) : undefined,
     });
 
     return await this.articlesRepository.saveArticles(
