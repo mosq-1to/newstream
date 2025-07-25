@@ -30,6 +30,7 @@ export interface GNewsOptions {
   to?: string;
   sortby?: 'publishedAt' | 'relevance';
   in?: ['title', 'description', 'content'];
+  nullable?: ['image', 'description', 'content'];
 }
 
 @Injectable()
@@ -47,6 +48,7 @@ export class FetchArticlesFromApiUseCase {
     params.append('max', String(options.max || 10));
     params.append('sortby', options.sortby || 'publishedAt');
     params.append('in', options.in?.join(',') || 'title,description,content');
+    params.append('nullable', options.nullable?.join(',') || 'image,description');
     if (options.category) params.append('category', options.category);
     if (options.q) params.append('q', options.q);
     if (options.from) params.append('from', toApiDateString(new Date(options.from)));
