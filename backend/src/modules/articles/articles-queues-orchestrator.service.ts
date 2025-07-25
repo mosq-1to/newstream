@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { ArticleScrapeQueue } from './queues/article-scrape-queue/article-scrape.queue';
 import { ArticleCategorizeQueue } from './queues/article-categorize-queue/article-categorize.queue';
 import { ArticleTransformQueue } from './queues/article-transform-queue/article-transform.queue';
 import { Article } from '@prisma/client';
+import { ArticlesService } from './articles.service';
 
 @Injectable()
 export class ArticlesQueuesOrchestratorService {
   constructor(
-    private readonly articleScrapeQueue: ArticleScrapeQueue,
     private readonly articleCategorizeQueue: ArticleCategorizeQueue,
     private readonly articleTransformQueue: ArticleTransformQueue,
+    private readonly articlesService: ArticlesService,
   ) {}
 
   public async onArticlesFetched(articlesFetched: Article[]) {
@@ -17,7 +17,7 @@ export class ArticlesQueuesOrchestratorService {
       .filter((article) => article.relevant)
       .map((article) => article.id);
 
-    await this.articleScrapeQueue.addArticleScrapeJobs(relevantArticleIds);
+    await this.articlesService.scrapeArticlesWithoutContent(relevantArticleIds);
   }
 
   public async onArticleScraped(article: Article) {
