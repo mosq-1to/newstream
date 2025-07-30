@@ -25,7 +25,7 @@ export interface GNewsOptions {
   lang?: string;
   country?: string;
   max?: number;
-  q?: string;
+  q: string;
   from?: Date;
   to?: Date;
   sortby?: 'publishedAt' | 'relevance';
@@ -53,7 +53,7 @@ export class FetchArticlesFromGnewsUseCase {
     });
   }
 
-  private async callGnewsApi(options: GNewsOptions = {}): Promise<GNewsArticle[]> {
+  private async callGnewsApi(options: GNewsOptions): Promise<GNewsArticle[]> {
     const apiKey = this.configService.getOrThrow<string>('GNEWS_API_KEY');
     const params = new URLSearchParams();
 
@@ -63,9 +63,9 @@ export class FetchArticlesFromGnewsUseCase {
     params.append('sortby', options.sortby || 'publishedAt');
     params.append('in', options.in?.join(',') || 'title,description,content');
     params.append('nullable', options.nullable?.join(',') || 'image,description');
-    if (options.country) params.append('country', options.country);
+    params.append('country', options.country || 'any');
     if (options.category) params.append('category', options.category);
-    if (options.q) params.append('q', options.q);
+    params.append('q', options.q);
     if (options.from) params.append('from', toGnewsApiUTCDateString(options.from));
     if (options.to) params.append('to', toGnewsApiUTCDateString(options.to));
 

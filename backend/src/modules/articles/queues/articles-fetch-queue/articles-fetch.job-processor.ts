@@ -59,8 +59,8 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
   }
 
   async process(job: FetchArticlesJob) {
-    // return await this.processUsingGnewsApi(job);
-    return await this.processUsingGoogleNewsRss(job);
+    return await this.processUsingGnewsApi(job);
+    // return await this.processUsingGoogleNewsRss(job);
   }
 
   @OnWorkerEvent('completed')
