@@ -40,7 +40,7 @@ interface FetchArticlesFromApiUseCaseOptions {
 }
 
 @Injectable()
-export class FetchArticlesFromApiUseCase {
+export class FetchArticlesFromGnewsUseCase {
   private readonly baseUrl = 'https://gnews.io/api/v4/top-headlines';
 
   constructor(private readonly configService: ConfigService) {}

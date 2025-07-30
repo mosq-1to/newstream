@@ -8,7 +8,7 @@ import { QueueName } from '../../types/queue-name.enum';
 import { ArticlesController } from './articles.controller';
 import { ArticlesFetchQueue } from './queues/articles-fetch-queue/articles-fetch.queue';
 import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
-import { FetchArticlesFromApiUseCase } from './use-cases/fetch-articles-from-api.use-case';
+import { FetchArticlesFromGnewsUseCase } from './use-cases/fetch-articles-from-gnews.use-case';
 import { ArticlesFetchJobProcessor } from './queues/articles-fetch-queue/articles-fetch.job-processor';
 import { ScrapeArticleContentUseCase } from './use-cases/scrape-article-content.use-case';
 import { BullBoardModule } from '@bull-board/nestjs';
@@ -24,6 +24,7 @@ import { ArticleTransformJobProcessor } from './queues/article-transform-queue/a
 import { ArticlesQueuesOrchestratorService } from './articles-queues-orchestrator.service';
 import { CategorizeArticleUseCase } from './use-cases/categorize-article.use-case';
 import { TransformArticleUseCase } from './use-cases/transform-article.use-case';
+import { FetchArticlesFromGoogleNewsRssUseCase } from './use-cases/fetch-articles-from-google-news-rss.use-case';
 import { TextGenerationModule } from '../text-generation/text-generation.module';
 import { ObservabilityModule } from '../observability/observability.module';
 
@@ -60,7 +61,8 @@ import { ObservabilityModule } from '../observability/observability.module';
     ArticlesRepository,
     ArticlesFetchQueue,
     FetchArticlesUseCase,
-    FetchArticlesFromApiUseCase,
+    FetchArticlesFromGnewsUseCase,
+    FetchArticlesFromGoogleNewsRssUseCase,
     ArticlesFetchJobProcessor,
     ScrapeArticleContentUseCase,
     TopicsService,
