@@ -7,7 +7,7 @@ import { Prompt } from 'src/modules/text-generation/types/prompt.types';
 export class GenerateBriefUseCase {
   constructor(private textGenerationService: TextGenerationService) {}
 
-  async execute(articles: Article[], topic: Topic): Promise<string> {
+  async execute(articles: Article[], topic: Topic, lengthInMinutes: number): Promise<string> {
     const articlesContent = articles
       .map(
         (article) =>
@@ -19,7 +19,11 @@ export class GenerateBriefUseCase {
       .join('\n');
 
     const content = await this.textGenerationService.usePrompt(Prompt.GenerateBrief, {
-      variables: { articlesContent, topicTitle: topic.title },
+      variables: {
+        articlesContent,
+        topicTitle: topic.title,
+        maxLengthInMinutes: lengthInMinutes.toString(),
+      },
       metadata: {
         topicId: topic.id,
         articleIds: articles.map((article) => article.id),

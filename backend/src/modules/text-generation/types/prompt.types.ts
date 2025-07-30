@@ -19,5 +19,6 @@ export type PromptVariables = {
   [Prompt.GenerateBrief]: {
     articlesContent: string;
     topicTitle: string;
+    maxLengthInMinutes: string;
   };
 };
