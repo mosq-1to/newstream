@@ -11,7 +11,7 @@
       },
       {
         "include": "ai/kokoro/lib/voices/*.bin",
-        "outDir": "dist"
+        "outDir": "dist/src"
       }
     ],
     "watchAssets": true
