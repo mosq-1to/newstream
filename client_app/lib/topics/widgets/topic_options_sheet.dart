@@ -256,6 +256,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   final brief = await Get.find<NewstreamApi>().createBrief(
                     widget.topic.id,
                     selectedTimeframe.duration.inDays,
+                    selectedLength.duration.inMinutes,
                   );
                   final playerController = Get.find<PlayerController>();
                   Navigator.of(context).pop(result);
