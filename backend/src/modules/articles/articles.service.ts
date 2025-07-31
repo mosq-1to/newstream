@@ -20,6 +20,11 @@ export class ArticlesService {
     return { job_started: true };
   }
 
+  async fetchArticlesForGivenPeriod(fromDate: Date, toDate: Date) {
+    await this.articlesFetchQueue.fetchArticlesForGivenPeriod(fromDate, toDate);
+    return { job_started: true };
+  }
+
   async scrapeArticle(articleId: string) {
     await this.articleScrapeQueue.addArticleScrapeJob(articleId);
     return { job_started: true };

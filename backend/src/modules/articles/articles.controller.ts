@@ -4,6 +4,7 @@ import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { ArticlesService } from './articles.service';
 import { TransformArticleDto } from './dto/transform-article.dto';
 import { CategorizeArticleDto } from './dto/categorize-article.dto';
+import { FetchArticlesForGivenPeriodDto } from './dto/fetch-articles-for-given-period.dto';
 
 @SkipAuth()
 @Controller('articles')
@@ -18,6 +19,11 @@ export class ArticlesController {
   @Post('debug/fetch')
   async fetchArticles() {
     return this.articlesService.fetchAndSaveArticles();
+  }
+
+  @Post('debug/fetchForPeriod')
+  async fetchArticlesForGivenPeriod(@Body() dto: FetchArticlesForGivenPeriodDto) {
+    return this.articlesService.fetchArticlesForGivenPeriod(dto.fromDate, dto.toDate);
   }
 
   @Post('debug/scrapeArticle')
