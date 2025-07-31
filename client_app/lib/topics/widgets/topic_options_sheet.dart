@@ -151,7 +151,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
               ),
               const SizedBox(height: 4),
               const Text(
-                "How much time do you have?",
+                "How much time you have?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.grey,
