@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 function toGnewsApiUTCDateString(date: Date): string {
@@ -43,7 +43,10 @@ interface FetchArticlesFromApiUseCaseOptions {
 export class FetchArticlesFromGnewsUseCase {
   private readonly baseUrl = 'https://gnews.io/api/v4/top-headlines';
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly logger: Logger,
+  ) {}
 
   public async execute(options: FetchArticlesFromApiUseCaseOptions): Promise<GNewsArticle[]> {
     return await this.callGnewsApi({
@@ -70,7 +73,7 @@ export class FetchArticlesFromGnewsUseCase {
     if (options.to) params.append('to', toGnewsApiUTCDateString(options.to));
 
     const url = `${this.baseUrl}?${params.toString()}`;
-    console.log('used URL: ', url);
+    this.logger.log('used URL: ', url);
 
     try {
       const response = await fetch(url);
@@ -79,9 +82,10 @@ export class FetchArticlesFromGnewsUseCase {
       }
       const data = await response.json();
       if (!Array.isArray(data.articles)) return [];
-      console.log('fetched articles:', data.articles.length);
+      this.logger.log('fetched articles:', data.articles.length);
       return data.articles as GNewsArticle[];
     } catch (error) {
+      this.logger.error(error);
       return [];
     }
   }
