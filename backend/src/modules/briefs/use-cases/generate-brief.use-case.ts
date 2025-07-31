@@ -22,7 +22,7 @@ export class GenerateBriefUseCase {
       variables: {
         articlesContent,
         topicTitle: topic.title,
-        maxLengthInMinutes: lengthInMinutes.toString(),
+        desiredWordsCount: (lengthInMinutes * 140).toString(),
       },
       metadata: {
         topicId: topic.id,
