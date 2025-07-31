@@ -29,6 +29,40 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
   int _selectedTimeframeIndex = 0; // Default to 15 minutes
   bool _isLoading = false;
 
+  // Validation matrix defining max valid length index for each timeframe
+  final Map<int, int> _validationMatrix = {
+    0: 0,     // 1 day: only 5 minutes (index 0) is valid
+    1: 3,     // 1 week: up to 20 minutes (index 3) is valid
+    2: 4,     // 2 weeks: up to 45 minutes (index 4) is valid
+    3: 5,     // 1 month: all lengths valid (up to index 5 - 1 hour)
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Ensure initial selection is valid
+    _validateSelection();
+  }
+  
+  // Gets valid lengths for the current timeframe
+  List<TopicTimeframe> _getValidLengths() {
+    final maxValidIndex = _validationMatrix[_selectedTimeframeIndex] ?? 0;
+    return TopicOptions.lengths.asMap()
+        .entries
+        .where((entry) => entry.key <= maxValidIndex)
+        .map((entry) => entry.value)
+        .toList();
+  }
+  
+  // Ensures the selected length is valid for the selected timeframe
+  void _validateSelection() {
+    final maxValidIndex = _validationMatrix[_selectedTimeframeIndex] ?? 0;
+    if (_selectedLengthIndex > maxValidIndex) {
+      _selectedLengthIndex = 0; // Reset to first valid option
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -181,6 +215,8 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
               onSelectedItemChanged: (int index) {
                 setState(() {
                   _selectedTimeframeIndex = index;
+                  // Validate and adjust length selection if needed
+                  _validateSelection();
                 });
               },
               children: TopicOptions.timeframes
@@ -206,13 +242,13 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
               itemExtent: 40,
               backgroundColor: Colors.transparent,
               scrollController: FixedExtentScrollController(
-                  initialItem: _selectedLengthIndex),
+                  initialItem: _selectedLengthIndex < _getValidLengths().length ? _selectedLengthIndex : 0),
               onSelectedItemChanged: (int index) {
                 setState(() {
                   _selectedLengthIndex = index;
                 });
               },
-              children: TopicOptions.lengths
+              children: _getValidLengths()
                   .map(
                     (length) => Center(
                       child: Text(
@@ -243,7 +279,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                 final selectedTimeframe =
                     TopicOptions.timeframes[_selectedTimeframeIndex];
                 final selectedLength =
-                    TopicOptions.lengths[_selectedLengthIndex];
+                    _getValidLengths()[_selectedLengthIndex];
 
                 // Create a result object with the selected values
                 final result = {
