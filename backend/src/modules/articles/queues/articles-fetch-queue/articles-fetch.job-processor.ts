@@ -7,7 +7,12 @@ import { FetchArticlesFromGoogleNewsRssUseCase } from '../../use-cases/fetch-art
 import { FetchArticlesJob } from './fetch-articles.job';
 import { ArticlesQueuesOrchestratorService } from '../../articles-queues-orchestrator.service';
 
-@Processor(QueueName.ArticlesFetch)
+@Processor(QueueName.ArticlesFetch, {
+  limiter: {
+    max: 1,
+    duration: 1000,
+  },
+})
 export class ArticlesFetchJobProcessor extends WorkerHost {
   constructor(
     private readonly articlesRepository: ArticlesRepository,

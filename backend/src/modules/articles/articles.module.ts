@@ -31,7 +31,9 @@ import { ObservabilityModule } from '../observability/observability.module';
 @Module({
   imports: [
     HttpModule,
-    BullModule.registerQueue({ name: QueueName.ArticlesFetch }),
+    BullModule.registerQueue({
+      name: QueueName.ArticlesFetch,
+    }),
     BullBoardModule.forFeature({
       name: QueueName.ArticlesFetch,
       adapter: BullMQAdapter,
