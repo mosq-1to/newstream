@@ -10,7 +10,7 @@ import { ArticlesQueuesOrchestratorService } from '../../articles-queues-orchest
 @Processor(QueueName.ArticlesFetch, {
   limiter: {
     max: 1,
-    duration: 1000,
+    duration: 2000,
   },
 })
 export class ArticlesFetchJobProcessor extends WorkerHost {

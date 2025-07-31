@@ -42,11 +42,9 @@ interface FetchArticlesFromApiUseCaseOptions {
 @Injectable()
 export class FetchArticlesFromGnewsUseCase {
   private readonly baseUrl = 'https://gnews.io/api/v4/top-headlines';
+  private readonly logger = new Logger(FetchArticlesFromGnewsUseCase.name);
 
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly logger: Logger,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
 
   public async execute(options: FetchArticlesFromApiUseCaseOptions): Promise<GNewsArticle[]> {
     return await this.callGnewsApi({
@@ -73,20 +71,20 @@ export class FetchArticlesFromGnewsUseCase {
     if (options.to) params.append('to', toGnewsApiUTCDateString(options.to));
 
     const url = `${this.baseUrl}?${params.toString()}`;
-    this.logger.log('used URL: ', url);
+    this.logger.debug('used URL: ', url);
 
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`GNews API error: ${response.statusText}`);
+        throw new Error(`GNews API error: [${response.status}] ${response.statusText}`);
       }
       const data = await response.json();
       if (!Array.isArray(data.articles)) return [];
-      this.logger.log('fetched articles:', data.articles.length);
+      this.logger.debug('fetched articles:', data.articles.length);
       return data.articles as GNewsArticle[];
     } catch (error) {
       this.logger.error(error);
-      return [];
+      throw error;
     }
   }
 }
