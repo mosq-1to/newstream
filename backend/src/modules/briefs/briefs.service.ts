@@ -32,6 +32,7 @@ export class BriefsService {
       articles,
       topic,
       userId,
+      timeframeInDays: briefCreateDto.timeframeInDays,
     );
     const existingArticles = await this.articlesRepository.findByIds(usedArticleIds);
 
