@@ -28,11 +28,7 @@ export class BriefsService {
       briefCreateDto.timeframeInDays,
     );
     const topic = await this.topicsService.findOne(briefCreateDto.topicId);
-    const content = await this.generateBriefUseCase.execute(
-      articles,
-      topic,
-      briefCreateDto.lengthInMinutes,
-    );
+    const content = await this.generateBriefUseCase.execute(articles, topic);
     return this.briefsRepository.saveBrief({
       content,
       articleIds: articles.map((article) => article.id),

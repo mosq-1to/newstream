@@ -7,7 +7,7 @@ import { Prompt } from 'src/modules/text-generation/types/prompt.types';
 export class GenerateBriefUseCase {
   constructor(private textGenerationService: TextGenerationService) {}
 
-  async execute(articles: Article[], topic: Topic, lengthInMinutes: number): Promise<string> {
+  async execute(articles: Article[], topic: Topic): Promise<string> {
     const articlesContent = articles
       .map(
         (article) =>
@@ -24,7 +24,6 @@ export class GenerateBriefUseCase {
         variables: {
           articlesContent,
           topicTitle: topic.title,
-          desiredWordsCount: (lengthInMinutes * 130).toString(),
         },
         metadata: {
           topicId: topic.id,

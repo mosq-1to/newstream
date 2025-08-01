@@ -8,8 +8,4 @@ export class BriefCreateDto {
   @IsNotEmpty()
   @IsNumber()
   timeframeInDays: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  lengthInMinutes: number;
 }
