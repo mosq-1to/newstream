@@ -25,6 +25,7 @@ export class TextGenerationService {
     const trace = this.promptTracingService.createTrace({ name });
 
     trace.update({
+      userId: metadata?.userId,
       metadata,
       input: prompt,
     });
@@ -71,6 +72,7 @@ export class TextGenerationService {
     });
 
     trace.update({
+      userId: metadata?.userId,
       metadata,
       input: compiledPrompt,
     });

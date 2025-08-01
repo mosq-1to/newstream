@@ -8,9 +8,10 @@ import { TextGenerationModule } from '../text-generation/text-generation.module'
 import { DatabaseService } from '../../utils/database/database.service';
 import { BriefAudioStorageRepository } from '../storage/brief-audio-storage.repository';
 import { TopicsModule } from '../topics/topics.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [ArticlesModule, TopicsModule, TextGenerationModule],
+  imports: [ArticlesModule, TopicsModule, TextGenerationModule, UsersModule],
   controllers: [BriefsController],
   providers: [
     BriefsService,

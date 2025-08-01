@@ -22,13 +22,17 @@ export class BriefsService {
     return this.briefsRepository.findOne(id);
   }
 
-  async createBrief(briefCreateDto: BriefCreateDto) {
+  async createBrief(briefCreateDto: BriefCreateDto, userId: string) {
     const articles = await this.getArticlesForBrief(
       briefCreateDto.topicId,
       briefCreateDto.timeframeInDays,
     );
     const topic = await this.topicsService.findOne(briefCreateDto.topicId);
-    const { content, usedArticleIds } = await this.generateBriefUseCase.execute(articles, topic);
+    const { content, usedArticleIds } = await this.generateBriefUseCase.execute(
+      articles,
+      topic,
+      userId,
+    );
     const existingArticles = await this.articlesRepository.findByIds(usedArticleIds);
 
     const existingArticleIds = existingArticles.map((article) => article.id);

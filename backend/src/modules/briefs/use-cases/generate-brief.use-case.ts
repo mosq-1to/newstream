@@ -12,6 +12,7 @@ export class GenerateBriefUseCase {
   async execute(
     articles: Article[],
     topic: Topic,
+    userId: string,
   ): Promise<{ content: string; usedArticleIds: string[] }> {
     const articlesContent = articles
       .map(
@@ -35,6 +36,7 @@ export class GenerateBriefUseCase {
           topicId: topic.id,
           articleIds: articles.map((article) => article.id),
           topicTitle: topic.title,
+          userId,
         },
       },
       'mini',
