@@ -1,6 +1,6 @@
 import { InjectFlowProducer, InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
-import { FlowProducer, Job, Queue } from 'bullmq';
+import { FlowChildJob, FlowJob, FlowProducer, Job, Queue } from 'bullmq';
 import { v4 as uuidv4 } from 'uuid';
 import { FlowProducerName } from '../../types/flow-producer.enum';
 import { QueueName } from '../../types/queue-name.enum';
@@ -45,12 +45,14 @@ export class BriefAudioGenerationQueue {
         },
         opts: {
           jobId,
+          // prioritize first 3 chunks
+          priority: index < 3 ? 0 : 1,
         },
-      };
+      } as FlowChildJob;
     });
 
     // Create a parent job that depends on all the chunk jobs
-    const tree = {
+    const tree: FlowJob = {
       name: jobName,
       queueName: QueueName.BriefAudioGeneration,
       data: {

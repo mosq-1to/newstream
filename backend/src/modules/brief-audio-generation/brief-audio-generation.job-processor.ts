@@ -9,7 +9,7 @@ import path from 'path';
 import { AudioGenerationService } from '../audio-generation/audio-generation.service';
 import { HlsService } from '../../utils/audio/hls.service';
 
-@Processor(QueueName.BriefAudioGeneration, { concurrency: 20 })
+@Processor(QueueName.BriefAudioGeneration, { concurrency: 3 })
 export class BriefAudioGenerationJobProcessor extends WorkerHost {
   constructor(
     private readonly briefAudioStorageRepository: BriefAudioStorageRepository,
