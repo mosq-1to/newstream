@@ -21,7 +21,7 @@ export class TextGenerationService {
     modelAdvancement?: ModelAdvancement;
     name: string;
     metadata?: Record<string, any>;
-  }): Promise<string> {
+  }): Promise<string | Record<string, any>> {
     const trace = this.promptTracingService.createTrace({ name });
 
     trace.update({
@@ -56,6 +56,8 @@ export class TextGenerationService {
       metadata?: Record<string, any>;
     },
     modelAdvancement?: ModelAdvancement,
+    //todo - move to generic type so that the response format can be inferred
+    responseFormat?: 'json' | 'text',
   ) {
     const trace = this.promptTracingService.createTrace({ name: promptName });
 
@@ -76,6 +78,7 @@ export class TextGenerationService {
     const { result, modelUsed } = await this.textGenerationStrategy.generateContent(
       compiledPrompt,
       modelAdvancement,
+      responseFormat,
     );
 
     generation.update({ model: modelUsed });

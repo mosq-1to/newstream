@@ -13,6 +13,10 @@ export class TransformArticleUseCase {
       metadata: { articleId: article.id },
     });
 
-    return result;
+    if (typeof result === 'string') {
+      return result;
+    } else {
+      throw new Error('[TransformArticleUseCase]: Invalid response format');
+    }
   }
 }

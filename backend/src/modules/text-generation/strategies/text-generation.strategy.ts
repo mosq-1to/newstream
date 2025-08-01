@@ -4,5 +4,6 @@ export abstract class TextGenerationStrategy {
   abstract generateContent(
     prompt: string,
     modelAdvancement?: ModelAdvancement,
-  ): Promise<{ result: string; modelUsed: string }>;
+    responseFormat?: 'json' | 'text',
+  ): Promise<{ result: string | Record<string, any>; modelUsed: string }>;
 }
