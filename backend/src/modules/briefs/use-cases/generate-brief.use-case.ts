@@ -18,18 +18,22 @@ export class GenerateBriefUseCase {
       )
       .join('\n');
 
-    const content = await this.textGenerationService.usePrompt(Prompt.GenerateBrief, {
-      variables: {
-        articlesContent,
-        topicTitle: topic.title,
-        desiredWordsCount: (lengthInMinutes * 130).toString(),
+    const content = await this.textGenerationService.usePrompt(
+      Prompt.GenerateBrief,
+      {
+        variables: {
+          articlesContent,
+          topicTitle: topic.title,
+          desiredWordsCount: (lengthInMinutes * 130).toString(),
+        },
+        metadata: {
+          topicId: topic.id,
+          articleIds: articles.map((article) => article.id),
+          topicTitle: topic.title,
+        },
       },
-      metadata: {
-        topicId: topic.id,
-        articleIds: articles.map((article) => article.id),
-        topicTitle: topic.title,
-      },
-    });
+      'mini',
+    );
 
     return content;
   }
