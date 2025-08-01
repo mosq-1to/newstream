@@ -19,10 +19,14 @@ export class CategorizeArticleUseCase {
       )
       .join('\n');
 
-    const result = await this.textGenerationService.usePrompt(Prompt.CategorizeArticle, {
-      variables: { topicsContent, articleTitle: article.title, articleContent: article.content },
-      metadata: { articleId: article.id },
-    });
+    const result = await this.textGenerationService.usePrompt(
+      Prompt.CategorizeArticle,
+      {
+        variables: { topicsContent, articleTitle: article.title, articleContent: article.content },
+        metadata: { articleId: article.id },
+      },
+      'mini',
+    );
 
     const cleanedResult = result.trim();
 
