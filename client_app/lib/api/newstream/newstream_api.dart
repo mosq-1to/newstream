@@ -15,7 +15,7 @@ import 'package:http/http.dart' as http;
 
 class NewstreamApi {
   /* Auth */
-  String? _accessToken;
+  String? accessToken;
 
   Future<void> validateGoogleAuthCode(String code) async {
     final response = await http.get(
@@ -38,7 +38,7 @@ class NewstreamApi {
   Future<CurrentUser?> getCurrentUser() async {
     await _loadAccessToken();
 
-    if (_accessToken == null) {
+    if (accessToken == null) {
       printError(info: 'accessToken is not set');
       return null;
     }
@@ -49,7 +49,7 @@ class NewstreamApi {
         'auth/users/me',
       ),
       headers: {
-        'Authorization': 'Bearer $_accessToken',
+        'Authorization': 'Bearer $accessToken',
       },
     );
 
@@ -63,12 +63,12 @@ class NewstreamApi {
   }
 
   void _setAccessToken(String token) {
-    _accessToken = token;
+    accessToken = token;
     UserRepository.setAccessToken(token);
   }
 
   Future<void> _loadAccessToken() async {
-    _accessToken = await UserRepository.getAccessToken();
+    accessToken = await UserRepository.getAccessToken();
   }
   /* END Auth */
 
@@ -77,7 +77,7 @@ class NewstreamApi {
   Future<List<Topic>> fetchTopics() async {
     await _loadAccessToken();
 
-    if (_accessToken == null) {
+    if (accessToken == null) {
       throw Exception('accessToken is not set');
     }
 
@@ -87,7 +87,7 @@ class NewstreamApi {
         'topics',
       ),
       headers: {
-        'Authorization': 'Bearer $_accessToken',
+        'Authorization': 'Bearer $accessToken',
       },
     );
 
@@ -108,7 +108,7 @@ class NewstreamApi {
 
     await _loadAccessToken();
 
-    if (_accessToken == null) {
+    if (accessToken == null) {
       throw Exception('accessToken is not set');
     }
 
@@ -120,7 +120,7 @@ class NewstreamApi {
     final response = await http.post(
       httpUri,
       headers: {
-        'Authorization': 'Bearer $_accessToken',
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
@@ -142,7 +142,7 @@ class NewstreamApi {
   Future<String> getBriefStreamPlaylistUrl(String briefId) async {
     await _loadAccessToken();
 
-    if (_accessToken == null) {
+    if (accessToken == null) {
       throw Exception('accessToken is not set');
     }
 

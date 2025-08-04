@@ -109,6 +109,9 @@ class PlayerController extends GetxController {
 
       final audioSource = audio.AudioSource.uri(
         Uri.parse(playlistUrl),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${_newstreamApi.accessToken}',
+        },
         tag: MediaItem(
           id: brief.id,
           title: 'Brief',
