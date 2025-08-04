@@ -14,6 +14,7 @@ import { RoundRobin } from '../../utils/data-structures/round-robin';
 @Processor(QueueName.BriefAudioGeneration)
 export class BriefAudioGenerationJobProcessor extends WorkerHost {
   private readonly logger = new Logger(BriefAudioGenerationJobProcessor.name);
+  // todo - may be problematic with multiple backend instances
   private readonly userRoundRobin: RoundRobin<string> = new RoundRobin<string>();
 
   constructor(
