@@ -46,8 +46,8 @@ export class BriefAudioGenerationQueue {
         },
         opts: {
           jobId,
-          // prioritize first 3 chunks
-          priority: index < 3 ? 0 : 1,
+          // prioritize first chunk
+          priority: index === 1 ? 0 : 1,
         },
       } as FlowChildJob;
     });
@@ -74,5 +74,11 @@ export class BriefAudioGenerationQueue {
     const jobs = (await this.queue.getJobs()) as Job[];
 
     return jobs.some((job) => job.name === GenerateBriefAudioJob.getName(briefId));
+  }
+
+  async checkIfUserHasActiveJobs(userId: string) {
+    const jobs = (await this.queue.getJobs()) as Job[];
+
+    return jobs.some((job) => job.data.userId === userId);
   }
 }

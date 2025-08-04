@@ -1,4 +1,4 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { QueueName } from '../../types/queue-name.enum';
 import {
   GenerateBriefAudioJob,
@@ -10,6 +10,8 @@ import { AudioGenerationService } from '../audio-generation/audio-generation.ser
 import { HlsService } from '../../utils/audio/hls.service';
 import { Logger } from '@nestjs/common';
 import { RoundRobin } from '../../utils/data-structures/round-robin';
+import { Job } from 'bullmq';
+import { BriefAudioGenerationQueue } from './brief-audio-generation.queue';
 
 @Processor(QueueName.BriefAudioGeneration)
 export class BriefAudioGenerationJobProcessor extends WorkerHost {
@@ -21,6 +23,7 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
     private readonly briefAudioStorageRepository: BriefAudioStorageRepository,
     private readonly audioGenerationService: AudioGenerationService,
     private readonly hlsService: HlsService,
+    private readonly briefAudioGenerationQueue: BriefAudioGenerationQueue,
   ) {
     super();
   }
@@ -69,4 +72,15 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
       throw e;
     }
   };
+
+  @OnWorkerEvent('completed')
+  async onCompleted(job: Job) {
+    const userHasActiveJobs = await this.briefAudioGenerationQueue.checkIfUserHasActiveJobs(
+      job.data.userId,
+    );
+
+    if (!userHasActiveJobs) {
+      this.userRoundRobin.deleteByValue(job.data.userId);
+    }
+  }
 }
