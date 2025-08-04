@@ -77,7 +77,13 @@ export class BriefAudioGenerationQueue {
   }
 
   async checkIfUserHasActiveJobs(userId: string) {
-    const jobs = (await this.queue.getJobs()) as Job[];
+    const jobs = (await this.queue.getJobs([
+      'active',
+      'delayed',
+      'paused',
+      'paused',
+      'delayed',
+    ])) as Job[];
 
     return jobs.some((job) => job.data.userId === userId);
   }
