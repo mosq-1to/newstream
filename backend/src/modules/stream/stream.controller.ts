@@ -19,7 +19,7 @@ export class StreamController {
     console.log('requested to stream briefId', briefId + ' for user ' + user.id);
     res.header('Content-Type', 'application/vnd.apple.mpegurl');
     res.header('Cache-Control', 'no-cache, no-store, must-revalidate, public, max-age=2');
-    const playlistPath = await this.streamService.getBriefPlaylistFile(briefId);
+    const playlistPath = await this.streamService.getBriefPlaylistFile(briefId, user.id);
     const fileStream = createReadStream(playlistPath);
     fileStream.pipe(res);
   }

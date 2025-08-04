@@ -19,7 +19,7 @@ export class BriefAudioGenerationQueue {
     private readonly flowProducer: FlowProducer,
   ) {}
 
-  async generateBriefAudio(briefId: string, content: string) {
+  async generateBriefAudio(briefId: string, content: string, userId: string) {
     const jobName = GenerateBriefAudioJob.getName(briefId);
     const mainJobId = uuidv4();
     const splitter = new TextSplitterStream();
@@ -42,6 +42,7 @@ export class BriefAudioGenerationQueue {
           briefId,
           text,
           chunkIndex: index,
+          userId,
         },
         opts: {
           jobId,
@@ -57,6 +58,7 @@ export class BriefAudioGenerationQueue {
       queueName: QueueName.BriefAudioGeneration,
       data: {
         briefId,
+        userId,
       },
       opts: {
         jobId: mainJobId,

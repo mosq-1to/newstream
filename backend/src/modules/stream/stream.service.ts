@@ -11,10 +11,10 @@ export class StreamService {
     private readonly generateBriefAudioUseCase: GenerateBriefAudioUseCase,
   ) {}
 
-  public async getBriefPlaylistFile(briefId: string) {
+  public async getBriefPlaylistFile(briefId: string, userId: string) {
     const { hlsOutputDir } = this.briefAudioStorageRepository.getBriefPaths(briefId);
 
-    await this.generateBriefAudioUseCase.execute(briefId);
+    await this.generateBriefAudioUseCase.execute(briefId, userId);
     return await this.hlsService.getPlaylistFile(hlsOutputDir);
   }
 

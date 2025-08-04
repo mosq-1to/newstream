@@ -9,7 +9,7 @@ export class GenerateBriefAudioUseCase {
     private readonly briefAudioGenerationQueue: BriefAudioGenerationQueue,
   ) {}
 
-  async execute(briefId: string): Promise<void> {
+  async execute(briefId: string, userId: string): Promise<void> {
     // Get the brief
     const brief = await this.briefsRepository.findOne(briefId);
     if (!brief) {
@@ -17,6 +17,6 @@ export class GenerateBriefAudioUseCase {
     }
 
     // Generate audio using the queue
-    await this.briefAudioGenerationQueue.generateBriefAudio(briefId, brief.content);
+    await this.briefAudioGenerationQueue.generateBriefAudio(briefId, brief.content, userId);
   }
 }

@@ -8,9 +8,14 @@ import { BriefAudioStorageRepository } from '../storage/brief-audio-storage.repo
 import path from 'path';
 import { AudioGenerationService } from '../audio-generation/audio-generation.service';
 import { HlsService } from '../../utils/audio/hls.service';
+import { Logger } from '@nestjs/common';
+import { RoundRobin } from '../../utils/data-structures/round-robin';
 
-@Processor(QueueName.BriefAudioGeneration, { concurrency: 3 })
+@Processor(QueueName.BriefAudioGeneration)
 export class BriefAudioGenerationJobProcessor extends WorkerHost {
+  private readonly logger = new Logger(BriefAudioGenerationJobProcessor.name);
+  private readonly userRoundRobin: RoundRobin<string> = new RoundRobin<string>();
+
   constructor(
     private readonly briefAudioStorageRepository: BriefAudioStorageRepository,
     private readonly audioGenerationService: AudioGenerationService,
@@ -23,8 +28,22 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
     // Check job type based on job name pattern
     if (job.name.startsWith('generate-brief-audio-')) {
       if (job.name.includes('-process-chunk-')) {
-        await this.processGenerateBriefAudioChunkJob(job as GenerateBriefAudioProcessChunkJob);
+        const processJob = job as GenerateBriefAudioProcessChunkJob;
+        const { userId } = processJob.data;
+
+        this.userRoundRobin.addIfNotPresent(userId);
+        const currentUserId = this.userRoundRobin.current()?.value;
+
+        if (currentUserId !== userId) {
+          await job.moveToDelayed(Date.now() + 100);
+          this.logger.debug(`Job ${job.name} moved to delayed.`);
+          return;
+        }
+
+        await this.processGenerateBriefAudioChunkJob(processJob);
+        this.userRoundRobin.next();
       } else {
+        // Parent job processing - just finalize the playlist
         const { hlsOutputDir } = this.briefAudioStorageRepository.getBriefPaths(job.data.briefId);
         this.hlsService.closePlaylistFile(hlsOutputDir);
       }
@@ -45,7 +64,7 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
       await this.audioGenerationService.generateSpeechFromText(job.data.text, wavFilePath);
       await this.hlsService.appendPlaylistFile(hlsOutputDir, wavFilePath, job.data.chunkIndex);
     } catch (e) {
-      console.error('GenerateBriefAudioProcessChunkJob', e);
+      this.logger.error('GenerateBriefAudioProcessChunkJob', e);
       throw e;
     }
   };
