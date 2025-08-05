@@ -131,7 +131,12 @@ class PlayerController extends GetxController {
   Future<void> _checkPlaylistGenerating(String playlistUrl,
       {bool initial = false}) async {
     try {
-      final playlistResponse = await http.get(Uri.parse(playlistUrl));
+      final playlistResponse = await http.get(
+        Uri.parse(playlistUrl),
+        headers: {
+          'Authorization': 'Bearer ${_newstreamApi.accessToken}',
+        },
+      );
       bool isGenerating = true;
       if (playlistResponse.statusCode == 200) {
         final content = playlistResponse.body;
