@@ -52,11 +52,6 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
       const { userId, lastRequestAt } = job.data;
       this.userRoundRobin.addIfNotPresent(userId);
       const currentTurnUserId = this.userRoundRobin.next().value;
-      this.logger.debug('Current count of the round-robin: ', this.userRoundRobin.count());
-      this.logger.debug(
-        `Checking if user ${userId} is in turn. Current user in turn: ${currentTurnUserId}`,
-      );
-
       if (
         lastRequestAt < Date.now() - 1000 * 8 &&
         // if it's been already rescheduled, don't reschedule again
@@ -86,10 +81,7 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
   };
 
   private readonly markJobAbandoned = async (job: Job) => {
-    await job.updateData({
-      ...job.data,
-      priority: GenerateBriefAutioProcessChunkJobPriority.Abandoned,
-    });
+    await job.changePriority({ priority: GenerateBriefAutioProcessChunkJobPriority.Abandoned });
   };
 
   private readonly moveJobBackToActive = async (job: Job) => {
