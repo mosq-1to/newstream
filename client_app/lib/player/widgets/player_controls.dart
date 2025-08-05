@@ -31,8 +31,29 @@ class PlayerSeekBar extends StatefulWidget {
   PlayerSeekBarState createState() => PlayerSeekBarState();
 }
 
-class PlayerSeekBarState extends State<PlayerSeekBar> {
+class PlayerSeekBarState extends State<PlayerSeekBar>
+    with SingleTickerProviderStateMixin {
   double? _dragValue;
+  late AnimationController _blinkController;
+  late Animation<double> _blinkAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _blinkController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _blinkAnimation =
+        Tween<double>(begin: 0.4, end: 0.7).animate(_blinkController);
+    _blinkController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _blinkController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,11 +186,24 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
                 style: TextStyles.bodySm
                     .copyWith(color: Colors.white.withOpacity(0.7)),
               ),
-              Text(
-                widget.isGenerating ? '' : formatDuration(widget.duration),
-                style: TextStyles.bodySm
-                    .copyWith(color: Colors.white.withOpacity(0.7)),
-              ),
+              if (widget.isGenerating)
+                AnimatedBuilder(
+                  animation: _blinkAnimation,
+                  builder: (context, child) {
+                    return Text(
+                      'Generating...',
+                      style: TextStyles.bodySm.copyWith(
+                        color: Colors.white.withOpacity(_blinkAnimation.value),
+                      ),
+                    );
+                  },
+                )
+              else
+                Text(
+                  formatDuration(widget.duration),
+                  style: TextStyles.bodySm
+                      .copyWith(color: Colors.white.withOpacity(0.7)),
+                ),
             ],
           ),
       ],
