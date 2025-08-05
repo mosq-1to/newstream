@@ -13,7 +13,18 @@ export class GenerateBriefAudioProcessChunkJob extends Job<{
   userId: User['id'];
   text: string;
   chunkIndex: number;
+  /** Timestamp of the last user request */
+  lastRequestAt: number;
 }> {
   public static getName = (briefId: string, chunkIndex: number) =>
     `generate-brief-audio-${briefId}-process-chunk-${chunkIndex}`;
+
+  public static getNameWithoutChunkIndex = (briefId: string) =>
+    `generate-brief-audio-${briefId}-process-chunk-`;
+}
+
+export const enum GenerateBriefAutioProcessChunkJobPriority {
+  FirstChunk = 0,
+  Normal = 1,
+  Abandoned = 2,
 }

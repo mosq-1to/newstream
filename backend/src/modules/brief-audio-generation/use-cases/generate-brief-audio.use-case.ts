@@ -10,13 +10,11 @@ export class GenerateBriefAudioUseCase {
   ) {}
 
   async execute(briefId: string, userId: string): Promise<void> {
-    // Get the brief
     const brief = await this.briefsRepository.findOne(briefId);
     if (!brief) {
       throw new Error(`Brief with ID ${briefId} not found`);
     }
 
-    // Generate audio using the queue
     await this.briefAudioGenerationQueue.generateBriefAudio(briefId, brief.content, userId);
   }
 }

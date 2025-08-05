@@ -3,6 +3,7 @@ import { QueueName } from '../../types/queue-name.enum';
 import {
   GenerateBriefAudioJob,
   GenerateBriefAudioProcessChunkJob,
+  GenerateBriefAutioProcessChunkJobPriority,
 } from './jobs/generate-brief-audio.job';
 import { BriefAudioStorageRepository } from '../storage/brief-audio-storage.repository';
 import path from 'path';
@@ -33,19 +34,7 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
     if (job.name.startsWith('generate-brief-audio-')) {
       if (job.name.includes('-process-chunk-')) {
         const processJob = job as GenerateBriefAudioProcessChunkJob;
-        const { userId } = processJob.data;
-
-        this.userRoundRobin.addIfNotPresent(userId);
-        const currentUserId = this.userRoundRobin.current()?.value;
-
-        if (currentUserId !== userId) {
-          await job.moveToDelayed(Date.now() + 100);
-          this.logger.debug(`Job ${job.name} moved to delayed.`);
-          return;
-        }
-
         await this.processGenerateBriefAudioChunkJob(processJob);
-        this.userRoundRobin.next();
       } else {
         // Parent job processing - just finalize the playlist
         const { hlsOutputDir } = this.briefAudioStorageRepository.getBriefPaths(job.data.briefId);
@@ -60,6 +49,29 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
     job: GenerateBriefAudioProcessChunkJob,
   ) => {
     try {
+      const { userId, lastRequestAt } = job.data;
+      this.userRoundRobin.addIfNotPresent(userId);
+      const currentTurnUserId = this.userRoundRobin.next().value;
+      this.logger.debug('Current count of the round-robin: ', this.userRoundRobin.count());
+      this.logger.debug(
+        `Checking if user ${userId} is in turn. Current user in turn: ${currentTurnUserId}`,
+      );
+
+      if (
+        lastRequestAt < Date.now() - 1000 * 8 &&
+        // if it's been already rescheduled, don't reschedule again
+        job.priority !== GenerateBriefAutioProcessChunkJobPriority.Abandoned
+      ) {
+        await this.markJobAbandoned(job);
+        await this.moveJobBackToActive(job);
+        return;
+      }
+
+      if (currentTurnUserId !== userId) {
+        await this.moveJobBackToActive(job);
+        return;
+      }
+
       const { wavOutputDir, hlsOutputDir } = this.briefAudioStorageRepository.getBriefPaths(
         job.data.briefId,
       );
@@ -71,6 +83,18 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
       this.logger.error('GenerateBriefAudioProcessChunkJob', e);
       throw e;
     }
+  };
+
+  private readonly markJobAbandoned = async (job: Job) => {
+    await job.updateData({
+      ...job.data,
+      priority: GenerateBriefAutioProcessChunkJobPriority.Abandoned,
+    });
+  };
+
+  private readonly moveJobBackToActive = async (job: Job) => {
+    await job.moveToDelayed(Date.now() + 100);
+    this.logger.debug(`Job ${job.name} moved to delayed.`);
   };
 
   @OnWorkerEvent('completed')

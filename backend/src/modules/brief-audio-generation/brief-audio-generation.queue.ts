@@ -9,6 +9,7 @@ import {
   GenerateBriefAudioProcessChunkJob,
 } from './jobs/generate-brief-audio.job';
 import { TextSplitterStream } from '../../ai/kokoro/lib/splitter';
+import { GenerateBriefAutioProcessChunkJobPriority } from './jobs/generate-brief-audio.job';
 
 @Injectable()
 export class BriefAudioGenerationQueue {
@@ -20,15 +21,16 @@ export class BriefAudioGenerationQueue {
   ) {}
 
   async generateBriefAudio(briefId: string, content: string, userId: string) {
-    const jobName = GenerateBriefAudioJob.getName(briefId);
-    const mainJobId = uuidv4();
-    const splitter = new TextSplitterStream();
-
-    if (await this.checkIfGenerateBriefAudioJobExists(briefId)) {
+    if (await this.getGenerateBriefAudioJob(briefId)) {
       console.log(`Audio generation already started for Brief#${briefId}`);
+
+      await this.updateActiveJobsLastRequestAt(briefId);
       return;
     }
 
+    const jobName = GenerateBriefAudioJob.getName(briefId);
+    const splitter = new TextSplitterStream();
+    const mainJobId = uuidv4();
     // Create a job for each chunk
     splitter.push(content);
     const children = [...splitter].map((text, index) => {
@@ -43,11 +45,15 @@ export class BriefAudioGenerationQueue {
           text,
           chunkIndex: index,
           userId,
+          lastRequestAt: Date.now(),
         },
         opts: {
           jobId,
           // prioritize first chunk
-          priority: index === 1 ? 0 : 1,
+          priority:
+            index === 0
+              ? GenerateBriefAutioProcessChunkJobPriority.FirstChunk
+              : GenerateBriefAutioProcessChunkJobPriority.Normal,
         },
       } as FlowChildJob;
     });
@@ -69,11 +75,36 @@ export class BriefAudioGenerationQueue {
     await this.flowProducer.add(tree);
   }
 
-  async checkIfGenerateBriefAudioJobExists(briefId: string) {
-    //todo - think about less resource intensive way
+  private async updateActiveJobsLastRequestAt(briefId: string) {
+    const activeJobs = await this.getActiveGenerateBriefAudioProcessChunkJobs(briefId);
+    if (activeJobs.length > 0) {
+      activeJobs.forEach(async (job) => {
+        await job.updateData({
+          ...job.data,
+          lastRequestAt: Date.now(),
+        });
+      });
+    }
+  }
+
+  async getGenerateBriefAudioJob(briefId: string) {
     const jobs = (await this.queue.getJobs()) as Job[];
 
-    return jobs.some((job) => job.name === GenerateBriefAudioJob.getName(briefId));
+    return jobs.find((job) => job.name === GenerateBriefAudioJob.getName(briefId));
+  }
+
+  async getActiveGenerateBriefAudioProcessChunkJobs(briefId: string) {
+    const jobs = (await this.queue.getJobs([
+      'active',
+      'delayed',
+      'paused',
+      'paused',
+      'delayed',
+    ])) as Job[];
+
+    return jobs.filter((job) =>
+      job.name.startsWith(GenerateBriefAudioProcessChunkJob.getNameWithoutChunkIndex(briefId)),
+    );
   }
 
   async checkIfUserHasActiveJobs(userId: string) {
