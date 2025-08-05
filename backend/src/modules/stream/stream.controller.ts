@@ -37,13 +37,4 @@ export class StreamController {
     const fileStream = createReadStream(filePath);
     fileStream.pipe(res);
   }
-
-  @SkipAuth()
-  @Get('demo')
-  async getDemo(@Res() res: Response) {
-    res.header('Content-Type', 'text/html');
-    const filePath = `${__dirname}/demo/hls-player.html`;
-    const fileStream = createReadStream(filePath);
-    fileStream.pipe(res);
-  }
 }
