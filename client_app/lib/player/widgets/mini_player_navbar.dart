@@ -3,6 +3,7 @@ import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/player/widgets/player_control_button.dart';
 import 'package:client_app/player/widgets/player_controls.dart';
+import 'package:client_app/utils/duration_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -92,34 +93,26 @@ class MiniPlayerNavbar extends StatelessWidget {
       }
 
       return Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Row(
           children: [
-            Row(
-              children: [
-                Text(
-                  '1 day of ',
-                  style: TextStyles.bodySm.copyWith(
-                    color: Colors.white70,
-                  ),
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Text(
+                DurationFormatter.formatTimeframeDuration(
+                    currentBrief.timeframeDuration),
+                style: TextStyles.bodySm.copyWith(
+                  color: Colors.white70,
                 ),
-                Text(
-                  currentBrief.topic.title,
-                  style: TextStyles.bodySm.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+              ),
             ),
             Text(
-              'in 15 minutes',
+              currentBrief.topic.title,
               style: TextStyles.bodySm.copyWith(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
