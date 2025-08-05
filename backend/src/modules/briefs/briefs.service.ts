@@ -41,6 +41,7 @@ export class BriefsService {
       content,
       articleIds: existingArticleIds,
       topicId: topic.id,
+      timeframeInDays: briefCreateDto.timeframeInDays,
     });
   }
 
