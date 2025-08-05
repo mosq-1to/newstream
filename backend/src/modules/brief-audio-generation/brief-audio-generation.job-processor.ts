@@ -91,13 +91,13 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
   };
 
   @OnWorkerEvent('completed')
-  async onCompleted(job: Job) {
+  async onCompleted(job: GenerateBriefAudioJob | GenerateBriefAudioProcessChunkJob) {
     const userHasActiveJobs = await this.briefAudioGenerationQueue.checkIfUserHasActiveJobs(
       job.data.userId,
     );
 
     if (!userHasActiveJobs) {
-      this.userRoundRobin.deleteByValue(job.data.userId);
+      this.userRoundRobin.deleteByValue((value) => value === job.data.userId);
     }
   }
 }
