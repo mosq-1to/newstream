@@ -56,6 +56,10 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
       this.logger.debug(
         `Checking if user ${userId} is in turn. Current user in turn: ${currentTurnUserId}`,
       );
+      this.logger.debug({
+        lastRequestAt: new Date(lastRequestAt).toISOString(),
+        priority: job.priority,
+      });
 
       if (
         lastRequestAt < Date.now() - 1000 * 8 &&
@@ -86,10 +90,7 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
   };
 
   private readonly markJobAbandoned = async (job: Job) => {
-    await job.updateData({
-      ...job.data,
-      priority: GenerateBriefAutioProcessChunkJobPriority.Abandoned,
-    });
+    await job.changePriority({ priority: GenerateBriefAutioProcessChunkJobPriority.Abandoned });
   };
 
   private readonly moveJobBackToActive = async (job: Job) => {
