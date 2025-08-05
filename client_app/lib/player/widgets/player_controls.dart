@@ -166,7 +166,7 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
                     .copyWith(color: Colors.white.withOpacity(0.7)),
               ),
               Text(
-                widget.isGenerating ? '~5:00' : formatDuration(widget.duration),
+                widget.isGenerating ? '' : formatDuration(widget.duration),
                 style: TextStyles.bodySm
                     .copyWith(color: Colors.white.withOpacity(0.7)),
               ),
