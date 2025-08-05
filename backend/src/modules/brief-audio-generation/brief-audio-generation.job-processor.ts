@@ -82,6 +82,7 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
 
   private readonly markJobAbandoned = async (job: Job) => {
     await job.changePriority({ priority: GenerateBriefAutioProcessChunkJobPriority.Abandoned });
+    await job.changePriority({ priority: GenerateBriefAutioProcessChunkJobPriority.Abandoned });
   };
 
   private readonly moveJobBackToActive = async (job: Job) => {
