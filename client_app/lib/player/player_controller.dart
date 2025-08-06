@@ -57,6 +57,8 @@ class PlayerController extends GetxController {
         this.playerState.value = this.playerState.value.copyWith(
               isPlaying: playerState.playing && !isProcessing,
               isProcessing: isProcessing,
+              isBuffering: playerState.processingState ==
+                  audio.ProcessingState.buffering,
             );
 
         if (playerState.processingState == audio.ProcessingState.completed) {

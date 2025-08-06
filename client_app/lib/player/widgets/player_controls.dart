@@ -14,6 +14,7 @@ class PlayerSeekBar extends StatefulWidget {
   final bool disableDragSeek;
   final double seekBarHeight;
   final bool isGenerating;
+  final bool isBuffering;
 
   const PlayerSeekBar({
     required this.progress,
@@ -24,6 +25,7 @@ class PlayerSeekBar extends StatefulWidget {
     this.disableDragSeek = false,
     this.seekBarHeight = 4.0,
     this.isGenerating = false,
+    this.isBuffering = false,
   }) : assert(seekBarHeight == 4.0 || seekBarHeight == 2.0,
             'seekBarHeight must be 4.0 or 2.0');
 
@@ -237,6 +239,7 @@ class PlayerControls extends StatelessWidget {
             duration: playerState.duration ?? Duration.zero,
             onSeek: controller.seek,
             isGenerating: playerState.isGenerating,
+            isBuffering: playerState.isBuffering,
           ),
           const SizedBox(height: 16),
           _buildControlButtons(playerState.isPlaying),
@@ -252,7 +255,7 @@ class PlayerControls extends StatelessWidget {
         PlayerControlButton(
           onTap: controller.togglePlayPause,
           isPlaying: isPlaying,
-          isLoading: controller.playerState.value.isProcessing,
+          isLoading: controller.playerState.value.isProcessing || controller.playerState.value.isBuffering,
           size: 64.0,
         ),
       ],

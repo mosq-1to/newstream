@@ -1,15 +1,13 @@
-import 'dart:ui';
-
 import 'package:client_app/api/newstream/models/article_model.dart';
 import 'package:client_app/api/newstream/models/brief_model.dart';
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/common/ui/tappable.dart';
 import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/player/widgets/player_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:client_app/common/ui/tappable.dart';
 
 class PlayerPage extends StatefulWidget {
   const PlayerPage({super.key});
