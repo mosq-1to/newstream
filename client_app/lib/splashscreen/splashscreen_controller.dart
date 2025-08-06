@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:client_app/api/newstream/newstream_api.dart';
+import 'package:client_app/common/logger.dart';
+import 'package:client_app/common/toast_service.dart';
 import 'package:get/get.dart';
 
 class SplashscreenController extends GetxController {
@@ -6,12 +10,19 @@ class SplashscreenController extends GetxController {
 
   @override
   Future<void> onInit() async {
-    super.onInit();
+    try {
+      super.onInit();
 
-    if (await _newstreamApi.getCurrentUser() == null) {
-      Get.offNamed('/auth');
-    } else {
-      Get.offNamed('/homefeed');
+      final currentUser = await _newstreamApi.getCurrentUser();
+
+      if (currentUser == null) {
+        unawaited(Get.offNamed('/auth'));
+      } else {
+        unawaited(Get.offNamed('/homefeed'));
+      }
+    } catch (e) {
+      ToastService.showError('Something went wrong. Try again later');
+      logger.e('[Error] SplashscreenController.onInit', error: e);
     }
   }
 }
