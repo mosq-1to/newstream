@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 
 import 'package:audio_session/audio_session.dart';
 import 'package:client_app/api/newstream/models/brief_model.dart';
