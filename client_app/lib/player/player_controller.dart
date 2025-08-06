@@ -43,7 +43,7 @@ class PlayerController extends GetxController {
     _audioPlayer.errorStream.listen(_handleError);
 
     // Listen to player state changes
-    _audioPlayer.playerStateStream.listen((playerState) {
+    _audioPlayer.playerStateStream.listen((playerState) async {
       final isProcessing = !playerState.playing &&
           playerState.processingState == audio.ProcessingState.loading;
 
@@ -53,8 +53,8 @@ class PlayerController extends GetxController {
           );
 
       if (playerState.processingState == audio.ProcessingState.completed) {
-        _audioPlayer.seek(Duration.zero);
-        _audioPlayer.pause();
+        await _audioPlayer.seek(Duration.zero);
+        await _audioPlayer.pause();
       }
     });
 
@@ -78,7 +78,7 @@ class PlayerController extends GetxController {
   @override
   void onClose() {
     _playlistCheckTimer?.cancel();
-    _audioPlayer.dispose();
+    unawaited(_audioPlayer.dispose());
     super.onClose();
   }
 
