@@ -1,5 +1,7 @@
 import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
+import 'package:client_app/common/logger.dart';
+import 'package:client_app/common/toast_service.dart';
 import 'package:get/get.dart';
 
 class NewstreamSearchController extends GetxController {
@@ -8,17 +10,33 @@ class NewstreamSearchController extends GetxController {
   final NewstreamApi _newstreamApi = Get.find();
 
   Future<void> onSearchQueryChanged(String query) async {
-    searchQuery.value = query;
+    try {
+      searchQuery.value = query;
 
-    if (query.length >= 2) {
-      searchResults.value = await _newstreamApi.fetchTopics();
-    } else {
-      searchResults.clear();
+      if (query.length >= 2) {
+        searchResults.value = await _newstreamApi.fetchTopics();
+      } else {
+        searchResults.clear();
+      }
+    } catch (e) {
+      _handleError(e);
     }
   }
 
   void clearSearch() {
-    searchQuery.value = '';
-    searchResults.clear();
+    try {
+      searchQuery.value = '';
+      searchResults.clear();
+    } catch (e) {
+      _handleError(e);
+    }
+  }
+
+  void _handleError(e) {
+    ToastService.showError('Something went wrong. Try again later');
+    logger.e(
+      '[Error] NewstreamSearchController.clearSearch',
+      error: e,
+    );
   }
 }
