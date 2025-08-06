@@ -32,7 +32,7 @@ class NewstreamApi {
 
     final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
     final validationResponse = GoogleAuthCodeValidation.fromJson(responseBody);
-    _setAccessToken(validationResponse.accessToken);
+    await _setAccessToken(validationResponse.accessToken);
   }
 
   Future<CurrentUser?> getCurrentUser() async {
@@ -62,9 +62,9 @@ class NewstreamApi {
     return CurrentUser.fromJson(responseBody);
   }
 
-  void _setAccessToken(String token) {
+  Future<void> _setAccessToken(String token) async {
     accessToken = token;
-    UserRepository.setAccessToken(token);
+    await UserRepository.setAccessToken(token);
   }
 
   Future<void> _loadAccessToken() async {
