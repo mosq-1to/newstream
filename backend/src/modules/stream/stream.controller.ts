@@ -1,6 +1,5 @@
 import { Controller, Get, Param, Res } from '@nestjs/common';
 import { StreamService } from './stream.service';
-import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { Response } from 'express';
 import { createReadStream } from 'fs';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -24,7 +23,6 @@ export class StreamController {
     fileStream.pipe(res);
   }
 
-  @SkipAuth()
   @Get('brief/:briefId/:segmentFilename')
   async getBriefSegment(
     @Param('briefId') briefId: string,
