@@ -1,5 +1,7 @@
 import 'package:client_app/common/theme/dark_background_layout.dart';
+import 'package:client_app/splashscreen/splashscreen_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SplashscreenPage extends StatefulWidget {
   @override
@@ -10,6 +12,7 @@ class _SplashscreenPageState extends State<SplashscreenPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _opacityAnimation;
+  final SplashscreenController controller = Get.find();
 
   @override
   void initState() {
