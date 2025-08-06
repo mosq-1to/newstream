@@ -5,6 +5,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:client_app/api/newstream/models/brief_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/common/logger.dart';
+import 'package:client_app/common/toast_service.dart';
 import 'package:client_app/player/player_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -174,5 +175,7 @@ class PlayerController extends GetxController {
       isPlaying: false,
       isProcessing: false,
     );
+
+    ToastService.showError('Something went wrong. Try again later');
   }
 }
