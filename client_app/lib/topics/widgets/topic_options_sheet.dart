@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
+import 'package:client_app/common/logger.dart';
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/common/toast_service.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/player/widgets/player_control_button.dart';
@@ -165,6 +168,7 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: PlayerControlButton(
+        // todo - move the logic to dedicated controller
         onTap: _isLoading
             ? null
             : () async {
@@ -185,10 +189,16 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   );
                   final playerController = Get.find<PlayerController>();
                   Navigator.of(context).pop(result);
-                  PlayerPage.show(context);
-                  playerController.playBrief(brief);
+                  unawaited(PlayerPage.show(context));
+                  unawaited(playerController.playBrief(brief));
                 } catch (e, st) {
-                  debugPrint('Error playing a Brief: $e\n$st');
+                  ToastService.showError(
+                      'Something went wrong. Try again later');
+                  logger.e(
+                    '[Error] TopicOptionsSheet._buildPlayButton',
+                    error: e,
+                    stackTrace: st,
+                  );
                 } finally {
                   setState(() => _isLoading = false);
                 }
