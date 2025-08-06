@@ -42,18 +42,20 @@ class HomefeedPage extends StatelessWidget {
               children: [
                 ...((controller.topics.value ?? {})
                     .entries
-                    .map((entry) => [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(
-                              entry.key,
-                              style: TextStyles.headingLg,
-                            ),
+                    .map(
+                      (entry) => [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            entry.key,
+                            style: TextStyles.headingLg,
                           ),
-                          const SizedBox(height: 28),
-                          _buildTopicRow(entry.value),
-                          const SizedBox(height: 20),
-                        ])
+                        ),
+                        const SizedBox(height: 28),
+                        _buildTopicRow(entry.value),
+                        const SizedBox(height: 20),
+                      ],
+                    )
                     .expand((widgetList) => widgetList)),
               ],
             ),
