@@ -14,7 +14,14 @@ class NewstreamSearchController extends GetxController {
       searchQuery.value = query;
 
       if (query.length >= 2) {
-        searchResults.value = await _newstreamApi.fetchTopics();
+        searchResults.value = await _newstreamApi.fetchTopics().then((topics) {
+          return topics
+              .where(
+                (topic) =>
+                    topic.title.toLowerCase().contains(query.toLowerCase()),
+              )
+              .toList();
+        });
       } else {
         searchResults.clear();
       }
