@@ -1,5 +1,3 @@
-import { phonemize as espeakng } from 'phonemizer';
-
 function split(text: string, regex: RegExp): Array<{ match: boolean; text: string }> {
   const result = [];
   let prev = 0;
@@ -138,6 +136,8 @@ export async function phonemize(
   language: 'a' | 'b' = 'a',
   norm: boolean = true,
 ): Promise<string> {
+  const { phonemize: espeakng } = await import('phonemizer');
+
   // 1. Normalize text
   if (norm) {
     text = normalize_text(text);
