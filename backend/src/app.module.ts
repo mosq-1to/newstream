@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -17,6 +17,7 @@ import { BriefsModule } from './modules/briefs/briefs.module';
 import { BriefAudioGenerationModule } from './modules/brief-audio-generation/brief-audio-generation.module';
 import { TopicsModule } from './modules/topics/topics.module';
 import { ObservabilityModule } from './modules/observability/observability.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -24,11 +25,15 @@ import { ObservabilityModule } from './modules/observability/observability.modul
       isGlobal: true,
     }),
     ScheduleModule.forRoot({}),
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST', 'localhost'),
+          port: configService.get<number>('REDIS_PORT', 6379),
+        },
+      }),
+      inject: [ConfigService],
     }),
     BullBoardModule.forRoot({
       route: '/queues',
@@ -45,6 +50,7 @@ import { ObservabilityModule } from './modules/observability/observability.modul
     BriefAudioGenerationModule,
     TopicsModule,
     ObservabilityModule,
+    HealthModule,
   ],
   providers: [
     {
