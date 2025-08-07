@@ -7,7 +7,6 @@ import { BullModule } from '@nestjs/bullmq';
 import { QueueName } from '../../types/queue-name.enum';
 import { ArticlesController } from './articles.controller';
 import { ArticlesFetchQueue } from './queues/articles-fetch-queue/articles-fetch.queue';
-import { FetchArticlesUseCase } from './use-cases/fetch-articles.use-case';
 import { FetchArticlesFromGnewsUseCase } from './use-cases/fetch-articles-from-gnews.use-case';
 import { ArticlesFetchJobProcessor } from './queues/articles-fetch-queue/articles-fetch.job-processor';
 import { ScrapeArticleContentUseCase } from './use-cases/scrape-article-content.use-case';
@@ -62,7 +61,6 @@ import { ObservabilityModule } from '../observability/observability.module';
     ArticlesService,
     ArticlesRepository,
     ArticlesFetchQueue,
-    FetchArticlesUseCase,
     FetchArticlesFromGnewsUseCase,
     FetchArticlesFromGoogleNewsRssUseCase,
     ArticlesFetchJobProcessor,
