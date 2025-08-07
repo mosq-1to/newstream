@@ -52,4 +52,4 @@ RUN mkdir -p /tmp/hls && chmod 777 /tmp/hls
 EXPOSE 3000
 
 # Start the server using production command
-CMD ["npm", "run", "start:prod"]
+CMD npm run migrate:prod && npm run start:prod
