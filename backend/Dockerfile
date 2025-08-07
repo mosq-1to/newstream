@@ -4,9 +4,6 @@ FROM node:20-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Install build dependencies
-RUN apk add --no-cache python3 make g++ gcc
-
 # Install dependencies first (for better layer caching)
 COPY package.json package-lock.json* ./
 RUN npm ci

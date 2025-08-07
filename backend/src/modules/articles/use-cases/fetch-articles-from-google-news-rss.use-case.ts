@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as xml2json from 'xml2json';
+// import * as xml2json from 'xml2json';
 
 export interface GoogleNewsRssImage {
   title: string;
@@ -72,27 +72,28 @@ export class FetchArticlesFromGoogleNewsRssUseCase {
   private async fetchGoogleNewsRss(
     options: GoogleNewsRssSearchParams = {},
   ): Promise<GoogleNewsRssItem[]> {
-    const params = new URLSearchParams();
+    throw new Error('Not implemented'); // Re-implement me when needed
+    // const params = new URLSearchParams();
 
-    params.append('ceid', options.ceid || 'US:en');
-    params.append('num', String(options.num || 10));
-    if (options.q) params.append('q', options.q);
+    // params.append('ceid', options.ceid || 'US:en');
+    // params.append('num', String(options.num || 10));
+    // if (options.q) params.append('q', options.q);
 
-    const url = `${this.baseUrl}?${params.toString()}`;
-    console.log('used URL: ', url);
+    // const url = `${this.baseUrl}?${params.toString()}`;
+    // console.log('used URL: ', url);
 
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Google News RSS error: ${response.statusText}`);
-      }
+    // try {
+    //   const response = await fetch(url);
+    //   if (!response.ok) {
+    //     throw new Error(`Google News RSS error: ${response.statusText}`);
+    //   }
 
-      const xmlText = await response.text();
-      const jsonResult = xml2json.toJson(xmlText, { object: true });
-      return (jsonResult as unknown as GoogleNewsRssResponse).rss.channel.item;
-    } catch (error) {
-      console.error('Error fetching Google News RSS:', error);
-      return [];
-    }
+    //   const xmlText = await response.text();
+    //   const jsonResult = xml2json.toJson(xmlText, { object: true });
+    //   return (jsonResult as unknown as GoogleNewsRssResponse).rss.channel.item;
+    // } catch (error) {
+    //   console.error('Error fetching Google News RSS:', error);
+    //   return [];
+    // }
   }
 }
