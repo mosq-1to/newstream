@@ -16,6 +16,9 @@ COPY . .
 # Build the application
 RUN npm run build
 
+# Compile seed script
+RUN npx tsc --outDir dist/scripts scripts/seed-topics.ts
+
 # Production stage
 # Using Debian-based image instead of Alpine to ensure compatibility with ONNX Runtime and Sharp
 FROM node:20-slim AS production
