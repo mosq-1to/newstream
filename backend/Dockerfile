@@ -51,5 +51,5 @@ RUN mkdir -p /tmp/hls && chmod 777 /tmp/hls
 # Expose the application port
 EXPOSE 3000
 
-# Start the server using production command
-CMD npm run migrate:prod && npm run start:prod
+# Run migrations, seed database, then start the server
+CMD npm run migrate:prod && npm run seed:topics && npm run start:prod
