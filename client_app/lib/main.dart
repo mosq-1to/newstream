@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/auth/auth_bindings.dart';
 import 'package:client_app/auth/auth_page.dart';
@@ -8,13 +10,18 @@ import 'package:client_app/player/player_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 
 void main() async {
   // Ensure Flutter is initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Set status bar to use light (white) icons
+  unawaited(SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]));
 
   // Initialize app config
   await AppConfig().initialize();

@@ -30,14 +30,16 @@ model Article {
   thumbnailUrl String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  publishedAt  DateTime 
+  publishedAt  DateTime
+  relevant     Boolean @default(true)
+  transformedContent String?
 
   // Relationship to Brief
   briefs Brief[] @relation("ArticleToBrief")
 
   // Relationship to Topic
-  topicId String
-  topic   Topic  @relation(fields: [topicId], references: [id])
+  topicId     String?
+  topic       Topic?  @relation(fields: [topicId], references: [id])
 
   @@unique([url])
 }
@@ -49,6 +51,8 @@ model Topic {
   categoryTitle String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  description   String
+  keywords      String[]
 
   // Relationship to Briefs
   briefs   Brief[]
@@ -58,6 +62,7 @@ model Topic {
 model Brief {
   id      String @id @default(uuid())
   content String
+  timeframeInDays Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

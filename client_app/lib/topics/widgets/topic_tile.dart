@@ -1,4 +1,6 @@
+import 'package:client_app/common/logger.dart';
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/common/toast_service.dart';
 import 'package:client_app/common/ui/tappable.dart';
 import 'package:client_app/topics/widgets/topic_options_sheet.dart';
 import 'package:flutter/material.dart';
@@ -64,22 +66,22 @@ class _TopicTileState extends State<TopicTile> {
     );
   }
 
-  void _showTopicOptionsSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => TopicOptionsSheet(
-        topic: widget.topic,
-      ),
-    ).then((result) {
-      if (result != null) {
-        // Handle the result when user presses play
-        // This can be expanded to initiate playback or navigate to another screen
-        debugPrint('Selected options for topic: ${result['topicTitle']}');
-        debugPrint('Timeframe: ${result['timeframe'].label}');
-        debugPrint('Length: ${result['length'].label}');
-      }
-    });
+  Future<void> _showTopicOptionsSheet(BuildContext context) async {
+    try {
+      await showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) => TopicOptionsSheet(
+          topic: widget.topic,
+        ),
+      );
+    } catch (e) {
+      ToastService.showError('Something went wrong. Try again later');
+      logger.e(
+        '[Error] TopicTile._showTopicOptionsSheet',
+        error: e,
+      );
+    }
   }
 }

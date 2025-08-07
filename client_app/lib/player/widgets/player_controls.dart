@@ -14,6 +14,7 @@ class PlayerSeekBar extends StatefulWidget {
   final bool disableDragSeek;
   final double seekBarHeight;
   final bool isGenerating;
+  final bool isBuffering;
 
   const PlayerSeekBar({
     required this.progress,
@@ -24,6 +25,7 @@ class PlayerSeekBar extends StatefulWidget {
     this.disableDragSeek = false,
     this.seekBarHeight = 4.0,
     this.isGenerating = false,
+    this.isBuffering = false,
   }) : assert(seekBarHeight == 4.0 || seekBarHeight == 2.0,
             'seekBarHeight must be 4.0 or 2.0');
 
@@ -31,8 +33,29 @@ class PlayerSeekBar extends StatefulWidget {
   PlayerSeekBarState createState() => PlayerSeekBarState();
 }
 
-class PlayerSeekBarState extends State<PlayerSeekBar> {
+class PlayerSeekBarState extends State<PlayerSeekBar>
+    with SingleTickerProviderStateMixin {
   double? _dragValue;
+  late AnimationController _blinkController;
+  late Animation<double> _blinkAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _blinkController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _blinkAnimation =
+        Tween<double>(begin: 0.4, end: 0.7).animate(_blinkController);
+    _blinkController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _blinkController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,11 +188,24 @@ class PlayerSeekBarState extends State<PlayerSeekBar> {
                 style: TextStyles.bodySm
                     .copyWith(color: Colors.white.withOpacity(0.7)),
               ),
-              Text(
-                widget.isGenerating ? '~5:00' : formatDuration(widget.duration),
-                style: TextStyles.bodySm
-                    .copyWith(color: Colors.white.withOpacity(0.7)),
-              ),
+              if (widget.isGenerating)
+                AnimatedBuilder(
+                  animation: _blinkAnimation,
+                  builder: (context, child) {
+                    return Text(
+                      'Generating...',
+                      style: TextStyles.bodySm.copyWith(
+                        color: Colors.white.withOpacity(_blinkAnimation.value),
+                      ),
+                    );
+                  },
+                )
+              else
+                Text(
+                  formatDuration(widget.duration),
+                  style: TextStyles.bodySm
+                      .copyWith(color: Colors.white.withOpacity(0.7)),
+                ),
             ],
           ),
       ],
@@ -203,6 +239,7 @@ class PlayerControls extends StatelessWidget {
             duration: playerState.duration ?? Duration.zero,
             onSeek: controller.seek,
             isGenerating: playerState.isGenerating,
+            isBuffering: playerState.isBuffering,
           ),
           const SizedBox(height: 16),
           _buildControlButtons(playerState.isPlaying),
@@ -218,7 +255,7 @@ class PlayerControls extends StatelessWidget {
         PlayerControlButton(
           onTap: controller.togglePlayPause,
           isPlaying: isPlaying,
-          isLoading: controller.playerState.value.isProcessing,
+          isLoading: controller.playerState.value.isProcessing || controller.playerState.value.isBuffering,
           size: 64.0,
         ),
       ],

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/common/toast_service.dart';
 import 'package:client_app/search/search_bindings.dart';
 import 'package:client_app/search/search_overlay.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +34,9 @@ class BottomNavBar extends StatelessWidget {
           if (index == 1) {
             // Search tab clicked
             _showSearchOverlay();
+          } else if (index == 2) {
+            // My space tab clicked
+            ToastService.showInfo('Work in progress');
           } else {
             onTap(index);
           }
@@ -57,17 +63,17 @@ class BottomNavBar extends StatelessWidget {
       ),
     );
   }
-  
+
   void _showSearchOverlay() {
     // Initialize the search bindings
     SearchBindings().dependencies();
-    
+
     // Show the search overlay
-    Get.dialog(
+    unawaited(Get.dialog(
       const SearchOverlay(),
       barrierDismissible: true,
       barrierColor: Colors.transparent,
       useSafeArea: false,
-    );
+    ));
   }
 }

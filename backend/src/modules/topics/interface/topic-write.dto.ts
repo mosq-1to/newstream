@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsArray } from 'class-validator';
 
 export class TopicWriteDto {
   @IsString()
@@ -9,4 +9,11 @@ export class TopicWriteDto {
 
   @IsString()
   categoryTitle: string;
+
+  @IsString()
+  description: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  keywords: string[];
 }

@@ -5,6 +5,6 @@ export interface ArticleWriteDto {
   url: string;
   content: string;
   thumbnailUrl: string;
-  topicId: string;
+  topicId?: string;
   publishedAt: Date;
 }

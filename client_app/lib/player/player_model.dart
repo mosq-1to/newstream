@@ -4,6 +4,7 @@ class PlayerState {
   final bool isPlaying;
   final bool isProcessing;
   final bool isGenerating;
+  final bool isBuffering;
   final Brief? currentBrief;
   final Duration position;
   final Duration? duration;
@@ -12,6 +13,7 @@ class PlayerState {
     this.isPlaying = false,
     this.isProcessing = false,
     this.isGenerating = false,
+    this.isBuffering = false,
     this.currentBrief,
     this.position = Duration.zero,
     this.duration,
@@ -21,6 +23,7 @@ class PlayerState {
     bool? isPlaying,
     bool? isProcessing,
     bool? isGenerating,
+    bool? isBuffering,
     double? progress,
     Brief? currentBrief,
     Duration? position,
@@ -30,6 +33,7 @@ class PlayerState {
       isPlaying: isPlaying ?? this.isPlaying,
       isProcessing: isProcessing ?? this.isProcessing,
       isGenerating: isGenerating ?? this.isGenerating,
+      isBuffering: isBuffering ?? this.isBuffering,
       currentBrief: currentBrief ?? this.currentBrief,
       position: position ?? this.position,
       duration: duration ?? this.duration,

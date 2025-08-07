@@ -1,54 +1,56 @@
 import { Injectable } from '@nestjs/common';
-import { ArticlesQueue } from './queue/articles.queue';
+import { ArticlesFetchQueue } from './queues/articles-fetch-queue/articles-fetch.queue';
+import { ArticleScrapeQueue } from './queues/article-scrape-queue/article-scrape.queue';
+import { ArticleTransformQueue } from './queues/article-transform-queue/article-transform.queue';
+import { ArticleCategorizeQueue } from './queues/article-categorize-queue/article-categorize.queue';
 import { ArticlesRepository } from './articles.repository';
-import { FetchArticlesFromApiUseCase } from './use-cases/fetch-articles-from-api.use-case';
 
 @Injectable()
 export class ArticlesService {
   constructor(
-    private readonly fetchArticlesUseCase: FetchArticlesFromApiUseCase,
-    private readonly articlesQueue: ArticlesQueue,
-    private readonly articlesRepository: ArticlesRepository,
+    private readonly articlesFetchQueue: ArticlesFetchQueue,
+    private readonly articleScrapeQueue: ArticleScrapeQueue,
+    private readonly articleTransformQueue: ArticleTransformQueue,
+    private readonly articleCategorizeQueue: ArticleCategorizeQueue,
+    private readonly articleRepository: ArticlesRepository,
   ) {}
 
   async fetchAndSaveArticles() {
-    this.fetchArticlesUseCase
-      .fetchLastNDays(7, {
-        q: 'Artificial Intelligence',
-      })
-      .then((articles) => {
-        // todo: hard-coded topicId for now, change it later
-        return this.articlesQueue.addSaveArticlesJob(
-          articles.map((article) => ({
-            title: article.title,
-            url: article.url,
-            sourceName: article.source.name,
-            sourceUrl: article.source.url,
-            content: '',
-            thumbnailUrl: article.image,
-            topicId: '00000000-0000-0000-0000-000000000001',
-            publishedAt: new Date(article.publishedAt),
-          })),
-        );
-      })
-      .catch((error) => {
-        console.error('Error fetching articles:', error);
-      });
-
-    return { started: true };
+    await this.articlesFetchQueue.fetchArticlesPublishedLastTwoHours();
+    return { job_started: true };
   }
 
-  async scrapeAllArticles(batchSize: number) {
-    const articles = await this.articlesRepository.getAllArticles({
-      content: '',
-    });
-    void this.articlesQueue.addScrapeArticlesJob(articles.slice(0, batchSize));
-    return { queued: articles.length };
+  async fetchArticlesForGivenPeriod(fromDate: Date, toDate: Date) {
+    await this.articlesFetchQueue.fetchArticlesForGivenPeriod(fromDate, toDate);
+    return { job_started: true };
   }
 
-  async scrapeSingleArticle(articleId: string) {
-    const article = await this.articlesRepository.getArticleById(articleId);
-    void this.articlesQueue.addScrapeArticleJob(article);
-    return { queued: 1 };
+  async scrapeArticle(articleId: string) {
+    await this.articleScrapeQueue.addArticleScrapeJob(articleId);
+    return { job_started: true };
+  }
+
+  async scrapeArticles(articleIds: string[]) {
+    await this.articleScrapeQueue.addArticleScrapeJobs(articleIds);
+    return { job_started: true };
+  }
+
+  async transformArticle(articleId: string) {
+    await this.articleTransformQueue.addArticleTransformJob(articleId);
+    return { job_started: true };
+  }
+
+  async categorizeArticle(articleId: string) {
+    await this.articleCategorizeQueue.addArticleCategorizeJob(articleId);
+    return { job_started: true };
+  }
+
+  async scrapeArticlesWithoutContent(articleIds: string[]) {
+    const articles = await this.articleRepository.findByIds(articleIds);
+
+    const articlesToScrape = articles.filter((article) => article.content.length < 100);
+    await this.articleScrapeQueue.addArticleScrapeJobs(
+      articlesToScrape.map((article) => article.id),
+    );
   }
 }

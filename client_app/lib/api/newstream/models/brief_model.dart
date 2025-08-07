@@ -6,6 +6,7 @@ class Brief {
   final String content;
   final Topic topic;
   final Duration targetDuration;
+  final Duration timeframeDuration;
   final List<Article> articles;
 
   const Brief({
@@ -13,6 +14,7 @@ class Brief {
     required this.content,
     required this.topic,
     required this.targetDuration,
+    required this.timeframeDuration,
     required this.articles,
   });
 
@@ -23,6 +25,7 @@ class Brief {
         'content': final String content,
         'topic': final Map<String, dynamic> topic,
         'articles': final List<dynamic> articles,
+        'timeframeInDays': final int timeframeInDays,
       } =>
         Brief(
           id: id,
@@ -30,6 +33,7 @@ class Brief {
           topic: Topic.fromJson(topic),
           // todo - move to the real entity
           targetDuration: const Duration(minutes: 5),
+          timeframeDuration: Duration(days: timeframeInDays),
           articles: articles
               .map((article) =>
                   Article.fromJson(article as Map<String, dynamic>))

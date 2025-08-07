@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'dart:ui';
 
+import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
+import 'package:client_app/common/logger.dart';
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/common/toast_service.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/player/widgets/player_control_button.dart';
@@ -9,8 +13,6 @@ import 'package:client_app/topics/topic_options_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'package:client_app/api/newstream/models/topic_model.dart';
 
 class TopicOptionsSheet extends StatefulWidget {
   final Topic topic;
@@ -25,9 +27,13 @@ class TopicOptionsSheet extends StatefulWidget {
 }
 
 class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
-  int _selectedLengthIndex = 2; // Default to 1 day
-  int _selectedTimeframeIndex = 0; // Default to 15 minutes
+  int _selectedTimeframeIndex = 1; // Default to 1 week
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,118 +122,44 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
   }
 
   Widget _buildPickerSelectionRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            children: [
-              Text(
-                "Timeframe",
-                textAlign: TextAlign.center,
-                style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                "How far should I reach?",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          Text(
+            "How much you want to learn?",
+            textAlign: TextAlign.center,
+            style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
           ),
-        ),
-        Expanded(
-          child: Column(
-            children: [
-              Text(
-                "Length",
-                textAlign: TextAlign.center,
-                style: TextStyles.bodySm.copyWith(color: Colors.grey.shade400),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                "How much time do you have?",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildWheelPickers() {
     return SizedBox(
       height: 200,
-      child: Row(
-        children: [
-          // Timeframe picker
-          Expanded(
-            child: CupertinoPicker(
-              itemExtent: 40,
-              backgroundColor: Colors.transparent,
-              scrollController: FixedExtentScrollController(
-                  initialItem: _selectedTimeframeIndex),
-              onSelectedItemChanged: (int index) {
-                setState(() {
-                  _selectedTimeframeIndex = index;
-                });
-              },
-              children: TopicOptions.timeframes
-                  .map((timeframe) => Center(
-                        child: Text(
-                          timeframe.label,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
-          const Text(
-            "in",
-            style: TextStyle(color: Colors.grey),
-          ),
-          // Length picker
-          Expanded(
-            child: CupertinoPicker(
-              itemExtent: 40,
-              backgroundColor: Colors.transparent,
-              scrollController: FixedExtentScrollController(
-                  initialItem: _selectedLengthIndex),
-              onSelectedItemChanged: (int index) {
-                setState(() {
-                  _selectedLengthIndex = index;
-                });
-              },
-              children: TopicOptions.lengths
-                  .map(
-                    (length) => Center(
-                      child: Text(
-                        length.label,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      ),
+      child: CupertinoPicker(
+        itemExtent: 40,
+        backgroundColor: Colors.transparent,
+        scrollController:
+            FixedExtentScrollController(initialItem: _selectedTimeframeIndex),
+        onSelectedItemChanged: (int index) {
+          setState(() {
+            _selectedTimeframeIndex = index;
+          });
+        },
+        children: TopicOptions.timeframes
+            .map((timeframe) => Center(
+                  child: Text(
+                    timeframe.label,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
                     ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ],
+                  ),
+                ))
+            .toList(),
       ),
     );
   }
@@ -236,20 +168,18 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: PlayerControlButton(
+        // todo - move the logic to dedicated controller
         onTap: _isLoading
             ? null
             : () async {
                 setState(() => _isLoading = true);
                 final selectedTimeframe =
                     TopicOptions.timeframes[_selectedTimeframeIndex];
-                final selectedLength =
-                    TopicOptions.lengths[_selectedLengthIndex];
 
                 // Create a result object with the selected values
                 final result = {
                   'topicTitle': widget.topic.title,
                   'timeframe': selectedTimeframe,
-                  'length': selectedLength,
                 };
 
                 try {
@@ -259,10 +189,16 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   );
                   final playerController = Get.find<PlayerController>();
                   Navigator.of(context).pop(result);
-                  PlayerPage.show(context);
-                  playerController.playBrief(brief);
+                  unawaited(PlayerPage.show(context));
+                  unawaited(playerController.playBrief(brief));
                 } catch (e, st) {
-                  debugPrint('Error playing a Brief: $e\n$st');
+                  ToastService.showError(
+                      'Something went wrong. Try again later');
+                  logger.e(
+                    '[Error] TopicOptionsSheet._buildPlayButton',
+                    error: e,
+                    stackTrace: st,
+                  );
                 } finally {
                   setState(() => _isLoading = false);
                 }

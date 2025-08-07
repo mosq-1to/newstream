@@ -1,3 +1,4 @@
+import 'package:client_app/common/logger.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class EnvModel {
@@ -39,8 +40,12 @@ class AppConfig {
   static final AppConfig _instance = AppConfig._privateConstructor();
 
   Future<void> initialize() async {
-    await dotenv.load();
-    env = EnvModel.fromMap(dotenv.env);
-    env.validate();
+    try {
+      await dotenv.load();
+      env = EnvModel.fromMap(dotenv.env);
+      env.validate();
+    } catch (e) {
+      logger.e('AppConfig', error: e);
+    }
   }
 }
