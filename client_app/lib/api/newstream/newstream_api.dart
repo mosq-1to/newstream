@@ -19,10 +19,8 @@ class NewstreamApi {
 
   Future<void> validateGoogleAuthCode(String code) async {
     final response = await http.get(
-      Uri.http(
-        AppConfig().env.newstreamApiUrl,
-        'auth/google/callback',
-        {'code': code},
+      Uri.parse(
+        '${AppConfig().env.newstreamApiUrl}/auth/google/callback?code=$code',
       ),
     );
 
@@ -44,9 +42,8 @@ class NewstreamApi {
     }
 
     final response = await http.get(
-      Uri.http(
-        AppConfig().env.newstreamApiUrl,
-        'auth/users/me',
+      Uri.parse(
+        '${AppConfig().env.newstreamApiUrl}/auth/users/me',
       ),
       headers: {
         'Authorization': 'Bearer $accessToken',
@@ -82,9 +79,8 @@ class NewstreamApi {
     }
 
     final response = await http.get(
-      Uri.http(
-        AppConfig().env.newstreamApiUrl,
-        'topics',
+      Uri.parse(
+        '${AppConfig().env.newstreamApiUrl}/topics',
       ),
       headers: {
         'Authorization': 'Bearer $accessToken',
@@ -112,13 +108,10 @@ class NewstreamApi {
       throw Exception('accessToken is not set');
     }
 
-    final httpUri = Uri.http(
-      AppConfig().env.newstreamApiUrl,
-      'briefs',
-    );
-
     final response = await http.post(
-      httpUri,
+      Uri.parse(
+        '${AppConfig().env.newstreamApiUrl}/briefs',
+      ),
       headers: {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
@@ -146,9 +139,8 @@ class NewstreamApi {
       throw Exception('accessToken is not set');
     }
 
-    final httpUri = Uri.http(
-      AppConfig().env.newstreamApiUrl,
-      'stream/brief/$briefId/playlist.m3u8',
+    final httpUri = Uri.parse(
+      '${AppConfig().env.newstreamApiUrl}/stream/brief/$briefId/playlist.m3u8',
     );
 
     return httpUri.toString();

@@ -20,9 +20,13 @@ class SplashscreenController extends GetxController {
       } else {
         unawaited(Get.offNamed('/homefeed'));
       }
-    } catch (e) {
+    } catch (e, st) {
       ToastService.showError('Something went wrong. Try again later');
-      logger.e('[Error] SplashscreenController.onInit', error: e);
+      logger.e(
+        '[Error] SplashscreenController.onInit',
+        error: e,
+        stackTrace: st,
+      );
     }
   }
 }
