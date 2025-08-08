@@ -13,7 +13,30 @@ async function main() {
     },
   ];
 
-  await prisma.topic.createMany({ data: topics });
+  // Process topics one by one - find by title then update or create
+  for (const topic of topics) {
+    // Find existing topic with the same title
+    const existingTopic = await prisma.topic.findFirst({
+      where: { title: topic.title },
+    });
+    if (existingTopic) {
+      // Update existing topic
+      await prisma.topic.update({
+        where: { id: existingTopic.id },
+        data: {
+          thumbnailUrl: topic.thumbnailUrl,
+          categoryTitle: topic.categoryTitle,
+          description: topic.description,
+          keywords: topic.keywords,
+        },
+      });
+    } else {
+      // Create new topic
+      await prisma.topic.create({
+        data: topic,
+      });
+    }
+  }
 }
 
 void main()
