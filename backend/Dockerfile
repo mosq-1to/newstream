@@ -28,6 +28,7 @@ FROM node:20-slim AS production
 
 # Set NODE_ENV
 ENV NODE_ENV=production
+ENV NODE_OPTIONS="--max-old-space-size=1500"
 
 # Install required dependencies for ONNX Runtime and Sharp
 RUN apt-get update && apt-get install -y --no-install-recommends \
