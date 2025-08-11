@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:client_app/auth/google_auth_service.dart';
-import 'package:client_app/common/logger.dart';
-import 'package:client_app/common/toast_service.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
@@ -11,14 +10,9 @@ class AuthController extends GetxController {
   Future<void> handleGoogleLogin() async {
     try {
       await _googleAuthService.signIn();
-      unawaited(Get.offNamed('/homefeed'));
+      await Get.offNamed('/homefeed');
     } catch (e, st) {
-      ToastService.showError('Something went wrong. Try again later');
-      logger.e(
-        '[Error] AuthController.handleGoogleLogin',
-        error: e,
-        stackTrace: st,
-      );
+      await ReportingService.reportError(e, st, showToast: true);
     }
   }
 }
