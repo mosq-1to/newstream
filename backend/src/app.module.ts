@@ -18,12 +18,14 @@ import { BriefAudioGenerationModule } from './modules/brief-audio-generation/bri
 import { TopicsModule } from './modules/topics/topics.module';
 import { ObservabilityModule } from './modules/observability/observability.module';
 import { HealthModule } from './health/health.module';
+import { SentryModule } from '@sentry/nestjs/setup';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    SentryModule.forRoot(),
     ScheduleModule.forRoot({}),
     BullModule.forRootAsync({
       imports: [ConfigModule],
