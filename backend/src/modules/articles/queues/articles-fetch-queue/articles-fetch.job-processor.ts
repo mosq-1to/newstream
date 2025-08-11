@@ -28,6 +28,7 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
       query: job.data.query,
       fromDate: job.data.fromDate ? new Date(job.data.fromDate) : undefined,
       toDate: job.data.toDate ? new Date(job.data.toDate) : undefined,
+      expand: 'content',
     });
 
     return await this.articlesRepository.saveArticles(
@@ -36,8 +37,7 @@ export class ArticlesFetchJobProcessor extends WorkerHost {
         url: article.url,
         sourceName: article.source.name,
         sourceUrl: article.source.url,
-        // todo - use content from api once we have the paid subscription
-        content: '',
+        content: article.content,
         thumbnailUrl: article.image,
         publishedAt: new Date(article.publishedAt),
       })),

@@ -31,12 +31,15 @@ export interface GNewsOptions {
   sortby?: 'publishedAt' | 'relevance';
   in?: ['title', 'description', 'content'];
   nullable?: ['image', 'description', 'content'];
+  expand?: 'content';
 }
 
 interface FetchArticlesFromApiUseCaseOptions {
   query: string;
   fromDate?: Date;
   toDate?: Date;
+  /** Can be used only when Pro version is activated */
+  expand?: 'content';
 }
 
 @Injectable()
@@ -51,6 +54,7 @@ export class FetchArticlesFromGnewsUseCase {
       q: options.query,
       from: options.fromDate,
       to: options.toDate,
+      expand: options.expand,
     });
   }
 
@@ -69,6 +73,7 @@ export class FetchArticlesFromGnewsUseCase {
     params.append('q', options.q);
     if (options.from) params.append('from', toGnewsApiUTCDateString(options.from));
     if (options.to) params.append('to', toGnewsApiUTCDateString(options.to));
+    if (options.expand) params.append('expand', options.expand);
 
     const url = `${this.baseUrl}?${params.toString()}`;
     this.logger.debug('used URL: ', url);
