@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
@@ -18,7 +18,7 @@ import { BriefAudioGenerationModule } from './modules/brief-audio-generation/bri
 import { TopicsModule } from './modules/topics/topics.module';
 import { ObservabilityModule } from './modules/observability/observability.module';
 import { HealthModule } from './health/health.module';
-import { SentryModule } from '@sentry/nestjs/setup';
+import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 
 @Module({
   imports: [
@@ -55,6 +55,10 @@ import { SentryModule } from '@sentry/nestjs/setup';
     HealthModule,
   ],
   providers: [
+    {
+      provide: APP_FILTER,
+      useClass: SentryGlobalFilter,
+    },
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
