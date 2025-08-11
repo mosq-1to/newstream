@@ -4,10 +4,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class EnvModel {
   final String newstreamApiUrl;
   final String googleAuthServerClientId;
+  final String sentryDsnUrl;
 
   EnvModel({
     required this.newstreamApiUrl,
     required this.googleAuthServerClientId,
+    required this.sentryDsnUrl,
   });
 
   void validate() {
@@ -17,12 +19,16 @@ class EnvModel {
     if (googleAuthServerClientId.isEmpty) {
       throw Exception('GOOGLE_AUTH_SERVER_CLIENT_ID is not set in .env file');
     }
+    if (sentryDsnUrl.isEmpty) {
+      throw Exception('SENTRY_DSN_URL is not set in .env file');
+    }
   }
 
   factory EnvModel.fromMap(Map<String, String> map) {
     return EnvModel(
       newstreamApiUrl: map['NEWSTREAM_API_URL']!,
       googleAuthServerClientId: map['GOOGLE_AUTH_SERVER_CLIENT_ID']!,
+      sentryDsnUrl: map['SENTRY_DSN_URL']!,
     );
   }
 }

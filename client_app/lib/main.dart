@@ -12,6 +12,7 @@ import 'package:client_app/splashscreen/splashscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   // Ensure Flutter is initialized
@@ -26,7 +27,16 @@ void main() async {
   // Initialize app config
   await AppConfig().initialize();
 
-  runApp(const MyApp());
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = AppConfig().env.sentryDsnUrl;
+      options.sendDefaultPii = true;
+      // Configure Session Replay
+      options.replay.sessionSampleRate = 0.1;
+      options.replay.onErrorSampleRate = 1.0;
+    },
+    appRunner: () => runApp(SentryWidget(child: const MyApp())),
+  );
 }
 
 class MyApp extends StatelessWidget {

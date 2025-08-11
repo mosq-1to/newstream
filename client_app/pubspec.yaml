@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  sentry_flutter: ^9.6.0
   flutter:
     sdk: flutter
   flutter_svg: ^2.1.0
@@ -48,6 +49,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
+  sentry_dart_plugin: ^3.1.1
   integration_test:
     sdk: flutter
   flutter_test:
@@ -155,3 +157,8 @@ flutter:
   assets:
     - assets/icons/
     - .env
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: true
+  project: flutter
+  org: personal-e7x
