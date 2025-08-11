@@ -13,11 +13,16 @@ export class ArticlesQueuesOrchestratorService {
   ) {}
 
   public async onArticlesFetched(articlesFetched: Article[]) {
-    const relevantArticleIds = articlesFetched
-      .filter((article) => article.relevant)
-      .map((article) => article.id);
+    const relevantArticles = articlesFetched.filter((article) => article.relevant);
+    const articlesToScrape = relevantArticles.filter((article) => article.content.length < 100);
+    const articlesToCategorize = relevantArticles.filter(
+      (article) => article.content.length >= 100,
+    );
 
-    await this.articlesService.scrapeArticlesWithoutContent(relevantArticleIds);
+    await this.articlesService.categorizeArticles(
+      articlesToCategorize.map((article) => article.id),
+    );
+    await this.articlesService.scrapeArticles(articlesToScrape.map((article) => article.id));
   }
 
   public async onArticleScraped(article: Article) {

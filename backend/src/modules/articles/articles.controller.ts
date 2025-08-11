@@ -13,7 +13,7 @@ export class ArticlesController {
 
   @Post('debug/categorizeArticle')
   async categorizeArticle(@Body() dto: CategorizeArticleDto) {
-    return this.articlesService.categorizeArticle(dto.articleId);
+    return this.articlesService.categorizeArticles([dto.articleId]);
   }
 
   @Post('debug/fetch')

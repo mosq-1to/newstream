@@ -40,8 +40,8 @@ export class ArticlesService {
     return { job_started: true };
   }
 
-  async categorizeArticle(articleId: string) {
-    await this.articleCategorizeQueue.addArticleCategorizeJob(articleId);
+  async categorizeArticles(articleIds: string[]) {
+    await this.articleCategorizeQueue.addArticleCategorizeJobs(articleIds);
     return { job_started: true };
   }
 
