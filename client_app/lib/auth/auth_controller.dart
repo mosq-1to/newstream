@@ -12,9 +12,13 @@ class AuthController extends GetxController {
     try {
       await _googleAuthService.signIn();
       unawaited(Get.offNamed('/homefeed'));
-    } catch (e) {
+    } catch (e, st) {
       ToastService.showError('Something went wrong. Try again later');
-      logger.e('[Error] AuthController.handleGoogleLogin', error: e);
+      logger.e(
+        '[Error] AuthController.handleGoogleLogin',
+        error: e,
+        stackTrace: st,
+      );
     }
   }
 }
