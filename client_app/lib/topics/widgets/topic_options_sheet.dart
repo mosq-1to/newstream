@@ -3,9 +3,8 @@ import 'dart:ui';
 
 import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
-import 'package:client_app/common/logger.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/common/theme/text_styles.dart';
-import 'package:client_app/common/toast_service.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/player/widgets/player_control_button.dart';
@@ -192,12 +191,10 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   unawaited(PlayerPage.show(context));
                   unawaited(playerController.playBrief(brief));
                 } catch (e, st) {
-                  ToastService.showError(
-                      'Something went wrong. Try again later');
-                  logger.e(
-                    '[Error] TopicOptionsSheet._buildPlayButton',
-                    error: e,
-                    stackTrace: st,
+                  await ReportingService.reportError(
+                    e,
+                    st,
+                    showToast: true,
                   );
                 } finally {
                   setState(() => _isLoading = false);

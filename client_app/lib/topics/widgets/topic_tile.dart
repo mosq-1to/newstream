@@ -1,6 +1,5 @@
-import 'package:client_app/common/logger.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/common/theme/text_styles.dart';
-import 'package:client_app/common/toast_service.dart';
 import 'package:client_app/common/ui/tappable.dart';
 import 'package:client_app/topics/widgets/topic_options_sheet.dart';
 import 'package:flutter/material.dart';
@@ -76,11 +75,11 @@ class _TopicTileState extends State<TopicTile> {
           topic: widget.topic,
         ),
       );
-    } catch (e) {
-      ToastService.showError('Something went wrong. Try again later');
-      logger.e(
-        '[Error] TopicTile._showTopicOptionsSheet',
-        error: e,
+    } catch (e, st) {
+      await ReportingService.reportError(
+        e,
+        st,
+        showToast: true,
       );
     }
   }

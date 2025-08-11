@@ -1,4 +1,4 @@
-import 'package:client_app/common/logger.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class EnvModel {
@@ -50,8 +50,8 @@ class AppConfig {
       await dotenv.load();
       env = EnvModel.fromMap(dotenv.env);
       env.validate();
-    } catch (e) {
-      logger.e('AppConfig', error: e);
+    } catch (e, st) {
+      await ReportingService.reportError(e, st);
     }
   }
 }

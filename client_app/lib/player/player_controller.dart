@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:audio_session/audio_session.dart';
 import 'package:client_app/api/newstream/models/brief_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
-import 'package:client_app/common/logger.dart';
-import 'package:client_app/common/toast_service.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/player/player_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -24,8 +23,8 @@ class PlayerController extends GetxController {
       } else {
         await _audioPlayer.play();
       }
-    } catch (e) {
-      _handleError(e);
+    } catch (e, st) {
+      _handleError(e, st);
     }
   }
 
@@ -81,8 +80,8 @@ class PlayerController extends GetxController {
           );
         }
       });
-    } catch (e) {
-      _handleError(e);
+    } catch (e, st) {
+      _handleError(e, st);
     }
   }
 
@@ -92,8 +91,8 @@ class PlayerController extends GetxController {
       _playlistCheckTimer?.cancel();
       await _audioPlayer.dispose();
       super.onClose();
-    } catch (e) {
-      _handleError(e);
+    } catch (e, st) {
+      _handleError(e, st);
     }
   }
 
@@ -138,8 +137,8 @@ class PlayerController extends GetxController {
       await _audioPlayer.setAudioSource(audioSource);
 
       return _audioPlayer.play();
-    } catch (e) {
-      _handleError(e);
+    } catch (e, st) {
+      _handleError(e, st);
     }
   }
 
@@ -164,19 +163,23 @@ class PlayerController extends GetxController {
       if (!isGenerating) {
         _playlistCheckTimer?.cancel();
       }
-    } catch (e) {
-      _handleError(e);
+    } catch (e, st) {
+      _handleError(e, st);
     }
   }
 
-  void _handleError(Object e) {
-    logger.e('PlayerController', error: e);
+  void _handleError(Object e, [StackTrace? st]) {
+    unawaited(
+      ReportingService.reportError(
+        e,
+        st ?? StackTrace.current,
+        showToast: true,
+      ),
+    );
 
     playerState.value = playerState.value.copyWith(
       isPlaying: false,
       isProcessing: false,
     );
-
-    ToastService.showError('Something went wrong. Try again later');
   }
 }

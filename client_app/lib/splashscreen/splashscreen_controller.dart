@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:client_app/api/newstream/newstream_api.dart';
-import 'package:client_app/common/logger.dart';
-import 'package:client_app/common/toast_service.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:get/get.dart';
 
 class SplashscreenController extends GetxController {
@@ -21,11 +20,10 @@ class SplashscreenController extends GetxController {
         unawaited(Get.offNamed('/homefeed'));
       }
     } catch (e, st) {
-      ToastService.showError('Something went wrong. Try again later');
-      logger.e(
-        '[Error] SplashscreenController.onInit',
-        error: e,
-        stackTrace: st,
+      await ReportingService.reportError(
+        e,
+        st,
+        showToast: true,
       );
     }
   }
