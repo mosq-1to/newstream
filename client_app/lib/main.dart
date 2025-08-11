@@ -9,6 +9,7 @@ import 'package:client_app/homefeed/homefeed_page.dart';
 import 'package:client_app/player/player_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_bindings.dart';
 import 'package:client_app/splashscreen/splashscreen_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -34,6 +35,11 @@ void main() async {
       // Configure Session Replay
       options.replay.sessionSampleRate = 0.1;
       options.replay.onErrorSampleRate = 1.0;
+      options.environment = kReleaseMode
+          ? 'release'
+          : kProfileMode
+              ? 'profile'
+              : 'debug';
     },
     appRunner: () => runApp(SentryWidget(child: const MyApp())),
   );
