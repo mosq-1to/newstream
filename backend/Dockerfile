@@ -30,13 +30,14 @@ FROM node:20-slim AS production
 ENV NODE_ENV=production
 ENV NODE_OPTIONS="--max-old-space-size=1500"
 
-# Install required dependencies for ONNX Runtime and Sharp
+# Install required dependencies for ONNX Runtime and Sharp + FFmpeg
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6 \
     libstdc++6 \
     ca-certificates \
     build-essential \
     python3 \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
