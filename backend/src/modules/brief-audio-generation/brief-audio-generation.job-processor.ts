@@ -1,4 +1,4 @@
-import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { QueueName } from '../../types/queue-name.enum';
 import {
   GenerateBriefAudioJob,
@@ -9,21 +9,15 @@ import path from 'path';
 import { AudioGenerationService } from '../audio-generation/audio-generation.service';
 import { HlsService } from '../../utils/audio/hls.service';
 import { Logger } from '@nestjs/common';
-import { RoundRobin } from '../../utils/data-structures/round-robin';
-import { Job } from 'bullmq';
-import { BriefAudioGenerationQueue } from './brief-audio-generation.queue';
 
 @Processor(QueueName.BriefAudioGeneration)
 export class BriefAudioGenerationJobProcessor extends WorkerHost {
   private readonly logger = new Logger(BriefAudioGenerationJobProcessor.name);
-  // todo - may be problematic with multiple backend instances
-  private readonly userRoundRobin: RoundRobin<string> = new RoundRobin<string>();
 
   constructor(
     private readonly briefAudioStorageRepository: BriefAudioStorageRepository,
     private readonly audioGenerationService: AudioGenerationService,
     private readonly hlsService: HlsService,
-    private readonly briefAudioGenerationQueue: BriefAudioGenerationQueue,
   ) {
     super();
   }
@@ -48,15 +42,6 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
     job: GenerateBriefAudioProcessChunkJob,
   ) => {
     try {
-      const { userId } = job.data;
-      this.userRoundRobin.addIfNotPresent(userId);
-      const currentTurnUserId = this.userRoundRobin.next().value;
-
-      if (currentTurnUserId !== userId) {
-        await this.moveJobBackToActive(job);
-        return;
-      }
-
       const { wavOutputDir, hlsOutputDir } = this.briefAudioStorageRepository.getBriefPaths(
         job.data.briefId,
       );
@@ -69,19 +54,4 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
       throw e;
     }
   };
-
-  private readonly moveJobBackToActive = async (job: Job) => {
-    await job.moveToDelayed(Date.now() + 100);
-    this.logger.debug(`Job ${job.name} moved to delayed.`);
-  };
-
-  @OnWorkerEvent('completed')
-  async onCompleted(job: GenerateBriefAudioJob | GenerateBriefAudioProcessChunkJob) {
-    // const userHasActiveJobs = await this.briefAudioGenerationQueue.checkIfUserHasActiveJobs(
-    //   job.data.userId,
-    // );
-    // if (!userHasActiveJobs) {
-    //   this.userRoundRobin.deleteByValue((value) => value === job.data.userId);
-    // }
-  }
 }
