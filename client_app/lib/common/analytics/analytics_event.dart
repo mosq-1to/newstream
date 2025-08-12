@@ -2,10 +2,10 @@ class AnalyticsEvent {
   const AnalyticsEvent(this.name, {this.properties = const {}});
 
   final String name;
-  final Map<String, String> properties;
+  final Map<String, dynamic> properties;
 }
 
-enum SignInProvider { google, recognized }
+enum SignInProvider { google, session }
 
 class SignInEvent extends AnalyticsEvent {
   SignInEvent({
@@ -26,5 +26,16 @@ class ErrorEvent extends AnalyticsEvent {
             'error': error.toString(),
             'stackTrace': stackTrace.toString(),
           },
+        );
+}
+
+class ScreenViewEvent extends AnalyticsEvent {
+  ScreenViewEvent({
+    required String to,
+    required String from,
+    bool? isBack,
+  }) : super(
+          'Screen view',
+          properties: {'to': to, 'from': from, 'isBack': isBack},
         );
 }

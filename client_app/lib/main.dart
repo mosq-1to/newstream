@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/auth/auth_bindings.dart';
 import 'package:client_app/auth/auth_page.dart';
+import 'package:client_app/common/analytics/analytics_event.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/homefeed/homefeed_bindings.dart';
 import 'package:client_app/homefeed/homefeed_page.dart';
@@ -62,21 +64,35 @@ class MyApp extends StatelessWidget {
       defaultTransition: Transition.fadeIn,
       getPages: [
         GetPage(
+          title: 'Splashscreen',
           name: '/splashscreen',
           page: () => SplashscreenPage(),
           binding: SplashscreenBindings(),
         ),
         GetPage(
+          title: 'Auth',
           name: '/auth',
           page: () => const AuthPage(),
           binding: AuthBindings(),
         ),
         GetPage(
+          title: 'Homefeed',
           name: '/homefeed',
           page: () => const HomefeedPage(),
           binding: HomefeedBindings(),
         ),
       ],
+      routingCallback: (routing) async {
+        if (routing != null) {
+          await ReportingService.reportEvent(
+            ScreenViewEvent(
+              to: routing.current,
+              from: routing.previous,
+              isBack: routing.isBack,
+            ),
+          );
+        }
+      },
     );
   }
 }

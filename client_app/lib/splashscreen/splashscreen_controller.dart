@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:client_app/api/newstream/newstream_api.dart';
+import 'package:client_app/common/analytics/analytics_event.dart';
 import 'package:client_app/common/reporting_service.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +19,9 @@ class SplashscreenController extends GetxController {
         unawaited(Get.offNamed('/auth'));
       } else {
         await ReportingService.setUserId(currentUser.id);
+        await ReportingService.reportEvent(
+          SignInEvent(provider: SignInProvider.session),
+        );
         unawaited(Get.offNamed('/homefeed'));
       }
     } catch (e, st) {
