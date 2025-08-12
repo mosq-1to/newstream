@@ -43,9 +43,9 @@ class ReportingService {
   }
 
   static Future<void> reportEvent(
-    String eventName,
-    Map<String, String>? eventProperties,
-  ) async {
+    String eventName, {
+    Map<String, String> eventProperties = const {},
+  }) async {
     try {
       await amplitude.track(
         BaseEvent(eventName, eventProperties: eventProperties),
