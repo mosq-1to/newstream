@@ -84,13 +84,13 @@ class MyApp extends StatelessWidget {
       ],
       routingCallback: (routing) async {
         if (routing != null) {
-          await ReportingService.reportEvent(
+          unawaited(ReportingService.reportEvent(
             ScreenViewEvent(
               to: routing.current,
               from: routing.previous,
               isBack: routing.isBack,
             ),
-          );
+          ));
         }
       },
     );

@@ -12,9 +12,9 @@ class AuthController extends GetxController {
     try {
       await _googleAuthService.signIn();
       await Get.offNamed('/homefeed');
-      await ReportingService.reportEvent(
+      unawaited(ReportingService.reportEvent(
         SignInEvent(provider: SignInProvider.google),
-      );
+      ));
     } catch (e, st) {
       unawaited(ReportingService.reportError(e, st, showToast: true));
     }

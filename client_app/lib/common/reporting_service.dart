@@ -37,6 +37,7 @@ class ReportingService {
 
   static Future<void> reportEvent(AnalyticsEvent event) async {
     try {
+      await amplitude.isBuilt;
       await amplitude.track(
         BaseEvent(event.name, eventProperties: event.properties),
       );
