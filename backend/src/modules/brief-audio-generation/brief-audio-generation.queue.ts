@@ -23,8 +23,6 @@ export class BriefAudioGenerationQueue {
   async generateBriefAudio(briefId: string, content: string, userId: string) {
     if (await this.getGenerateBriefAudioJob(briefId)) {
       console.log(`Audio generation already started for Brief#${briefId}`);
-
-      await this.updateActiveJobsLastRequestAt(briefId);
       return;
     }
 
@@ -45,7 +43,6 @@ export class BriefAudioGenerationQueue {
           text,
           chunkIndex: index,
           userId,
-          lastRequestAt: Date.now(),
         },
         opts: {
           jobId,
@@ -73,18 +70,6 @@ export class BriefAudioGenerationQueue {
     };
 
     await this.flowProducer.add(tree);
-  }
-
-  private async updateActiveJobsLastRequestAt(briefId: string) {
-    const activeJobs = await this.getActiveGenerateBriefAudioProcessChunkJobs(briefId);
-    if (activeJobs.length > 0) {
-      activeJobs.forEach(async (job) => {
-        await job.updateData({
-          ...job.data,
-          lastRequestAt: Date.now(),
-        });
-      });
-    }
   }
 
   async getGenerateBriefAudioJob(briefId: string) {

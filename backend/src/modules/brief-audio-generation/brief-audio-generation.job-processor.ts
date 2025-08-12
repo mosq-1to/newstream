@@ -3,7 +3,6 @@ import { QueueName } from '../../types/queue-name.enum';
 import {
   GenerateBriefAudioJob,
   GenerateBriefAudioProcessChunkJob,
-  GenerateBriefAutioProcessChunkJobPriority,
 } from './jobs/generate-brief-audio.job';
 import { BriefAudioStorageRepository } from '../storage/brief-audio-storage.repository';
 import path from 'path';
@@ -49,18 +48,9 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
     job: GenerateBriefAudioProcessChunkJob,
   ) => {
     try {
-      const { userId, lastRequestAt } = job.data;
+      const { userId } = job.data;
       this.userRoundRobin.addIfNotPresent(userId);
       const currentTurnUserId = this.userRoundRobin.next().value;
-      if (
-        lastRequestAt < Date.now() - 1000 * 8 &&
-        // if it's been already rescheduled, don't reschedule again
-        job.priority !== GenerateBriefAutioProcessChunkJobPriority.Abandoned
-      ) {
-        await this.markJobAbandoned(job);
-        await this.moveJobBackToActive(job);
-        return;
-      }
 
       if (currentTurnUserId !== userId) {
         await this.moveJobBackToActive(job);
@@ -78,11 +68,6 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
       this.logger.error('GenerateBriefAudioProcessChunkJob', e);
       throw e;
     }
-  };
-
-  private readonly markJobAbandoned = async (job: Job) => {
-    await job.changePriority({ priority: GenerateBriefAutioProcessChunkJobPriority.Abandoned });
-    await job.changePriority({ priority: GenerateBriefAutioProcessChunkJobPriority.Abandoned });
   };
 
   private readonly moveJobBackToActive = async (job: Job) => {
