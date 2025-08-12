@@ -77,12 +77,11 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
 
   @OnWorkerEvent('completed')
   async onCompleted(job: GenerateBriefAudioJob | GenerateBriefAudioProcessChunkJob) {
-    const userHasActiveJobs = await this.briefAudioGenerationQueue.checkIfUserHasActiveJobs(
-      job.data.userId,
-    );
-
-    if (!userHasActiveJobs) {
-      this.userRoundRobin.deleteByValue((value) => value === job.data.userId);
-    }
+    // const userHasActiveJobs = await this.briefAudioGenerationQueue.checkIfUserHasActiveJobs(
+    //   job.data.userId,
+    // );
+    // if (!userHasActiveJobs) {
+    //   this.userRoundRobin.deleteByValue((value) => value === job.data.userId);
+    // }
   }
 }
