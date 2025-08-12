@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:amplitude_flutter/amplitude.dart';
 import 'package:amplitude_flutter/configuration.dart';
 import 'package:amplitude_flutter/events/base_event.dart';
+import 'package:client_app/common/analytics/analytics_event.dart';
 import 'package:client_app/common/logger.dart';
 import 'package:client_app/common/toast_service.dart';
 import 'package:client_app/config/app_config.dart';
@@ -27,28 +28,17 @@ class ReportingService {
     }
     try {
       await Sentry.captureException(error, stackTrace: stackTrace);
-      await amplitude.track(
-        BaseEvent(
-          'Error',
-          eventProperties: {
-            'error': error.toString(),
-            'stackTrace': stackTrace.toString(),
-          },
-        ),
-      );
+      await reportEvent(ErrorEvent(error, stackTrace));
     } catch (err, st) {
       logger.e(err, stackTrace: st);
     }
     logger.e(error, stackTrace: stackTrace);
   }
 
-  static Future<void> reportEvent(
-    String eventName, {
-    Map<String, String> eventProperties = const {},
-  }) async {
+  static Future<void> reportEvent(AnalyticsEvent event) async {
     try {
       await amplitude.track(
-        BaseEvent(eventName, eventProperties: eventProperties),
+        BaseEvent(event.name, eventProperties: event.properties),
       );
     } catch (err, st) {
       unawaited(reportError(err, st));
