@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/common/analytics/analytics_event.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/player/utils/format_duration.dart';
 import 'package:client_app/player/widgets/player_control_button.dart';
@@ -253,7 +256,12 @@ class PlayerControls extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         PlayerControlButton(
-          onTap: controller.togglePlayPause,
+          onTap: () {
+            unawaited(ReportingService.reportEvent(
+              UserTapEvent(screen: Get.currentRoute, label: 'Toggle Play/Pause'),
+            ));
+            unawaited(controller.togglePlayPause());
+          },
           isPlaying: isPlaying,
           isLoading: controller.playerState.value.isProcessing || controller.playerState.value.isBuffering,
           size: 64.0,

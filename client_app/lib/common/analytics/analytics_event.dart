@@ -39,3 +39,13 @@ class ScreenViewEvent extends AnalyticsEvent {
           properties: {'to': to, 'from': from, 'isBack': isBack},
         );
 }
+
+class UserTapEvent extends AnalyticsEvent {
+  UserTapEvent({
+    required String screen,
+    required String label,
+  }) : super(
+          'User tap',
+          properties: {'screen': screen, 'label': label},
+        );
+}

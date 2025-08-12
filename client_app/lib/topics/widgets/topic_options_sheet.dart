@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:client_app/api/newstream/models/topic_model.dart';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/common/reporting_service.dart';
+import 'package:client_app/common/analytics/analytics_event.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
@@ -180,6 +181,13 @@ class _TopicOptionsSheetState extends State<TopicOptionsSheet> {
                   'topicTitle': widget.topic.title,
                   'timeframe': selectedTimeframe,
                 };
+
+                unawaited(ReportingService.reportEvent(
+                  UserTapEvent(
+                    screen: 'TopicOptions',
+                    label: 'Generate brief',
+                  ),
+                ));
 
                 try {
                   final brief = await Get.find<NewstreamApi>().createBrief(

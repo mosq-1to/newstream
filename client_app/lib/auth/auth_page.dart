@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:client_app/auth/auth_controller.dart';
+import 'package:client_app/common/analytics/analytics_event.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/common/theme/dark_background_layout.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/common/ui/button.dart';
@@ -20,17 +24,19 @@ class AuthPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const SizedBox(height: 100),
-              const Column(children: [
-                Text(
-                  'Welcome to Newstream',
-                  style: TextStyles.headingLg,
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Stay up to date with no effort',
-                  style: TextStyles.body,
-                ),
-              ]),
+              const Column(
+                children: [
+                  Text(
+                    'Welcome to Newstream',
+                    style: TextStyles.headingLg,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Stay up to date with no effort',
+                    style: TextStyles.body,
+                  ),
+                ],
+              ),
               const SizedBox(height: 40),
               Button(
                 locator: const Key('auth_page_google_button'),
@@ -40,7 +46,17 @@ class AuthPage extends StatelessWidget {
                   height: 24,
                 ),
                 text: 'Continue with Google',
-                onPressed: authController.handleGoogleLogin,
+                onPressed: () async {
+                  unawaited(
+                    ReportingService.reportEvent(
+                      UserTapEvent(
+                        screen: 'Auth',
+                        label: 'Continue with Google',
+                      ),
+                    ),
+                  );
+                  await authController.handleGoogleLogin();
+                },
               ),
               const SizedBox(height: 100),
             ],

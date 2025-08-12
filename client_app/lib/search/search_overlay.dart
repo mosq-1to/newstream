@@ -3,7 +3,10 @@ import 'dart:ui';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/search/search_controller.dart';
 import 'package:client_app/topics/widgets/topic_tile.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:client_app/common/analytics/analytics_event.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:get/get.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -53,7 +56,12 @@ class _SearchOverlayState extends State<SearchOverlay>
     return Material(
       type: MaterialType.transparency,
       child: GestureDetector(
-        onTap: () => Get.back(),
+        onTap: () {
+          unawaited(ReportingService.reportEvent(
+            UserTapEvent(screen: 'Search', label: 'Dismiss Search'),
+          ));
+          Get.back();
+        },
         child: FadeTransition(
           opacity: _animation,
           child: Stack(

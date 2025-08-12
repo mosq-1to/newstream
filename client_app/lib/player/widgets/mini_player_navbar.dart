@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:client_app/common/theme/text_styles.dart';
+import 'package:client_app/common/analytics/analytics_event.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/player/pages/player_page.dart';
 import 'package:client_app/player/player_controller.dart';
 import 'package:client_app/player/widgets/player_control_button.dart';
@@ -26,7 +29,12 @@ class MiniPlayerNavbar extends StatelessWidget {
       }
 
       return GestureDetector(
-        onTap: () => PlayerPage.show(context),
+        onTap: () {
+          unawaited(ReportingService.reportEvent(
+            UserTapEvent(screen: Get.currentRoute, label: 'Open Player'),
+          ));
+          unawaited(PlayerPage.show(context));
+        },
         child: ColoredBox(
           color: Colors.black,
           child: Column(
@@ -142,7 +150,12 @@ class MiniPlayerNavbar extends StatelessWidget {
       width: 48,
       height: 48,
       child: PlayerControlButton(
-        onTap: controller.togglePlayPause,
+        onTap: () {
+          unawaited(ReportingService.reportEvent(
+            UserTapEvent(screen: Get.currentRoute, label: 'Toggle Play/Pause'),
+          ));
+          unawaited(controller.togglePlayPause());
+        },
         isPlaying: isPlaying,
       ),
     );

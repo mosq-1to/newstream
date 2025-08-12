@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'package:client_app/common/analytics/analytics_event.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/common/toast_service.dart';
 import 'package:client_app/search/search_bindings.dart';
@@ -33,11 +34,20 @@ class BottomNavBar extends StatelessWidget {
         onTap: (index) {
           if (index == 1) {
             // Search tab clicked
+            unawaited(ReportingService.reportEvent(
+              UserTapEvent(screen: 'Homefeed', label: 'Open Search'),
+            ));
             _showSearchOverlay();
           } else if (index == 2) {
             // My space tab clicked
+            unawaited(ReportingService.reportEvent(
+              UserTapEvent(screen: 'Homefeed', label: 'Open My space'),
+            ));
             ToastService.showInfo('Work in progress');
           } else {
+            unawaited(ReportingService.reportEvent(
+              UserTapEvent(screen: 'Homefeed', label: 'Open Home'),
+            ));
             onTap(index);
           }
         },

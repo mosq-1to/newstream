@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:client_app/api/newstream/models/article_model.dart';
 import 'package:client_app/api/newstream/models/brief_model.dart';
+import 'package:client_app/common/analytics/analytics_event.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/common/theme/text_styles.dart';
 import 'package:client_app/common/ui/tappable.dart';
 import 'package:client_app/player/player_controller.dart';
@@ -158,7 +161,12 @@ class _PlayerPageState extends State<PlayerPage> {
             size: 40,
             weight: 200,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            unawaited(ReportingService.reportEvent(
+              UserTapEvent(screen: 'Player', label: 'Close Player'),
+            ));
+            Navigator.of(context).pop();
+          },
         ),
         // Text(
         //   brief.content,
@@ -192,6 +200,9 @@ class _PlayerPageState extends State<PlayerPage> {
             final article = articles[index];
             return Tappable(
               onTap: () async {
+                unawaited(ReportingService.reportEvent(
+                  UserTapEvent(screen: 'Player', label: 'Open source article'),
+                ));
                 final url = Uri.parse(article.url);
                 if (await canLaunchUrl(url)) {
                   await launchUrl(url, mode: LaunchMode.externalApplication);
