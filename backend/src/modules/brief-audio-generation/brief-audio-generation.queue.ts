@@ -21,7 +21,7 @@ export class BriefAudioGenerationQueue {
   ) {}
 
   async generateBriefAudio(briefId: string, content: string, userId: string) {
-    if (await this.getGenerateBriefAudioJob(briefId)) {
+    if (await this.isAudioGenerationInProgress(briefId)) {
       console.log(`Audio generation already started for Brief#${briefId}`);
       return;
     }
@@ -72,35 +72,9 @@ export class BriefAudioGenerationQueue {
     await this.flowProducer.add(tree);
   }
 
-  async getGenerateBriefAudioJob(briefId: string) {
-    const jobs = (await this.queue.getJobs()) as Job[];
+  async isAudioGenerationInProgress(briefId: string) {
+    const jobs = (await this.queue.getJobs(['waiting-children'])) as Job[];
 
-    return jobs.find((job) => job.name === GenerateBriefAudioJob.getName(briefId));
-  }
-
-  async getActiveGenerateBriefAudioProcessChunkJobs(briefId: string) {
-    const jobs = (await this.queue.getJobs([
-      'active',
-      'delayed',
-      'paused',
-      'paused',
-      'delayed',
-    ])) as Job[];
-
-    return jobs.filter((job) =>
-      job.name.startsWith(GenerateBriefAudioProcessChunkJob.getNameWithoutChunkIndex(briefId)),
-    );
-  }
-
-  async checkIfUserHasActiveJobs(userId: string) {
-    const jobs = (await this.queue.getJobs([
-      'active',
-      'delayed',
-      'paused',
-      'paused',
-      'delayed',
-    ])) as Job[];
-
-    return jobs.some((job) => job.data.userId === userId);
+    return jobs.some((job) => job.data.briefId === briefId);
   }
 }
