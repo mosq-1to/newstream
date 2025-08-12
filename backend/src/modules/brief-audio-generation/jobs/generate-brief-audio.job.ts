@@ -13,6 +13,8 @@ export class GenerateBriefAudioProcessChunkJob extends Job<{
   userId: User['id'];
   text: string;
   chunkIndex: number;
+  /** Timestamp of the last user request */
+  lastRequestAt: number;
 }> {
   public static getName = (briefId: string, chunkIndex: number) =>
     `generate-brief-audio-${briefId}-process-chunk-${chunkIndex}`;
