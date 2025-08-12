@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:client_app/api/newstream/newstream_api.dart';
 import 'package:client_app/auth/auth_bindings.dart';
 import 'package:client_app/auth/auth_page.dart';
+import 'package:client_app/common/reporting_service.dart';
 import 'package:client_app/config/app_config.dart';
 import 'package:client_app/homefeed/homefeed_bindings.dart';
 import 'package:client_app/homefeed/homefeed_page.dart';
@@ -24,6 +25,8 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]));
+
+  await ReportingService.reportEvent('Test');
 
   // Initialize app config
   await AppConfig().initialize();
@@ -72,7 +75,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/homefeed',
-          page: () => HomefeedPage(),
+          page: () => const HomefeedPage(),
           binding: HomefeedBindings(),
         ),
       ],

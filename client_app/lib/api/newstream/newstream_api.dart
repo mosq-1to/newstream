@@ -17,7 +17,7 @@ class NewstreamApi {
   /* Auth */
   String? accessToken;
 
-  Future<void> validateGoogleAuthCode(String code) async {
+  Future<GoogleAuthCodeValidation> validateGoogleAuthCode(String code) async {
     final response = await http.get(
       Uri.parse(
         '${AppConfig().env.newstreamApiUrl}/auth/google/callback?code=$code',
@@ -31,6 +31,7 @@ class NewstreamApi {
     final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
     final validationResponse = GoogleAuthCodeValidation.fromJson(responseBody);
     await _setAccessToken(validationResponse.accessToken);
+    return validationResponse;
   }
 
   Future<CurrentUser?> getCurrentUser() async {

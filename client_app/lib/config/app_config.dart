@@ -5,11 +5,13 @@ class EnvModel {
   final String newstreamApiUrl;
   final String googleAuthServerClientId;
   final String sentryDsnUrl;
+  final String amplitudeApiKey;
 
   EnvModel({
     required this.newstreamApiUrl,
     required this.googleAuthServerClientId,
     required this.sentryDsnUrl,
+    required this.amplitudeApiKey,
   });
 
   void validate() {
@@ -22,6 +24,9 @@ class EnvModel {
     if (sentryDsnUrl.isEmpty) {
       throw Exception('SENTRY_DSN_URL is not set in .env file');
     }
+    if (amplitudeApiKey.isEmpty) {
+      throw Exception('AMPLITUDE_API_KEY is not set in .env file');
+    }
   }
 
   factory EnvModel.fromMap(Map<String, String> map) {
@@ -29,6 +34,7 @@ class EnvModel {
       newstreamApiUrl: map['NEWSTREAM_API_URL']!,
       googleAuthServerClientId: map['GOOGLE_AUTH_SERVER_CLIENT_ID']!,
       sentryDsnUrl: map['SENTRY_DSN_URL']!,
+      amplitudeApiKey: map['AMPLITUDE_API_KEY']!,
     );
   }
 }

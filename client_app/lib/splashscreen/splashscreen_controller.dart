@@ -17,6 +17,7 @@ class SplashscreenController extends GetxController {
       if (currentUser == null) {
         unawaited(Get.offNamed('/auth'));
       } else {
+        await ReportingService.setUserId(currentUser.id);
         unawaited(Get.offNamed('/homefeed'));
       }
     } catch (e, st) {

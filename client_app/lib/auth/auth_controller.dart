@@ -12,7 +12,7 @@ class AuthController extends GetxController {
       await _googleAuthService.signIn();
       await Get.offNamed('/homefeed');
     } catch (e, st) {
-      await ReportingService.reportError(e, st, showToast: true);
+      unawaited(ReportingService.reportError(e, st, showToast: true));
     }
   }
 }
