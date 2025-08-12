@@ -33,9 +33,11 @@ export class BriefAudioGenerationQueue {
     const mainJobId = uuidv4();
     // Create a job for each chunk
     splitter.push(content);
+    const childJobIds: string[] = [];
     const children = [...splitter].map((text, index) => {
       const jobId = uuidv4();
       const jobName = GenerateBriefAudioProcessChunkJob.getName(briefId, index);
+      childJobIds.push(jobId);
 
       return {
         name: jobName,
@@ -45,7 +47,6 @@ export class BriefAudioGenerationQueue {
           text,
           chunkIndex: index,
           userId,
-          lastRequestAt: Date.now(),
         },
         opts: {
           jobId,
@@ -73,18 +74,54 @@ export class BriefAudioGenerationQueue {
     };
 
     await this.flowProducer.add(tree);
+
+    if (childJobIds.length > 0) {
+      const client = await this.queue.client;
+      const pipeline = client.multi();
+      const key = this.heartbeatKey(briefId);
+      const now = Date.now();
+      for (const id of childJobIds) {
+        pipeline.zadd(key, now, String(id));
+      }
+      await pipeline.exec();
+    }
+  }
+
+  private heartbeatKey(briefId: string) {
+    return this.queue.toKey(`brief:lastRequestAt:${briefId}`);
   }
 
   private async updateActiveJobsLastRequestAt(briefId: string) {
     const activeJobs = await this.getActiveGenerateBriefAudioProcessChunkJobs(briefId);
     if (activeJobs.length > 0) {
-      activeJobs.forEach(async (job) => {
-        await job.updateData({
-          ...job.data,
-          lastRequestAt: Date.now(),
-        });
-      });
+      const client = await this.queue.client;
+      const pipeline = client.multi();
+      const key = this.heartbeatKey(briefId);
+      const now = Date.now();
+      for (const job of activeJobs) {
+        pipeline.zadd(key, now, String(job.id));
+      }
+      await pipeline.exec();
     }
+  }
+
+  async getLastRequestAt(briefId: string, jobId: string): Promise<number | null> {
+    const client = await this.queue.client;
+    const key = this.heartbeatKey(briefId);
+    const score = (await client.zscore(key, String(jobId))) as string | null;
+    return score === null ? null : Number(score);
+  }
+
+  async removeHeartbeat(briefId: string, jobId: string): Promise<void> {
+    const client = await this.queue.client;
+    const key = this.heartbeatKey(briefId);
+    await client.zrem(key, String(jobId));
+  }
+
+  async clearHeartbeats(briefId: string): Promise<void> {
+    const client = await this.queue.client;
+    const key = this.heartbeatKey(briefId);
+    await client.del(key);
   }
 
   async getGenerateBriefAudioJob(briefId: string) {

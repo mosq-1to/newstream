@@ -49,7 +49,12 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
     job: GenerateBriefAudioProcessChunkJob,
   ) => {
     try {
-      const { userId, lastRequestAt } = job.data;
+      const { userId } = job.data;
+      const heartbeat = await this.briefAudioGenerationQueue.getLastRequestAt(
+        job.data.briefId,
+        String(job.id),
+      );
+      const lastRequestAt = heartbeat ?? Date.now();
       this.userRoundRobin.addIfNotPresent(userId);
       const currentTurnUserId = this.userRoundRobin.next().value;
       if (
@@ -92,10 +97,28 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
 
   @OnWorkerEvent('completed')
   async onCompleted(job: GenerateBriefAudioJob | GenerateBriefAudioProcessChunkJob) {
+    if (job.name.includes('-process-chunk-')) {
+      await this.briefAudioGenerationQueue.removeHeartbeat(job.data.briefId, String(job.id));
+    } else {
+      await this.briefAudioGenerationQueue.clearHeartbeats(job.data.briefId);
+    }
     const userHasActiveJobs = await this.briefAudioGenerationQueue.checkIfUserHasActiveJobs(
       job.data.userId,
     );
 
+    if (!userHasActiveJobs) {
+      this.userRoundRobin.deleteByValue((value) => value === job.data.userId);
+    }
+  }
+
+  @OnWorkerEvent('failed')
+  async onFailed(job: GenerateBriefAudioJob | GenerateBriefAudioProcessChunkJob) {
+    if (job.name.includes('-process-chunk-')) {
+      await this.briefAudioGenerationQueue.removeHeartbeat(job.data.briefId, String(job.id));
+    }
+    const userHasActiveJobs = await this.briefAudioGenerationQueue.checkIfUserHasActiveJobs(
+      job.data.userId,
+    );
     if (!userHasActiveJobs) {
       this.userRoundRobin.deleteByValue((value) => value === job.data.userId);
     }
