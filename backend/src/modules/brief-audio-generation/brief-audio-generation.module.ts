@@ -15,13 +15,26 @@ import { GenerateBriefAudioUseCase } from './use-cases/generate-brief-audio.use-
 @Module({
   imports: [
     BriefsModule,
-    BullModule.registerQueue({ name: QueueName.BriefAudioGeneration }),
+    BullModule.registerQueue({
+      name: QueueName.BriefAudioGeneration,
+      settings: {
+        maxStalledCount: 3,
+        lockDuration: 120 * 1000,
+        stalledInterval: 120 * 1000,
+      } as any, // poorly typed BullMQ module
+    }),
     BullBoardModule.forFeature({
       name: QueueName.BriefAudioGeneration,
       adapter: BullMQAdapter,
     }),
     BullModule.registerFlowProducer({
       name: FlowProducerName.BriefAudioGeneration,
+      /**@ts-expect-error poorly typed BullMQ module */
+      settings: {
+        maxStalledCount: 3,
+        lockDuration: 120 * 1000,
+        stalledInterval: 120 * 1000,
+      },
     }),
     StorageModule,
     AudioGenerationModule,
