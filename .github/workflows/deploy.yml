@@ -12,24 +12,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
-      - name: Prepare EB Docker context
-        run: |
-          # Copy all necessary backend files to root for Docker build
-          rm -rf source
-          mkdir -p source
-          cp backend/Dockerfile source/
-          cp backend/package.json source/
-          cp backend/package-lock.json source/
-          mkdir -p source/prisma
-          cp -r backend/prisma/* source/prisma/
-          mkdir -p source/scripts
-          cp -r backend/scripts/* source/scripts/
-          mkdir -p source/src
-          cp -r backend/src/* source/src/
 
       - name: Zip source bundle
-        run: cd source && zip -r ../app.zip . -x '*.git*'
+        run: cd backend && zip -r ../app.zip . -x '.*'
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
