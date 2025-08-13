@@ -1,4 +1,4 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { QueueName } from '../../types/queue-name.enum';
 import {
   GenerateBriefAudioJob,
@@ -9,6 +9,7 @@ import path from 'path';
 import { AudioGenerationService } from '../audio-generation/audio-generation.service';
 import { HlsService } from '../../utils/audio/hls.service';
 import { Logger } from '@nestjs/common';
+import { captureException } from '@sentry/nestjs';
 
 @Processor(QueueName.BriefAudioGeneration)
 export class BriefAudioGenerationJobProcessor extends WorkerHost {
@@ -54,4 +55,9 @@ export class BriefAudioGenerationJobProcessor extends WorkerHost {
       throw e;
     }
   };
+
+  @OnWorkerEvent('error')
+  async onError(error: Error) {
+    captureException(error);
+  }
 }
