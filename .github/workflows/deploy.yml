@@ -20,6 +20,10 @@ jobs:
           cp backend/.dockerignore . || true
           cp backend/package.json .
           cp backend/package-lock.json .
+          mkdir -p prisma
+          cp -r backend/prisma/* prisma/ .
+          mkdir -p scripts
+          cp -r backend/scripts/* scripts/ .
           mkdir -p src
           cp -r backend/src/* src/
 
