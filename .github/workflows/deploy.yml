@@ -15,9 +15,13 @@ jobs:
         
       - name: Prepare EB Docker context
         run: |
+          # Copy all necessary backend files to root for Docker build
           cp backend/Dockerfile .
           cp backend/.dockerignore . || true
-          # Copy your app files if needed
+          cp backend/package.json .
+          cp backend/package-lock.json .
+          mkdir -p src
+          cp -r backend/src/* src/
 
       - name: Zip source bundle
         run: zip -r app.zip . -x '*.git*'
