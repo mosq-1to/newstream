@@ -1,4 +1,4 @@
-name: Deploy Docker to AWS Elastic Beanstalk
+name: Deploy to VPS
 
 on:
   push:
@@ -10,20 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Zip source bundle
-        run: cd backend && zip -r ../app.zip . -x '.*'
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to Elastic Beanstalk
-        uses: einaregilsson/beanstalk-deploy@v21
-        with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: ${{ secrets.EB_APP_NAME }}
-          environment_name: ${{ secrets.EB_ENV_NAME }}
-          region: ${{ secrets.AWS_REGION }}
-          version_label: docker-${{ github.run_number }}
-          use_existing_version_if_available: true
-          deployment_package: app.zip
+      - name: Deploy and restart Docker container
+        run: |
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }} << 'EOF'
+            cd srv/newstream || mkdir srv/newstream && cd srv/newstream
+
+            # Remove files
+            rm -rf *
+          EOF
+
+          cd backend
+          scp -r . ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }}:/srv/newstream
+
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }} << 'EOF'
+            cd /srv/newstream
+            sudo docker build -t newstream-backend .
+            sudo docker stop newstream-backend || true
+            sudo docker rm newstream-backend || true
+            sudo docker run -d --name newstream-backend -p 80:3000 newstream-backend
+          EOF
