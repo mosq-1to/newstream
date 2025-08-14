@@ -23,7 +23,7 @@ jobs:
       - name: Deploy and restart Docker container
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }} << 'EOF'
-            cd srv/newstream || mkdir srv/newstream && cd srv/newstream
+            cd /srv/newstream || mkdir /srv/newstream && cd /srv/newstream
 
             # Remove files
             rm -rf *
